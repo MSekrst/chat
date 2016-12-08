@@ -1,0 +1,8 @@
+#editor files
+.idea
+
+#modules
+node_modules
+
+#word working files
+~$b*
