@@ -4,5 +4,10 @@
 #modules
 node_modules
 
+#database directory
+database
+
 #word working files
 ~$b*
+
+#other files
