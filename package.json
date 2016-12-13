@@ -1,0 +1,47 @@
+{
+  "name": "chat",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "clean": "rimraf build-api",
+    "build": "npm run clean && babel api --out-dir build-api",
+    "build:watch": "npm run clean && babel api --out-dir build-api -w",
+    "build:client": "webpack -p",
+    "build:client:watch": "webpack -d --watch",
+    "build:all": "npm run clean && npm run build && npm build:client",
+    "lint:api": "eslint api/**",
+    "lint:client": "eslint src/**",
+    "start:dev": "nodemon --watch build-api build-api/www.js",
+    "start:client": "webpack-dev-server --inline --hot",
+  },
+  "dependencies": {
+    "body-parser": "~1.15.1",
+    "cookie-parser": "~1.4.3",
+    "cors": "^2.8.1",
+    "debug": "~2.2.0",
+    "dotenv": "^2.0.0",
+    "express": "~4.13.4",
+    "morgan": "~1.7.0",
+    "react": "^15.3.2",
+    "react-dom": "^15.3.2",
+    "redux": "^3.6.0",
+    "rimraf": "^2.5.4"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.14.0",
+    "babel-core": "^6.16.0",
+    "babel-loader": "^6.2.5",
+    "babel-preset-es2015": "^6.14.0",
+    "babel-preset-react": "^6.16.0",
+    "eslint": "^3.6.1",
+    "eslint-config-airbnb-base": "^8.0.0",
+    "eslint-plugin-import": "^1.16.0",
+    "webpack": "^1.13.2",
+    "webpack-dev-server": "^1.16.1"
+  },
+  "author": "MSekrst",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MSekrst/chat"
+  }
+}
