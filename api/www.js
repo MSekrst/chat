@@ -73,6 +73,7 @@ function onListening() {
 /**
  * Listen on provided port, on all network interfaces.
  */
+console.log('Server is running!');
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);

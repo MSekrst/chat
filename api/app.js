@@ -4,19 +4,23 @@ import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import favicon from 'serve-favicon';
 
-import routes from './index';
+import routes from './routes/index';
 
 const app = express();
 
-// load environment variables from .env file
-dotenv.config();
+// load environment variables from .env file with no error displayed
+dotenv.config({ silent: true });
 
 app.use(cors());
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+app.use(express.static('public'));
+app.use(favicon('public/images/favicon.ico'));
 
 // use routes defined in an index file
 app.use('/', routes);
@@ -27,8 +31,6 @@ app.use((req, res, next) => {
   err.status = 404;
   next(err);
 });
-
-// error handlers
 
 // development error handler
 // will print stacktrace

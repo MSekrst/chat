@@ -19,4 +19,7 @@ Use terminal or IDE to start these scripts
 - `npm run lint:api` - Checks code style for api
 - `npm run lint:client` - Checks code style for client
 - `npm run start:dev` - Starts dev api service
-- `npm run start:client` - Starts webpack dev server on port 8080
+- `npm run start:client` - Starts webpack dev server on port 8080 for client development
+
+<h3>Structure</h3>
+Project structure is simple, all backend API code is in `api` folder. Client code is in the `src` folder. Mobile-app code is in `mobile` folder.
