@@ -1,9 +1,10 @@
 /*Basic HTML elements and universal classes*/
+
 * {
   font-family: 'Lato', sans-serif;
 }
 
-body {
+html, body {
   height: 100%;
   width: 100%;
   background-color: #f5f5f5;
@@ -11,29 +12,62 @@ body {
 
 .centered {
   margin: 0 auto;
-  width: 90%;
+  width: 80%;
+  height: 100%;
   text-align: center;
+  background-color: #ffffff;
+  padding: 0;
 }
 
+#app {
+  width: 100%;
+  height: 100%;
+}
+
+/*----------------------------------------------*/
 /*Header.jsx*/
-.color {
-  color: red;
-  background-color: green;
+
+.navLogo {
+  padding: 5px;
 }
 
-.navName {
-  padding-right: 20px;
-  color: red !important;
+.navBackground {
+  background-color: #86cbc4;
+  /*padding-right: 0px;*/
 }
 
+.navButton {
+  margin-left: 10px;
+  color: #ffffff !important;
+  font-size: large;
+}
+
+.navButton:hover {
+  font-weight: bold;
+}
+
+.navIcon {
+  color: #cb8689;
+}
+
+.navCollapsedButton {
+  background-color: #52b2a8 !important;
+}
+
+.navCollapsedButtonItem {
+  background-color: #ffffff !important;
+}
+
+/*----------------------------------------------*/
 /*NotFound.jsx*/
+
 .link404 {
   text-decoration: none;
-  color: red;
+  color: #86cbc4;
 }
 
 .link404:hover {
   text-decoration: none;
   font-weight: bold;
-  color: green;
+  color: #fc45a3;
 }

@@ -2,14 +2,22 @@ import React from 'react';
 
 export default class Header extends React.Component {
   render() {
-    return <nav className="navbar navbar-default color">
-      <div className="container-fluid">
+    return <nav className="navbar navbar-default">
+      <div className="container-fluid navBackground">
         <div className="navbar-header">
-          <a className="navbar-brand" href="#">
-            <img alt="Chat" src="../images/favicon.ico" />
-          </a>
+          <button type="button" className="navbar-toggle collapsed navCollapsedButton" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <span className="sr-only">Toggle navigation</span>
+            <span className="icon-bar navCollapsedButtonItem" />
+            <span className="icon-bar navCollapsedButtonItem" />
+            <span className="icon-bar navCollapsedButtonItem" />
+          </button>
+          <a className="navbar-brand navLogo" href="/"><img alt="Little Talks" src="./images/logo.png" height="40px" width="40px"/></a>
         </div>
-        <p className="navbar-text navbar-right navName">Signed in as <a href="#" className="navbar-link">Mark Otto</a></p>
+        <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul className="nav navbar-nav navbar-right">
+            <li><a className="navButton" href="/profile"><span className="glyphicon glyphicon-user navIcon" />&nbsp;&nbsp;Profile</a></li>
+          </ul>
+        </div>
       </div>
     </nav>;
   }

@@ -10,8 +10,20 @@ var config = {
   ],
   output: {
     path: BUILD_DIR,
-    publicPath: '/public',
+    publicPath: '/js',
     filename: 'bundle.js'
+  },
+  devServer: {
+    contentBase: "./public",
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        secure: false
+      }
+    },
+    inline: true,
+    hot: true
   },
   module : {
     loaders : [
