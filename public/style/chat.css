@@ -95,6 +95,29 @@ html, body {
 
 .item{
   width: 100%;
-  height: 7%;
-  background-color: #ffe87c;
+  height: 70px;
+  background-color: #fcf4c9;
+  border-bottom: solid;
+  border-bottom-color: whitesmoke;
+}
+
+.item:hover{
+  background-color: #ffeb94;
+}
+
+.profileImage{
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+.imageItem{
+  display: inline-block;
+  width: 70px;
+  height: 100%;
+  float: left;
+}
+
+.nameItem{
+  display: inline-block;
+  margin-top: 25px;
 }
