@@ -21,6 +21,7 @@ export const authMiddleware = {
     const jwtSecret = process.env.JWT_SECRET;
 
     const header = req.get('Authorization');
+
     const token = header.split(' ')[1];
 
     const decoded = jwt.verify(token, jwtSecret);
