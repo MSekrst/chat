@@ -5,6 +5,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import favicon from 'serve-favicon';
 import passport from 'passport';
+import { resolve } from 'path';
 
 import { connectDatabase } from './mongo';
 import routes from './routes';
@@ -28,21 +29,26 @@ app.use(passport.initialize());
 
 // use routes defined in an index file
 app.use('/api', routes);
+// wildcard route middleware -> returns index.html for react-router to work properly
+// must be last middleware -> after all routes
+app.use('/*', (req, res) => {
+  res.sendFile(resolve(__dirname, '../public/index.html'));
+});
 
 // error handeling for production
-const env = process.env.NODE_ENV || 'production';
-if (env === 'production') {
-  // catch 404 and forward to error handler
-  app.use((req, res, next) => {
-    const err = new Error('Not Found');
-    err.status = 404;
-    next(err);
-  });
-
-  // no stacktraces leaked to user
-  app.use((err, req, res) => {
-    res.status(err.status || 500);
-  });
-}
+// const env = process.env.NODE_ENV || 'production';
+// if (env === 'production') {
+//   // catch 404 and forward to error handler
+//   app.use((req, res, next) => {
+//     const err = new Error('Not Found');
+//     err.status = 404;
+//     next(err);
+//   });
+//
+//   // no stacktraces leaked to user
+//   app.use((err, req, res) => {
+//     res.status(err.status || 500);
+//   });
+// }
 
 export default app;

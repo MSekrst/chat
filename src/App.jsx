@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Router, Route, browserHistory } from 'react-router';
+import { BrowserRouter, Match, Miss } from 'react-router';
 import 'whatwg-fetch';
 
 import NotFound from './not-found/NotFound.jsx';
@@ -22,11 +22,27 @@ export class App extends React.Component {
   }
 }
 
+{/*ReactDOM.render(*/}
+  {/*<Router history={browserHistory} >*/}
+    {/*<Route path="/" component={Login} />*/}
+//     <Route path="chat" component={App}>
+//       <Route path=":username" component={Header}/>
+//     </Route>
+//     <Route path="*" component={NotFound} />
+//   </Router>,
+//   document.getElementById('app')
+// );
+
 ReactDOM.render(
-  <Router history={browserHistory}>
-    <Route path="/" component={Login} />
-    <Route path="/chat" componenet={App}/>
-    <Route path="*" component={NotFound} />
-  </Router>,
+  <div>
+    <BrowserRouter>
+      <div>
+        <Match exactly pattern="/" component={Login} />
+        <Match exactly pattern="/chat" component={App} />
+        <Match exactly pattern="/chat/:username" component={Header} />
+        <Miss component={NotFound} />
+      </div>
+    </BrowserRouter>
+  </div>,
   document.getElementById('app')
 );

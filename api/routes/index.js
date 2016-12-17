@@ -11,13 +11,7 @@ router.get('/', (req, res) => {
 });
 
 router.use('/auth', authRouter);
+
 router.use('/messages', messageRouter);
-
-
-// wildcard route middleware -> returns index.html for react-router to work properly
-// must be last middleware -> after all routes
-router.use('/*', (req, res) => {
-  res.sendFile(resolve(__dirname, '../../public/index.html'));
-});
 
 export default router;
