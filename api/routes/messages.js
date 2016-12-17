@@ -19,12 +19,30 @@ messageRouter.get('/:title',
   (req, res) => {
     const db = getDb();
 
-    const sender = (req.user.username) ? (req.user.username) : (req.facebook.user.username);
-    const title = req.param.title;
+    const title = req.params.title;
+    const conversation = db.collection('conversations').findOne({title});
 
-    const conversation = db.collection('conversation').findOne({title: title});
-    console.log(conversation);
+    conversation.then(data => {
+        res.end(data);
+    }).catch(err => {
+      console.log(err);
+    });
+  }
+);
 
+messageRouter.post('/:title',
+  (req, res) => {
+    const db = getDb();
+
+    const title = req.params.title;
+    db.collection('conversations').findOneAndUpdate( {title: title}, {$pushAll: {'conversation': req.body}}, { upsert: true }, (err, user) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).json({ message: 'err' });
+      }
+
+      return res.status(204).json(req.body);
+    });
   }
 );
 export default messageRouter;
