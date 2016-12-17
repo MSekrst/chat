@@ -108,6 +108,27 @@ html, body {
   background-color: #ffe87c;
 }
 
+.item:hover{
+  background-color: #ffeb94;
+}
+
+.profileImage{
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+.imageItem{
+  display: inline-block;
+  width: 70px;
+  height: 100%;
+  float: left;
+}
+
+.nameItem{
+  display: inline-block;
+  margin-top: 25px;
+}
+
 /*----------------------------------------------*/
 /*Login.jsx*/
 
@@ -127,3 +148,5 @@ html, body {
   text-decoration: underline;
   font-weight: bold;
 }
+
+
