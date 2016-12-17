@@ -1,6 +1,7 @@
 import express from 'express';
 
 import { getDb } from '../mongo';
+import { authMiddleware } from '../auth/middleware';
 
 const messageRouter = express.Router();
 
