@@ -5,7 +5,7 @@ import { authMiddleware } from '../auth/middleware';
 
 const messageRouter = express.Router();
 
-messageRouter.get('/',
+messageRouter.get('/', authMiddleware.checkToken,
   (req, res) => {
     const db = getDb();
 
@@ -38,7 +38,7 @@ messageRouter.post('/init', authMiddleware.checkToken, (req, res) => {
   });
 });
 
-messageRouter.get('/:title',
+messageRouter.get('/:title', authMiddleware.checkToken,
   (req, res) => {
     const db = getDb();
 
@@ -53,7 +53,7 @@ messageRouter.get('/:title',
   }
 );
 
-messageRouter.post('/:title',
+messageRouter.post('/:title', authMiddleware.checkToken,
   (req, res) => {
     const db = getDb();
 
