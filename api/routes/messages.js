@@ -10,7 +10,7 @@ messageRouter.get('/',
     const db = getDb();
 
   const user = (req.user.username) ? (req.user.username) : (req.facebook.user.username);
-  db.collection('messages').find({ 'users.username': { $in: [user] } }).toArray((err, data) => {
+  db.collection('conversations').find({ 'users.username': { $in: [user] } }).toArray((err, data) => {
     if(err) {
       console.log(err);
       return res.status(500).json( { message: "err" } );
@@ -26,10 +26,10 @@ messageRouter.post('/init', authMiddleware.checkToken, (req, res) => {
   let users = req.body.users;
   users.push(req.user);
 
-  db.collection('messages').insertOne({
+  db.collection('conversations').insertOne({
     "title": req.body.title,
     "users": users,
-    "message": []
+    "conversation": []
   }).then(conversation => {
     return res.status(201).json(conversation);
   }).catch( err => {
