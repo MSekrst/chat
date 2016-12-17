@@ -149,4 +149,20 @@ html, body {
   font-weight: bold;
 }
 
+.panelDiv{
+  background-color: white;
+  width: 65%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.4);
+  padding-bottom: 2%;
+}
+
 

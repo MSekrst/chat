@@ -2,7 +2,7 @@ import React from 'react';
 
 export default class Login extends React.Component {
   render() {
-    return <div className="container centered login">
+    return <div className="panelDiv">
       <h1>Welcome to <span className="appName">Chit Chat</span></h1>
       <br />
       <h3 className="loginSubtitle">Login</h3>
