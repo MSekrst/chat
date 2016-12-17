@@ -30,4 +30,4 @@ Use terminal or IDE to start these scripts
 - `npm run start:client` - Starts webpack dev server on port 8080 for client development with proxy to `http://localhost:3000`
 
 <h3>Structure</h3>
-Project structure is simple, all backend API code is in the `api` folder. Client code is in the `src` folder. Mobile-app code is in the `mobile` folder.
+Project structure is simple, all backend API code is in the `api` folder. Client code is in the `src` folder. Mobile-app code is in the `Android` folder.

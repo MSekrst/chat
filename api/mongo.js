@@ -8,7 +8,7 @@ export const connectDatabase = () =>
 {
   MongoClient.connect(mongoURL, (err, db) => {
     if (err) {
-      console.err('Error while connecting to the database!');
+      console.log('Error while connecting to the database!');
     }
 
     dbHandler = db;
