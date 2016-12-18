@@ -34,17 +34,22 @@ export default class Login extends React.Component {
       },
       body: JSON.stringify(this.state),
     }).then(checkStatus)
-      .then((token) => {
+      .then((res) => {
+        const dataPromise = res.json();
 
-      });
-
-
-
+        dataPromise.then(data => {
+          localStorage['ccToken'] = data.token;
+          window.location = '/chat'
+        });
+      })
+      .catch(() => {
+        $('#loginModal').modal('show');
+    });
   }
 
   renderButton() {
     if (this.state.username !== '' && this.state.password) {
-      return <input className="formButton" type="submit" value="Register" onClick={() => { this.login() }}/>
+      return <input className="formButton" type="submit" value="Login" onClick={() => { this.login() }}/>
     }
 
     if (!this.state.username) {
@@ -59,32 +64,41 @@ export default class Login extends React.Component {
       return <Redirect to="/chat"/>
     }
 
-    return <div className="panelDiv">
-      <h1>Welcome to <span className="appName">Chit Chat</span></h1>
-      <br />
-      <div className="loginFlow">
-        <h4 className="loginSubtitle">Login</h4>
-        <form onSubmit={ (e) => e.preventDefault() }>
-        <input className="formInput" value={this.state.username} name="username" type="text"
-               placeholder="Username" onChange={this.handleUsername}/><br/>
-        <input className="formInput" value={this.state.password} name="password" type="password"
-               placeholder="Password" onChange={this.handlePassword}/><br/>
-        {this.renderButton()}
-        </form>
-      </div>
-      <div className="socialMedia">
-        <h5 style={{marginLeft: '18%'}}>or login with social media:</h5>
-        <div className="fblogin">
-          <div className="imgFb">
-            <img src="./images/fbLogo.png" width="35px" height="35px"/>
+    return <div>
+      <div className="panelDiv">
+        <h1>Welcome to <span className="appName">Chit Chat</span></h1>
+        <br />
+        <div className="loginFlow">
+          <h4 className="loginSubtitle">Login</h4>
+          <form onSubmit={ (e) => e.preventDefault() }>
+          <input className="formInput" value={this.state.username} name="username" type="text"
+                 placeholder="Username" onChange={this.handleUsername}/><br/>
+          <input className="formInput" value={this.state.password} name="password" type="password"
+                 placeholder="Password" onChange={this.handlePassword}/><br/>
+          {this.renderButton()}
+          </form>
+        </div>
+        <div className="socialMedia">
+          <h5 style={{marginLeft: '18%'}}>or login with social media:</h5>
+          <div className="fblogin">
+            <div className="imgFb">
+              <img src="./images/fbLogo.png" width="35px" height="35px"/>
+            </div>
+            <div className="textFb">
+              Login with Facebook
+            </div>
           </div>
-          <div className="textFb">
-            Login with Facebook
+        </div>
+        <h4>if you don't have an account sign up <Link className="signUpHere" to="/register"><span>here</span></Link>
+        </h4>
+      </div>
+      <div id="loginModal" className="modal fade bs-example-modal-sm" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div className="modal-dialog modal-sm" role="document">
+          <div className="modal-content authModal">
+            Wrong login combination!
           </div>
         </div>
       </div>
-      <h4>if you don't have an account sign up <Link className="signUpHere" to="/register"><span>here</span></Link>
-      </h4>
     </div>
   }
 }

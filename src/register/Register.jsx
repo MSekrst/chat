@@ -95,7 +95,7 @@ export default class Register extends React.Component {
       </div>
       <div id="registerModal" className="modal fade bs-example-modal-sm" role="dialog" aria-labelledby="mySmallModalLabel">
         <div className="modal-dialog modal-sm" role="document">
-          <div className="modal-content registrationModal">
+          <div className="modal-content authModal">
             Sorry the username is already taken!
           </div>
         </div>
