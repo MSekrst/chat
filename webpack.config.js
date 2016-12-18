@@ -20,6 +20,11 @@ var config = {
         target: 'https://localhost:3000',
         changeOrigin: true,
         secure: false
+      },
+      '*': {
+        target: 'https://localhost:3000',
+        changeOrigin: true,
+        secure: false
       }
     },
     inline: true,

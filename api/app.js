@@ -31,11 +31,11 @@ app.use(passport.initialize());
 app.use('/api', routes);
 // wildcard route middleware -> returns index.html for react-router to work properly
 // must be last middleware -> after all routes
-app.use('/*', (req, res) => {
+app.get('/*', (req, res) => {
   res.sendFile(resolve(__dirname, '../public/index.html'));
 });
 
-// error handeling for production
+// // error handeling for production
 // const env = process.env.NODE_ENV || 'production';
 // if (env === 'production') {
 //   // catch 404 and forward to error handler
