@@ -30,13 +30,16 @@ var config = {
     inline: true,
     hot: true
   },
-  module : {
-    loaders : [
+  module: {
+    loaders: [
       {
-        test : /\.jsx?/,
-        include : APP_DIR,
-        exclude : '/node_modules',
-        loaders : ['babel-loader']
+        test: /\.jsx?/,
+        include: APP_DIR,
+        exclude: '/node_modules',
+        loader: 'babel-loader'
+      }, {
+        test: /\.json$/,
+        loader: 'json-loader'
       }
     ]
   }

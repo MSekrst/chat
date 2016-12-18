@@ -9,11 +9,10 @@ messageRouter.get('/', authMiddleware.checkToken,
   (req, res) => {
     const db = getDb();
 
-  const user = (req.user.username) ? (req.user.username) : (req.facebook.user.username);
-  db.collection('conversations').find({ 'users.username': { $in: [user] } }).toArray((err, data) => {
+  const user = req.user.username;
+  db.collection('messages').find({ 'users.username': { $in: [user] } }).toArray((err, data) => {
     if(err) {
-      console.log(err);
-      return res.status(500).json( { message: "err" } );
+      return res.status(500).json( { message: err } );
     }
 
     return res.status(200).json(data);
@@ -26,15 +25,16 @@ messageRouter.post('/init', authMiddleware.checkToken, (req, res) => {
   let users = req.body.users;
   users.push(req.user);
 
-  db.collection('conversations').insertOne({
-    "title": req.body.title,
-    "users": users,
-    "conversation": []
-  }).then(conversation => {
-    return res.status(201).json(conversation);
-  }).catch( err => {
-    console.log(err);
-    return res.status(500).json( { message: "err" } );
+  db.collection('messages').insertOne({
+    title: req.body.title,
+    users,
+    messages: []
+  }, (err, inserted) => {
+    if (err) {
+      return res.status(500).json(err);
+    }
+
+    return res.status(200).json(inserted.insertedId);
   });
 });
 
@@ -43,12 +43,16 @@ messageRouter.get('/:title', authMiddleware.checkToken,
     const db = getDb();
 
     const title = req.params.title;
-    const conversation = db.collection('conversations').findOne({title});
+    const conversation = db.collection('messages').findOne({title});
 
     conversation.then(data => {
-        res.end(data);
+        if (!data) {
+          res.status(404).json({ message: "Route does not exist" });
+        } else {
+          res.status(200).json(data);
+        }
     }).catch(err => {
-      console.log(err);
+      res.status(500).json(err);
     });
   }
 );
@@ -58,13 +62,12 @@ messageRouter.post('/:title', authMiddleware.checkToken,
     const db = getDb();
 
     const title = req.params.title;
-    db.collection('conversations').findOneAndUpdate( {title: title}, {$pushAll: {'conversation': req.body}}, { upsert: true }, (err, user) => {
+    db.collection('messages').findOneAndUpdate( {title: title}, {$pushAll: {'messages': req.body.messages}}, { upsert: true }, err => {
       if (err) {
-        console.log(err);
-        return res.status(500).json({ message: 'err' });
+        return res.status(500).json({ message: err });
       }
 
-      return res.status(204).json(req.body);
+      return res.status(204).json();
     });
   }
 );
