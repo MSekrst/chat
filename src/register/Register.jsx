@@ -46,9 +46,8 @@ export default class Register extends React.Component {
       body: JSON.stringify(send)
     }).then(checkStatus)
       .then((res) => {
-        console.log('proslo');
         this.setState({ redirect: true });
-    }).catch(err => {
+    }).catch(() => {
       $('#registerModal').modal('show');
     });
   }
