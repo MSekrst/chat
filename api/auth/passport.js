@@ -8,10 +8,10 @@ import { getDb } from '../mongo';
 passport.use(new LocalStrategy((username, password, next)  => {
   const db = getDb();
 
-  const user = db.collection('users').findOne({ username });
+  const userPromise = db.collection('users').findOne({ username });
 
   // handle promise
-  user.then(user => {
+  userPromise.then(user => {
     if (!user) {
       return next(null);
     }
@@ -20,7 +20,7 @@ passport.use(new LocalStrategy((username, password, next)  => {
       return next(null, user);
     }
 
-    return (null);
+    return next(null);
 
   }).catch(err => {
     return next(err);

@@ -258,7 +258,7 @@ html, body {
   color: #ffccac;
   text-align: center;
   width: 100%;
-  padding-top: 20px;
+  /*padding-top: 5px;*/
 }
 
 .registrationModal {
