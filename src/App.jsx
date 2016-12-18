@@ -22,24 +22,13 @@ export class App extends React.Component {
   }
 }
 
-{/*ReactDOM.render(*/}
-  {/*<Router history={browserHistory} >*/}
-    {/*<Route path="/" component={Login} />*/}
-//     <Route path="chat" component={App}>
-//       <Route path=":username" component={Header}/>
-//     </Route>
-//     <Route path="*" component={NotFound} />
-//   </Router>,
-//   document.getElementById('app')
-// );
-
 ReactDOM.render(
   <div>
     <BrowserRouter>
       <div>
         <Match exactly pattern="/" component={Login} />
         <Match exactly pattern="/chat" component={App} />
-        <Match exactly pattern="/chat/:username" component={Header} />
+        <Match exactly pattern="/chat/:username" component={App} />
         <Miss component={NotFound} />
       </div>
     </BrowserRouter>

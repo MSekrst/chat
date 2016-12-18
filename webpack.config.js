@@ -17,7 +17,7 @@ var config = {
     contentBase: "./public",
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        target: 'https://localhost:3000',
         changeOrigin: true,
         secure: false
       }
@@ -30,6 +30,7 @@ var config = {
       {
         test : /\.jsx?/,
         include : APP_DIR,
+        exclude : '/node_modules',
         loaders : ['babel-loader']
       }
     ]
