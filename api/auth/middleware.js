@@ -20,15 +20,29 @@ export const authMiddleware = {
 
     const header = req.get('Authorization');
 
-    const token = header.split(' ')[1];
+    if (!token) {
+      return res.status(401).send("Unauthorized");
+    }
 
-    const decoded = jwt.verify(token, jwtSecret);
+    const split = header.split(' ');
 
-    req.user = {
-      username: decoded.username,
-      _id: decoded._id,
-    };
+    if (split.length != 2) {
+      return res.status(401).send("Unauthorized");
+    }
 
-    next();
+    const token = split[1];
+
+    jwt.verify(token, jwtSecret, (err, decoded) => {
+      if (err) {
+        return res.status(401).send("Unauthorized");
+      }
+
+      req.user = {
+        username: decoded.username,
+        _id: decoded._id,
+      };
+
+      return next();
+    });
   }
 };

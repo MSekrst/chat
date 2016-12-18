@@ -1,4 +1,5 @@
 import express from 'express';
+import hash from 'password-hash';
 
 import { authMiddleware } from '../auth/middleware';
 import passport from '../auth/passport';
@@ -13,27 +14,32 @@ authRouter.post('/login',
   authMiddleware.sendResponse,
 );
 
-authRouter.post('/register',
-  (req, res) => {
+authRouter.post('/register', (req, res) => {
+  console.log('', req.body);
+
     const db = getDb();
-    db.collection('users').findOneAndUpdate({ username: req.body.username }, req.body, { upsert: true }, (err, user) => {
+    db.collection('users').findOne({username: req.body.username}, (err, user) => {
       if (err) {
-        console.log('err');
-        return res.status(500).json({ message: 'err' });
+        return res.status(500).json({message: err});
       }
 
-      if (user.value) {
-        return res.status(403).json({ message: 'Username already exists.' });
-      }
+      if (user) {
+        return res.status(403).json({message: 'Username already exists.'});
+      } else {
+        const newUser = { ...req.body, password: hash.generate(req.body.password)};
+        console.log('', newUser);
 
-      return res.status(201).json(req.body);
+        db.collection('users').insertOne(newUser);
+
+        return res.status(201).json({ username: newUser.username });
+      }
     });
   },
 );
 
 authRouter.get('/logout', (req, res) => {
   req.logout();
-  res.redirect('/login');
+  res.redirect('/');
 });
 
 authRouter.get('/facebook', passport.authenticate('facebook', { session: false, scope: ['public_profile', 'email'] }));

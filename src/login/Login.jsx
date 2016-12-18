@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router';
 
 export default class Login extends React.Component {
   render() {
@@ -7,9 +8,9 @@ export default class Login extends React.Component {
       <br />
       <div className="loginFlow">
         <h4 className="loginSubtitle">Login</h4>
-        <input className="inputLogin" name="username" type="text" placeholder="Username"/><br/>
-        <input className="inputLogin" name="password" type="passport" placeholder="Password"/><br/>
-        <input className="loginButton" type="submit" value="Login" />
+        <input className="formInput" name="username" type="text" placeholder="Username"/><br/>
+        <input className="formInput" name="password" type="password" placeholder="Password"/><br/>
+        <input className="formButton" type="submit" value="Login" />
       </div>
       <div className="socialMedia">
         <h5 style={{ marginLeft: '18%' }}>or login with social media:</h5>
@@ -22,7 +23,7 @@ export default class Login extends React.Component {
           </div>
           </div>
       </div>
-      <h4>if you don't have an account sign up <span id="signUpHere">here</span></h4>
+      <h4>if you don't have an account sign up <Link className="signUpHere" to="/register"><span>here</span></Link></h4>
     </div>
   }
 }

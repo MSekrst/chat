@@ -131,7 +131,7 @@ html, body {
 }
 
 /*----------------------------------------------*/
-/*Login.jsx*/
+/*Login.jsx* & Register.jsx*/
 
 .login {
   color: #777;
@@ -179,7 +179,7 @@ html, body {
   width: 55%;
 }
 
-.inputLogin{
+.formInput {
   height: 35px;
   width: 100%;
   margin-bottom: 10px;
@@ -190,7 +190,7 @@ html, body {
   outline-color: #ffe87c;
 }
 
-.loginButton{
+.formButton {
   background-color: #77dd77;
   float: right;
   border: none;
@@ -203,17 +203,19 @@ html, body {
   font-size: 15px;
 }
 
-.loginButton:hover{
+.formButton:hover{
   opacity: 0.85;
 }
 
-#signUpHere{
+.signUpHere {
   color: #cb8689;
   font-weight: bold;
+  text-decoration: none;
 }
 
-#signUpHere:hover{
+.signUpHere:hover{
   color: #ffccac;
+  text-decoration: none;
 }
 
 .fblogin{
@@ -246,3 +248,24 @@ html, body {
   opacity: 0.85;
 }
 
+.infoText {
+  width: 100%;
+  padding: 0 5% 0 5%;
+  text-align: center;
+}
+
+.validation {
+  color: #ffccac;
+  text-align: center;
+  width: 100%;
+  padding-top: 20px;
+}
+
+.registrationModal {
+  text-align: center;
+  padding: 10px 15px 10px 15px;
+  font-weight: bold;
+  font-size: 15px;
+  background-color: #f5f5f5;
+  color: #d9534f;
+}
