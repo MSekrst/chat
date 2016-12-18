@@ -8,6 +8,7 @@ import Header from './header/Header.jsx';
 import List from './list/List.jsx';
 import Login from './login/Login.jsx';
 import Talk from './talk/Talk.jsx';
+import Register from './register/Register.jsx';
 
 export class App extends React.Component {
 
@@ -29,6 +30,7 @@ ReactDOM.render(
     <BrowserRouter>
       <div>
         <Match exactly pattern="/" component={Login} />
+        <Match exactly pattern="/register" component={Register} />
         <Match exactly pattern="/chat" component={App} />
         <Match exactly pattern="/chat/:username" component={App} />
         <Miss component={NotFound} />

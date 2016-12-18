@@ -1,0 +1,1 @@
+{"_id":{"$oid":"5856a81e121e04137f301e89"},"title":"tea","users":[{"username":"tea"},{"username":"user","_id":"5853e4ec39f2555abd6932ab"}],"messages":[{"text":"BOK","time":"16:27:23","date":"2017.11.26.","sender":"user"},{"text":"BOK","time":"16:27:23","date":"2017.11.26.","sender":"user"}]}
