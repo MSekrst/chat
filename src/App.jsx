@@ -7,6 +7,7 @@ import NotFound from './not-found/NotFound.jsx';
 import Header from './header/Header.jsx';
 import List from './list/List.jsx';
 import Login from './login/Login.jsx';
+import Talk from './talk/Talk.jsx';
 
 export class App extends React.Component {
 
@@ -16,6 +17,7 @@ export class App extends React.Component {
         <div className="container centered chat">
           <Header />
           <List />
+          <Talk />
         </div>
       </div>
     );
