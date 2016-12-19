@@ -8,7 +8,6 @@ const messageRouter = express.Router();
 messageRouter.get('/', authMiddleware.checkToken,
   (req, res) => {
     const db = getDb();
-
   const user = req.user.username;
   db.collection('messages').find({ 'users.username': { $in: [user] } }).toArray((err, data) => {
     if(err) {
@@ -71,4 +70,5 @@ messageRouter.post('/:title', authMiddleware.checkToken,
     });
   }
 );
+
 export default messageRouter;

@@ -20,7 +20,7 @@ export const authMiddleware = {
 
     const header = req.get('Authorization');
 
-    if (!token) {
+    if (!header) {
       return res.status(401).send("Unauthorized");
     }
 
@@ -41,7 +41,7 @@ export const authMiddleware = {
         username: decoded.username,
         _id: decoded._id,
       };
-
+      
       return next();
     });
   }

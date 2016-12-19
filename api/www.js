@@ -4,7 +4,7 @@ import debug from 'debug';
 import http from 'http';
 import https from 'https';
 import fs from 'fs';
-import { resolve } from 'path';
+import {resolve} from 'path';
 
 import app from './app';
 import socketio from 'socket.io';
@@ -13,7 +13,7 @@ import socketio from 'socket.io';
  * Normalize a port into a number, string, or false.
  */
 
-const userSocket = [];
+const userSockets = [];
 
 function normalizePort(val) {
   const port = parseInt(val, 10);
@@ -67,14 +67,14 @@ function onError(error) {
 
 // HTTPS Proxy server
 const server = http.createServer(
-  function(res, req) {
-    res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url} );
+  function (res, req) {
+    res.writeHead(301, {"Location": "https://" + req.headers['host'] + req.url});
     res.end();
-});
+  });
 
 const options = {
   key: fs.readFileSync(resolve('./cert/server.key')),
-  cert: fs.readFileSync(resolve('./cert/server.crt')),
+  cert: fs.readFileSync(resolve('./cert/server.crt'))
 };
 
 const sServer = https.createServer(options, app);
@@ -82,22 +82,32 @@ const sServer = https.createServer(options, app);
 // Sockets
 const io = socketio(sServer);
 
-io.on('connection',
+io.on('connect',
   (socket) => {
-
-    socket.on('user', function(msg){
+    socket.on('user', function (user) {
+      console.log('Connected user: ' + user);
       const newUserSocket = {
-        "user": msg,
-        "socket": socket
+        'user': user,
+        'socket': socket
       };
-      userSocket.push(newUserSocket);
+      userSockets.push(newUserSocket);
+    });
+
+    socket.on('message', function (data) {
+      var message = JSON.parse(data);
+      for (var i = 0; i < userSockets.length; i++) {
+        if (userSockets[i].user === message.receiver) {
+          userSockets[i].socket.emit('message', {data});
+        }
+      }
     });
 
     socket.on('disconnect',
       ()=> {
-        for(var i = 0; i < userSocket.length; i++) {
-          if(userSocket[i].socket == socket) {
-            userSocket.splice(i, 1);
+        for (var i = 0; i < userSockets.length; i++) {
+          if (userSockets[i].socket == socket) {
+            console.log("Disconnected user: " + userSockets[i].user);
+            userSockets.splice(i, 1);
           }
         }
       });
@@ -124,5 +134,5 @@ server.on('error', onError);
 server.on('listening', onListening);
 
 export const getConnected = function () {
-  return userSocket;
+  return userSockets;
 };

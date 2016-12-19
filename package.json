@@ -9,11 +9,12 @@
     "build:watch": "npm run clean && babel api --out-dir build-api -w",
     "build:client": "webpack -p",
     "build:client:watch": "webpack -d --watch",
-    "build:all": "npm run clean && npm run build && npm build:client",
+    "build:all": "npm run clean && npm run build && npm run build:client",
     "lint:api": "eslint api/**",
     "lint:client": "eslint src/**",
     "start:api": "nodemon --watch build-api build-api/www.js",
-    "start:client": "webpack-dev-server --inline --hot"
+    "start:client": "webpack-dev-server --inline --hot",
+    "build&&start:api":"npm run clean && npm run build && nodemon --watch build-api build-api/www.js"
   },
   "dependencies": {
     "body-parser": "~1.15.1",
