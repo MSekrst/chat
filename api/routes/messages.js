@@ -1,15 +1,8 @@
 import express from 'express';
 
 import {getDb} from '../mongo';
-<<<<<<<
-HEAD
 import {ObjectID} from '../mongo';
-======
-=
 import {getConnected} from '../www';
->>>>>>>
-72
-b621978e6e6483e6b505a8979e77dd4969f7fb
 import {authMiddleware} from '../auth/middleware';
 
 const messageRouter = express.Router();
