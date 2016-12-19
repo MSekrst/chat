@@ -12,10 +12,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import eu.rasus.fer.chat.Chat.ChatMessage;
+import eu.rasus.fer.chat.HttpsConstants;
 
 public class ChatPreviewItemDeserializer implements JsonDeserializer<ChatPreviewItem> {
-
-  private static String ME = "tea";
 
   @Override
   public ChatPreviewItem deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
@@ -23,15 +22,16 @@ public class ChatPreviewItemDeserializer implements JsonDeserializer<ChatPreview
     JsonObject conversation = json.getAsJsonObject();
     ChatPreviewItem chatPreviewItem = new ChatPreviewItem();
 
+    chatPreviewItem.id = conversation.get("_id").toString().substring(1,conversation.get("_id").toString().length()-1);
+
     Gson gson = new Gson();
     User[] users = gson.fromJson(conversation.getAsJsonArray("users"), User[].class);
 
     if (users.length ==2) {
-      chatPreviewItem.id = users[0].username.equals(ME)? users[1]._id : users[0]._id;
-      chatPreviewItem.title = users[0].username.equals(ME)? users[1].username : users[0].username;
-      chatPreviewItem.image = users[0].username.equals(ME)? users[1].image : users[0].image;
+      chatPreviewItem.receiver = users[0].username.equals(HttpsConstants.ME) ? users[1].username : users[0].username;
+      chatPreviewItem.image = users[0].username.equals(HttpsConstants.ME)? users[1].image : users[0].image;
     }
-    else chatPreviewItem.title = conversation.get("title").toString();
+    else chatPreviewItem.receiver = conversation.get("title").toString();
 
     ChatMessage[] messages = gson.fromJson(conversation.getAsJsonArray("messages"), ChatMessage[].class);
 
@@ -50,7 +50,6 @@ public class ChatPreviewItemDeserializer implements JsonDeserializer<ChatPreview
   }
 
   private class User{
-    String _id;
     String username;
     String image;
   }

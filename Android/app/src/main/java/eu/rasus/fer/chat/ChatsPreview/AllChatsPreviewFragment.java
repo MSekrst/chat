@@ -10,9 +10,11 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.IOException;
 import java.util.List;
 
 import butterknife.BindView;
@@ -36,9 +38,12 @@ public class AllChatsPreviewFragment extends Fragment {
   @BindView(R.id.no_chats_text)
   TextView noChats;
 
-  public String ME = "tea";
-
   private ChatPreviewAdapter chatPreviewAdapter;
+
+//  public Socket socket;
+//  {
+//    socket = HttpsConstants.getUnsafeOkSocket();
+//  }
 
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.chats_preview, container, false);
@@ -78,8 +83,8 @@ public class AllChatsPreviewFragment extends Fragment {
   @OnItemClick(R.id.chat_item_container)
   public void openChat(final AdapterView<?> adapter, final View view, final int position, final long id) {
     Intent intent = new Intent(getActivity(), ChatActivity.class);
-    intent.putExtra("SENDER", ME);
-    intent.putExtra("RECEIVER", ((ChatPreviewItem)adapter.getItemAtPosition(position)).id);
+    intent.putExtra("SENDER", HttpsConstants.ME);
+    intent.putExtra("CHAT_PREVIEW_ITEM", ((ChatPreviewItem)adapter.getItemAtPosition(position)));
     startActivity(intent);
   }
 }

@@ -85,7 +85,7 @@ public class ChatPreviewAdapter extends BaseAdapter {
     }
 
     public void fillView(ChatPreviewItem chat) {
-      title.setText(chat.title);
+      title.setText(chat.receiver);
       lastMessage.setText(chat.lastMessageText);
 
       Picasso.with(context).load(chat.image).placeholder(R.drawable.placeholder).error(R.drawable.placeholder).fit().centerCrop().noFade().into(image);

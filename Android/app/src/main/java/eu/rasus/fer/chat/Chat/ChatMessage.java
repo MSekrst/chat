@@ -7,17 +7,11 @@ import java.util.Date;
 
 public class ChatMessage{
 
-  @Expose
   public String text;
-  @Expose
   public String sender;
-  @Expose
   public String receiver;
-  @Expose
   public String date;
-  @Expose
   public String time;
-  @Expose
   public boolean isMine;
 
   public ChatMessage(String sender, String receiver, String text, boolean isMINE) {

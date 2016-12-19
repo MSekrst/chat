@@ -1,6 +1,7 @@
 import express from 'express';
 
 import { getDb } from '../mongo';
+import { ObjectID } from '../mongo';
 import { authMiddleware } from '../auth/middleware';
 
 const messageRouter = express.Router();
@@ -37,18 +38,20 @@ messageRouter.post('/init', authMiddleware.checkToken, (req, res) => {
   });
 });
 
-messageRouter.get('/:title', authMiddleware.checkToken,
+// get conversation hitory
+messageRouter.get('/:id', authMiddleware.checkToken,
   (req, res) => {
     const db = getDb();
 
-    const title = req.params.title;
-    const conversation = db.collection('messages').findOne({title});
+    const _id = ObjectID(req.params.id);
+
+    const conversation = db.collection('messages').findOne({_id});
 
     conversation.then(data => {
         if (!data) {
           res.status(404).json({ message: "Route does not exist" });
         } else {
-          res.status(200).json(data);
+          res.status(200).json(data.messages);
         }
     }).catch(err => {
       res.status(500).json(err);
@@ -56,7 +59,7 @@ messageRouter.get('/:title', authMiddleware.checkToken,
   }
 );
 
-messageRouter.post('/:title', authMiddleware.checkToken, (req, res) => {
+messageRouter.post('/:id', authMiddleware.checkToken, (req, res) => {
     const db = getDb();
 
     const messages = req.body.messages.map(m => {
@@ -65,8 +68,9 @@ messageRouter.post('/:title', authMiddleware.checkToken, (req, res) => {
       return m;
     });
 
-    const title = req.params.title;
-    db.collection('messages').findOneAndUpdate( {title: title}, {
+    const _id = ObjectID(req.params.id);
+
+    db.collection('messages').findOneAndUpdate( {_id}, {
       $push: { messages: { $each:  messages } }
     }, { upsert: true }, err => {
       if (err) {
@@ -76,4 +80,7 @@ messageRouter.post('/:title', authMiddleware.checkToken, (req, res) => {
       return res.status(204).json();
     });
 });
+
+
+
 export default messageRouter;

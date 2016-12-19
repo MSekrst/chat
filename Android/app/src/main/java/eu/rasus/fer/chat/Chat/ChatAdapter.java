@@ -10,20 +10,24 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import eu.rasus.fer.chat.HttpsConstants;
 import eu.rasus.fer.chat.R;
 
 public class ChatAdapter extends BaseAdapter {
 
-  ArrayList<ChatMessage> chatMessageList;
+  List<ChatMessage> chatMessageList;
   Context context;
 
-  public ChatAdapter(Context context, ArrayList<ChatMessage> list) {
+  public ChatAdapter(Context context, List<ChatMessage> list) {
     chatMessageList = list;
     this.context = context;
+
+    for (ChatMessage m: chatMessageList)
+      m.isMine = m.sender.equals(HttpsConstants.ME) ? true : false;
   }
 
   @Override

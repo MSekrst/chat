@@ -3,9 +3,6 @@ package eu.rasus.fer.chat;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 
-import java.net.URISyntaxException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
@@ -21,6 +18,8 @@ import okhttp3.OkHttpClient;
 public class HttpsConstants {
 
   public static String ADDRES = "https://192.168.0.18:3000";
+
+  public static String ME = "tea";
 
   public static HostnameVerifier HOSTNAME_VERIFIER = new HostnameVerifier() {
 
@@ -45,6 +44,8 @@ public class HttpsConstants {
     }
   }};
 
+  private static Socket socket = null;
+
   public static OkHttpClient getUnsafeOkHttpClient() {
 
     try {
@@ -61,21 +62,21 @@ public class HttpsConstants {
     }
   }
 
-  public static Socket getUnsafeOkSocket() {
-    Socket socket = null;
-    try {
-      SSLContext mySSLContext = SSLContext.getInstance("TLS");
-      mySSLContext.init(null, HttpsConstants.TRUST_ALL_CERTS, null);
+  public static void initializeSocket() {
+      try {
+        SSLContext mySSLContext = SSLContext.getInstance("TLS");
+        mySSLContext.init(null, HttpsConstants.TRUST_ALL_CERTS, null);
 
-      IO.Options opts = new IO.Options();
-      opts.sslContext = mySSLContext;
-      opts.hostnameVerifier = HttpsConstants.HOSTNAME_VERIFIER;
+        IO.Options opts = new IO.Options();
+        opts.sslContext = mySSLContext;
+        opts.hostnameVerifier = HttpsConstants.HOSTNAME_VERIFIER;
 
-      socket = IO.socket(HttpsConstants.ADDRES, opts);
+        socket = IO.socket(HttpsConstants.ADDRES, opts);
+      } catch (Exception e) {
+      }
+  }
 
-    } catch (Exception e) {
-    }
-
+  public static Socket getSocket() {
     return socket;
   }
 }
