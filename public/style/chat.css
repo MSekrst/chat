@@ -78,13 +78,13 @@ html, body {
 
 .link404 {
   text-decoration: none;
-  color: #86cbc4;
+  color: #cb8689;
 }
 
 .link404:hover {
   text-decoration: none;
   font-weight: bold;
-  color: #fc45a3;
+  color: #ffccac;
 }
 
 /*----------------------------------------------*/
@@ -226,6 +226,7 @@ html, body {
   border-radius: 4px;
   box-sizing: border-box;
   margin-left: 18%;
+  cursor: pointer;
 }
 
 .imgFb{

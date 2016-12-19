@@ -27,6 +27,15 @@ app.use(favicon('public/images/favicon.ico'));
 app.use(express.static('public'));
 app.use(passport.initialize());
 
+// first middleware -> redirects to HTTPS
+app.all('*', (req, res, next) => {
+  if (req.secure) {
+    return next();
+  }
+
+  return res.redirect('https://' + req.hostname + req.url);
+});
+
 // use routes defined in an index file
 app.use('/api', routes);
 // wildcard route middleware -> returns index.html for react-router to work properly
