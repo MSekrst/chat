@@ -1,3 +1,6 @@
-{"_id":{"$oid":"5853e4ec39f2555abd6932ab"},"username":"user","password":"user"}
-{"_id":{"$oid":"585453e139f2555abd6932bc"},"facebook":{"id":"10210000307797884","username":"Matija Šekrst","token":"EAAVlNasUqSUBAC98zbkA3627puPSByrGNTaUSqYe6ZAuGwpFZBA6jby5C2W3ya2qcUuTVGrZCR3s0GVOuLCucE2ZCGmXWBF7KA1ZCxM0NXe65EcZCCMemUbpMeNOEffAOotIpZAudt5lMzQBxWo6XZBa8tZBEohuHHFgZD"}}
-{"_id":{"$oid":"5856a0c1886dd8a994e8cc32"},"username":"tea","password":"tea"}
+{"_id":{"$oid":"5857d30de45b4023600ae668"},"username":"tea","password":"sha1$bd8d47b6$1$e32ad08015a7fa73b42b311a35b0a5a3a148c745","image":"https://scontent.fzag1-1.fna.fbcdn.net/v/t1.0-9/14068102_10210545158653320_7356964510690281961_n.jpg?oh=e8ee669db137639eceb12385efc96995\u0026oe=58F83B0F"}
+{"_id":{"$oid":"5857d325e45b4023600ae669"},"username":"bruna","password":"sha1$394b27c3$1$1949c0b73d4d343aab68036aab91ff42f1d00925","image":"https://scontent.fzag1-1.fna.fbcdn.net/v/t1.0-9/15192522_1483843621632613_4515029785594108129_n.jpg?oh=f2a35dcaecab930d3bd547ca27cbfa4f\u0026oe=58B4F5AF"}
+{"_id":{"$oid":"5857d332e45b4023600ae66a"},"username":"josipa","password":"sha1$03fbb93a$1$0db7695974b8d4abdb6e6660036445003c3b4770","image":"https://scontent.fzag1-1.fna.fbcdn.net/v/t1.0-9/12548950_915250111894662_5285063202995618088_n.jpg?oh=7ee84a0313ca4838f06f34c3e0761568\u0026oe=58EFD3F3"}
+{"_id":{"$oid":"5857d33de45b4023600ae66b"},"username":"matija","password":"sha1$c08c0f59$1$8b00244a1f6d03c17609c24612785400863445ac"}
+{"_id":{"$oid":"5857d349e45b4023600ae66c"},"username":"karlo","password":"sha1$98725708$1$9e136337d7a74cda41dcaf44769844e9a6260f8a"}
+{"_id":{"$oid":"5857d353e45b4023600ae66d"},"username":"luka","password":"sha1$f3ac6055$1$7f1c88284be80d9f6b4c5b4d9233ececb0989cfe"}
