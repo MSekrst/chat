@@ -1,6 +1,7 @@
 import express from 'express';
 
 import { getDb } from '../mongo';
+import { getConnected } from '../www';
 import { authMiddleware } from '../auth/middleware';
 
 const messageRouter = express.Router();
@@ -58,6 +59,7 @@ messageRouter.get('/:title', authMiddleware.checkToken,
 
 messageRouter.post('/:title', authMiddleware.checkToken, (req, res) => {
     const db = getDb();
+    const connected = getConnected();
 
     const messages = req.body.messages.map(m => {
       m['sender'] = req.user.username;
@@ -66,6 +68,20 @@ messageRouter.post('/:title', authMiddleware.checkToken, (req, res) => {
     });
 
     const title = req.params.title;
+    const users = db.collection('messages').findOne({title});
+
+    users.then(function (data) {
+
+      for (var i = 0; i < data.users.length; i++) {
+        for (var i = 0; i < connected.length; i++) {
+          if (connected[i].user == data.users[i].username && data.users[i].username != req.user.username) {
+            connected[i].socket.emit('newMessages', messages);
+            break;
+          }
+        }
+      }
+    });
+
     db.collection('messages').findOneAndUpdate( {title: title}, {
       $push: { messages: { $each:  messages } }
     }, { upsert: true }, err => {
