@@ -12,10 +12,6 @@ export default class Chat extends React.Component {
     this.state = {}
   }
 
-  componentWillMount() {
-
-  }
-
   render() {
     return <div>
       <Header/>

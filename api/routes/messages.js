@@ -57,18 +57,24 @@ messageRouter.get('/:title', authMiddleware.checkToken,
   }
 );
 
-messageRouter.post('/:title', authMiddleware.checkToken,
-  (req, res) => {
+messageRouter.post('/:title', authMiddleware.checkToken, (req, res) => {
     const db = getDb();
 
+    const messages = req.body.messages.map(m => {
+      m['sender'] = req.user.username;
+
+      return m;
+    });
+
     const title = req.params.title;
-    db.collection('messages').findOneAndUpdate( {title: title}, {$pushAll: {'messages': req.body.messages}}, { upsert: true }, err => {
+    db.collection('messages').findOneAndUpdate( {title: title}, {
+      $push: { messages: { $each:  messages } }
+    }, { upsert: true }, err => {
       if (err) {
         return res.status(500).json({ message: err });
       }
 
       return res.status(204).json();
     });
-  }
-);
+});
 export default messageRouter;
