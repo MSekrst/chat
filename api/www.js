@@ -36,7 +36,7 @@ function normalizePort(val) {
  */
 const port = normalizePort(process.env.PORT || 3001);
 const sPort = normalizePort(process.env.SPORT || 3000);
-app.set('port', port);
+// app.set('port', port);
 
 /**
  * Event listener for HTTP server "error" event.
@@ -65,12 +65,14 @@ function onError(error) {
   }
 }
 
-// HTTPS Proxy server
+// // HTTPS Proxy server
 const server = http.createServer(
-  function (res, req) {
-    res.writeHead(301, {"Location": "https://" + req.headers['host'] + req.url});
-    res.end();
-  });
+  app
+  // function (req, res) {
+  //   res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+  //   res.end();
+  // }
+);
 
 const options = {
   key: fs.readFileSync(resolve('./cert/server.key')),

@@ -10,9 +10,11 @@ export const authMiddleware = {
   },
 
   sendResponse(req, res) {
-    res.status(200).json({
-      token: req.token,
-    });
+    res.status(200).json(req.token);
+  },
+
+  sendRedirect(req, res) {
+    res.redirect('/chat?token=' + req.token);
   },
 
   checkToken(req, res, next) {

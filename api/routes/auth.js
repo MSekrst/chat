@@ -8,6 +8,11 @@ import { getDb } from '../mongo';
 
 const authRouter = express.Router();
 
+// inital route -> checks token
+authRouter.get('/', authMiddleware.checkToken,(req, res) => {
+  res.status(200).json(req.user);
+});
+
 authRouter.post('/login',
   passport.authenticate('local', { session: false }),
   authMiddleware.generateToken,
@@ -15,8 +20,6 @@ authRouter.post('/login',
 );
 
 authRouter.post('/register', (req, res) => {
-  console.log('', req.body);
-
     const db = getDb();
     db.collection('users').findOne({username: req.body.username}, (err, user) => {
       if (err) {
@@ -27,7 +30,6 @@ authRouter.post('/register', (req, res) => {
         return res.status(403).json({message: 'Username already exists.'});
       } else {
         const newUser = { ...req.body, password: hash.generate(req.body.password)};
-        console.log('', newUser);
 
         db.collection('users').insertOne(newUser);
 
@@ -42,8 +44,14 @@ authRouter.get('/logout', (req, res) => {
   res.redirect('/');
 });
 
-authRouter.get('/facebook', passport.authenticate('facebook', { session: false, scope: ['public_profile', 'email'] }));
+authRouter.get('/facebook',
+  passport.authenticate('facebook', { session: false, scope: ['public_profile', 'email'] })
+);
 
-authRouter.get('/facebook/callback', passport.authenticate('facebook', { session: false, succesRedirect: '/' }), authMiddleware.generateToken, authMiddleware.sendResponse);
+authRouter.get('/facebook/callback',
+  passport.authenticate('facebook', { session: false, succesRedirect: '/' }),
+  authMiddleware.generateToken,
+  authMiddleware.sendRedirect
+);
 
 export default authRouter;

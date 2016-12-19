@@ -107,4 +107,4 @@ export const particles  = {
     }
   },
   "retina_detect": true
-}
+};
