@@ -1,8 +1,20 @@
 <resources>
-    <string name="app_name">Č@</string>
-    <string name="title_activity_main">Č@</string>
-    <string name="action_settings">Settings</string>
-    <string name="section_format">Hello World from section: %1$d</string>
-    <string name="title_section1">Contacts</string>
-    <string name="title_section2">Chats</string>
+  <string name="app_name">Chit Chat</string>
+  <string name="title_activity_main">chit chat</string>
+  <string name="action_settings">Settings</string>
+  <string name="section_format">Hello World from section: %1$d</string>
+  <string name="title_section1">Contacts</string>
+  <string name="title_section2">Chats</string>
+  <string name="facebook_app_id">1518656061483301</string>
+  <string name="fb_login_protocol_scheme">fb1518656061483301</string>
+  <string name="welcome_to">Welcome to</string>
+  <string name="login_text">Login</string>
+  <string name="username_text">Username</string>
+  <string name="password_text">Password</string>
+  <string name="or_login_with_text">or login with social media:</string>
+  <string name="sign_up_text">if you don\'t have an account sign up</string>
+  <string name="here_text">here</string>
+  <string name="register_text">Chit Chat is chatting app which provides encrypted communication between all participants. It also enables easy file sending and private messages via P2P.</string>
+  <string name="repeat_password_text">Repeat Password</string>
+  <string name="register_btn">Register</string>
 </resources>
