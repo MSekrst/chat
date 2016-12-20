@@ -10,7 +10,7 @@ export const authMiddleware = {
   },
 
   sendResponse(req, res) {
-    res.status(200).json(req.token);
+    res.status(200).json({ username: req.user.username, token: req.token });
   },
 
   sendRedirect(req, res) {

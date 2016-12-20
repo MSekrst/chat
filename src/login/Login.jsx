@@ -7,17 +7,17 @@ export default class Login extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      username: '',
+      password: '',
+    };
+
     const ccToken = localStorage.ccToken || '';
 
-    if (!localStorage || !localStorage.ccToken) {
-      this.state = {
-        username: '',
-        password: '',
-      }
-    } else {
+    if (localStorage.ccToken) {
       fetch('/api/auth', {
         headers: {
-          'Authorization': 'Bearer ' + localStorage.ccToken || '',
+          'Authorization': 'Bearer ' + localStorage.ccToken,
         }
       }).then(checkStatus)
         .then((data) => {
@@ -26,19 +26,14 @@ export default class Login extends React.Component {
 
             this.setState({token: localStorage.ccToken});
           });
-        }).catch(err => {
-        this.setState = ({
-          username: '',
-          password: '',
-          wait: false,
+        })
+        .catch(err => {
+          this.setState = ({
+            username: '',
+            password: '',
+            wait: false,
+          });
         });
-      });
-
-      this.state = {
-        wait: true,
-        username: '',
-        password: '',
-      };
     }
 
     this.handleUsername = this.handleUsername.bind(this);
@@ -72,7 +67,7 @@ export default class Login extends React.Component {
         const dataPromise = res.json();
 
         dataPromise.then(token => {
-          this.setState({ redirect: true , token});
+          this.setState({ redirect: true , token });
         });
       })
       .catch(() => {
@@ -95,6 +90,8 @@ export default class Login extends React.Component {
   }
 
   render() {
+      console.log('state', this.state);
+
       if (this.state.token) {
       const link = 'chat?token=' + this.state.token;
 
