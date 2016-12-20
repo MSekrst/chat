@@ -29,7 +29,7 @@ authRouter.post('/register', (req, res) => {
       if (user) {
         return res.status(403).json({message: 'Username already exists.'});
       } else {
-        const newUser = { ...req.body, password: hash.generate(req.body.password)};
+        const newUser = { ...req.body, image: 'xxx', password: hash.generate(req.body.password)};
 
         db.collection('users').insertOne(newUser);
 

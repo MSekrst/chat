@@ -72,6 +72,20 @@ messageRouter.post('/:id', authMiddleware.checkToken, (req, res) => {
   
   const _id = ObjectID(req.params.id);
 
+  const users = db.collection('messages').findOne({_id});
+
+  users.then(function (data) {
+
+    for (var i = 0; i < data.users.length; i++) {
+      for (var i = 0; i < connected.length; i++) {
+          if (connected[i].user == data.users[i].username && data.users[i].username != req.user.username) {
+              connected[i].socket.emit('newMessages', messages);
+              break;
+            }
+        }
+    }
+  });
+
   db.collection('messages').findOneAndUpdate({_id}, {
     $push: {messages: {$each: messages}}
   }, {upsert: true}, err => {
