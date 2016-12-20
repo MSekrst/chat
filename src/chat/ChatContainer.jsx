@@ -1,4 +1,5 @@
 import React from 'react';
+import { Redirect } from 'react-router';
 
 import Chat from './Chat.jsx';
 import { checkStatus } from '../helpers';
@@ -6,6 +7,8 @@ import { checkStatus } from '../helpers';
 export default class ChatContainer extends React.Component {
   constructor(props) {
     super(props);
+
+    localStorage['ccToken'] = this.props.location.query ? this.props.location.query.token || '' : '';
 
     this.state = {}
   }
@@ -31,8 +34,6 @@ export default class ChatContainer extends React.Component {
     if (this.state && this.state.redirect) {
       return <Redirect to="/"/>
     }
-
-
 
     if (this.state.messages) {
       return (

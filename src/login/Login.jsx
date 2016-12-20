@@ -9,29 +9,37 @@ export default class Login extends React.Component {
 
     const ccToken = localStorage.ccToken || '';
 
-    fetch('/api/auth', {
-      headers: {
-        'Authorization': 'Bearer ' + localStorage.ccToken || '',
+    if (!localStorage || !localStorage.ccToken) {
+      this.state = {
+        username: '',
+        password: '',
       }
-    }).then(checkStatus)
-      .then((data) => {
-        data.json().then(userData => {
-          localStorage.ccUsername = userData.username;
+    } else {
+      fetch('/api/auth', {
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.ccToken || '',
+        }
+      }).then(checkStatus)
+        .then((data) => {
+          data.json().then(userData => {
+            localStorage.ccUsername = userData.username;
 
-          this.setState({ token: localStorage.ccToken });
-        });
-      }).catch(err => {
-        this.state = {
+            this.setState({token: localStorage.ccToken});
+          });
+        }).catch(err => {
+        this.setState = ({
           username: '',
           password: '',
-        }
-    });
+          wait: false,
+        });
+      });
 
-    this.state = {
-      wait: true,
-      username: '',
-      password: '',
-    };
+      this.state = {
+        wait: true,
+        username: '',
+        password: '',
+      };
+    }
 
     this.handleUsername = this.handleUsername.bind(this);
     this.handlePassword = this.handlePassword.bind(this);
@@ -87,7 +95,7 @@ export default class Login extends React.Component {
   }
 
   render() {
-    if (this.state.token) {
+      if (this.state.token) {
       const link = 'chat?token=' + this.state.token;
 
       return <Redirect to={link}/>
