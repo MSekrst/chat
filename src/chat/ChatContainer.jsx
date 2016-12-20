@@ -18,8 +18,7 @@ export default class ChatContainer extends React.Component {
     }).then(checkStatus)
       .then(res => {
         res.json().then(messages => {
-          console.log(messages);
-          this.state = messages;
+          this.setState({ messages });
         });
       }).catch(() => {
         this.setState({ redirect: true });
@@ -27,16 +26,24 @@ export default class ChatContainer extends React.Component {
   }
 
   render() {
+    console.log('', this.state);
+
     if (this.state && this.state.redirect) {
       return <Redirect to="/"/>
     }
 
-    return (
-      <div style={{width: "100%", height: "100%"}}>
-        <div className="container centered chat">
-          <Chat messages={this.state.messages}/>
+
+
+    if (this.state.messages) {
+      return (
+        <div style={{width: "100%", height: "100%"}}>
+          <div className="container centered chat">
+            <Chat messages={this.state.messages}/>
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
+
+    return <div></div>
   }
 }
