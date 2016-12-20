@@ -15,8 +15,8 @@ export default class Chat extends React.Component {
   render() {
     return <div>
       <Header/>
-      <List/>
-      <Talk />
+      <List messages={this.props.messages}/>
+      {/*<Talk />*/}
     </div>;
   }
 }
