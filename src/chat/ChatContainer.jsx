@@ -29,6 +29,16 @@ export default class ChatContainer extends React.Component {
       }).catch(() => {
         this.setState({ redirect: true });
     });
+
+    this.setState({ ...this.state, socketIo: window.io() });
+  }
+
+  componentDidMount() {
+    const io = this.state.socketIo;
+
+    io.on('newMessage', m => {
+      console.log('m', m);
+    });
   }
 
   // passed as click prop

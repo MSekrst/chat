@@ -72,11 +72,12 @@ messageRouter.post('/:id', authMiddleware.checkToken, (req, res) => {
   users.then(data => {
     for (let i = 0; i < data.users.length; i++) {
       for (let i = 0; i < connected.length; i++) {
-          if (connected[i].user == data.users[i].username && data.users[i].username != req.user.username) {
-              connected[i].socket.emit('newMessages', req.body.message);
-              break;
-            }
+        if (connected[i].user == data.users[i].username && data.users[i].username != req.user.username) {
+          console.log('saljem');
+          connected[i].socket.emit('newMessage', req.body.message);
+          break;
         }
+      }
     }
   });
 

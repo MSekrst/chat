@@ -290,6 +290,8 @@ html, body {
 .messageContainer {
   margin-top: -20px;
   padding-top: 5px;
+  max-width: 100%;
+  word-wrap: break-word;
 }
 
 .reciver {
