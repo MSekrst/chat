@@ -1,9 +1,11 @@
-package eu.rasus.fer.chat;
+package eu.rasus.fer.chat.Login;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.WindowManager;
+
+import eu.rasus.fer.chat.R;
 
 public class SplashView extends AppCompatActivity {
 

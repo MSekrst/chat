@@ -12,6 +12,16 @@ export default class Login extends React.Component {
       password: '',
     };
 
+    this.checkIfLogedIn = this.checkIfLogedIn.bind(this);
+    this.handleUsername = this.handleUsername.bind(this);
+    this.handlePassword = this.handlePassword.bind(this);
+    this.renderButton = this.renderButton.bind(this);
+    this.login = this.login.bind(this);
+
+    this.checkIfLogedIn();
+  }
+
+  checkIfLogedIn() {
     const ccToken = localStorage.ccToken || '';
 
     if (localStorage.ccToken) {
@@ -23,6 +33,7 @@ export default class Login extends React.Component {
         .then((data) => {
           data.json().then(userData => {
             localStorage.ccUsername = userData.username;
+            localStorage.ccId = userData._id;
 
             this.setState({token: localStorage.ccToken});
           });
@@ -35,11 +46,6 @@ export default class Login extends React.Component {
           });
         });
     }
-
-    this.handleUsername = this.handleUsername.bind(this);
-    this.handlePassword = this.handlePassword.bind(this);
-    this.renderButton = this.renderButton.bind(this);
-    this.login = this.login.bind(this);
   }
 
   // handlers
@@ -66,8 +72,8 @@ export default class Login extends React.Component {
       .then((res) => {
         const dataPromise = res.json();
 
-        dataPromise.then(token => {
-          this.setState({ redirect: true , token });
+        dataPromise.then(data => {
+          this.setState({ redirect: true , token: data.token });
         });
       })
       .catch(() => {
@@ -90,8 +96,6 @@ export default class Login extends React.Component {
   }
 
   render() {
-      console.log('state', this.state);
-
       if (this.state.token) {
       const link = 'chat?token=' + this.state.token;
 

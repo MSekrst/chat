@@ -28,6 +28,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import eu.rasus.fer.chat.Application;
 import eu.rasus.fer.chat.ChatsPreview.ChatPreviewItem;
 import eu.rasus.fer.chat.HttpsConstants;
 import eu.rasus.fer.chat.R;
@@ -123,14 +124,14 @@ public class ChatActivity extends AppCompatActivity {
     Retrofit retrofit = new Retrofit.Builder().baseUrl(HttpsConstants.ADDRES).client(HttpsConstants.getUnsafeOkHttpClient()).addConverterFactory(GsonConverterFactory.create()).build();
     RestApi api = retrofit.create(RestApi.class);
 
-    Call<List<ChatMessage>> call = api.getConversationHistory(chatInfo.id);
+    Call<List<ChatMessage>> call = api.getConversationHistory(Application.TOKEN, chatInfo.id);
 
     final Activity a = this;
     call.enqueue(new Callback<List<ChatMessage>> (){
 
       @Override
       public void onResponse(final Call<List<ChatMessage>> call, final Response<List<ChatMessage>> response) {
-        chatAdapter = new ChatAdapter(a,response.body());
+        chatAdapter = new ChatAdapter(a, response.body());
         msgListView.setAdapter(chatAdapter);
       }
 
