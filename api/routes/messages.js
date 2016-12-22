@@ -97,5 +97,23 @@ messageRouter.post('/:id', authMiddleware.checkToken, (req, res) => {
   });
 });
 
+messageRouter.get('/private', authMiddleware.checkToken,
+  (req, res) => {
+    const connected = getConnected();
+    const username = req.user.username;
+    var ip;
+    for(var i = 0; i < connected.length; i++) {
+      if(username == connected.user.username) {
+        ip = connected.ip;
+        break;
+      }
+    }
+    const users = []
+    for(var i = 0; i < connected.length; i++) {
+      if(ip == connected.ip && username == connected.user.username) {
+        users.push(connected.user.username);
+      }
+    }
+})
 
 export default messageRouter;
