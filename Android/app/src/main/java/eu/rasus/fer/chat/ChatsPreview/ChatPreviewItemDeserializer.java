@@ -11,6 +11,7 @@ import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import eu.rasus.fer.chat.Application;
 import eu.rasus.fer.chat.Chat.ChatMessage;
 import eu.rasus.fer.chat.HttpsConstants;
 
@@ -28,8 +29,8 @@ public class ChatPreviewItemDeserializer implements JsonDeserializer<ChatPreview
     User[] users = gson.fromJson(conversation.getAsJsonArray("users"), User[].class);
 
     if (users.length ==2) {
-      chatPreviewItem.receiver = users[0].username.equals(HttpsConstants.ME) ? users[1].username : users[0].username;
-      chatPreviewItem.image = users[0].username.equals(HttpsConstants.ME)? users[1].image : users[0].image;
+      chatPreviewItem.receiver = users[0].username.equals(Application.USERNAME) ? users[1].username : users[0].username;
+      chatPreviewItem.image = users[0].username.equals(Application.USERNAME)? users[1].image : users[0].image;
     }
     else chatPreviewItem.receiver = conversation.get("title").toString();
 

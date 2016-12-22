@@ -14,6 +14,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import eu.rasus.fer.chat.Application;
 import eu.rasus.fer.chat.HttpsConstants;
 import eu.rasus.fer.chat.R;
 
@@ -27,7 +28,7 @@ public class ChatAdapter extends BaseAdapter {
     this.context = context;
 
     for (ChatMessage m: chatMessageList)
-      m.isMine = m.sender.equals(HttpsConstants.ME) ? true : false;
+      m.isMine = m.sender.equals(Application.USERNAME) ? true : false;
   }
 
   @Override

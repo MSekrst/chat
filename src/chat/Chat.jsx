@@ -1,9 +1,10 @@
 import React from 'react';
-import { Redirect } from 'react-router';
 
 import Header from '../header/Header.jsx';
 import List from '../list/List.jsx';
 import Talk from '../talk/Talk.jsx';
+import Conversation from '../conversation/Conversation.jsx';
+import TMP from '../talk/TMP.jsx';
 
 export default class Chat extends React.Component {
   constructor(props) {
@@ -15,8 +16,10 @@ export default class Chat extends React.Component {
   render() {
     return <div>
       <Header/>
-      <List messages={this.props.messages}/>
+      <List messages={this.props.messages} click={this.props.click}/>
+      <Conversation active={this.props.active} />
       <Talk />
+      <TMP sender={this.props.sender} />
     </div>;
   }
 }

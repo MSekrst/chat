@@ -1,28 +1,37 @@
 package eu.rasus.fer.chat;
 
+import com.google.gson.JsonElement;
+
 import java.util.List;
 
 import eu.rasus.fer.chat.Chat.ChatMessage;
 import eu.rasus.fer.chat.ChatsPreview.ChatPreviewItem;
+import eu.rasus.fer.chat.Login.User;
 import retrofit2.Call;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.Headers;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public interface RestApi {
-//  // Bruna
-//  @Headers("Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
-// .eyJfaWQiOiI1ODU3ZDMyNWU0NWI0MDIzNjAwYWU2NjkiLCJ1c2VybmFtZSI6ImJydW5hIiwicGFzc3dvcmQiOiJzaGExJDM5NGIyN2MzJDEkMTk0OWMwYjczZDRkMzQzYWFiNjgwMzZhYWI5MWZmNDJmMWQwMDkyNSIsImltYWdlIjoiaHR0cHM6Ly9zY29udGVudC5memFnMS0xLmZuYS5mYmNkbi5uZXQvdi90MS4wLTkvMTUxOTI1MjJfMTQ4Mzg0MzYyMTYzMjYxM180NTE1MDI5Nzg1NTk0MTA4MTI5X24uanBnP29oPWYyYTM1ZGNhZWNhYjkzMGQzYmQ1NDdjYTI3Y2JmYTRmJm9lPTU4QjRGNUFGIiwiaWF0IjoxNDgyMTY1MDcyfQ.5sjL8EKh8WHpQHbW5Ib1c9mUQFUmlI2cWFy_gS2RAxs")
-
-  //  TEA
-  @Headers("Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9" +
-    ".eyJfaWQiOiI1ODU2ZmE2OWQ5MzJmODIyZTRiY2RmZmUiLCJ1c2VybmFtZSI6InRlYSIsInBhc3N3b3JkIjoic2hhMSRlZjkxMDNlNiQxJGFkYjk1YWRiNWYyZTMxZjZmYTE2ZjhhMTkzOGQzNTc3ZTAwNWVmYzEiLCJpYXQiOjE0ODIwOTUyMTN9.4q8NyLWPZaHCDTEV-F6nOIBcYvw08gKZlSq100isR8g")
-
   @GET("api/messages")
-  Call<List<ChatPreviewItem>> getAllMessages();
+  Call<List<ChatPreviewItem>> getAllMessages(@Header("Authorization") String token);
 
-  @Headers("Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9" +
-    ".eyJfaWQiOiI1ODU2ZmE2OWQ5MzJmODIyZTRiY2RmZmUiLCJ1c2VybmFtZSI6InRlYSIsInBhc3N3b3JkIjoic2hhMSRlZjkxMDNlNiQxJGFkYjk1YWRiNWYyZTMxZjZmYTE2ZjhhMTkzOGQzNTc3ZTAwNWVmYzEiLCJpYXQiOjE0ODIwOTUyMTN9.4q8NyLWPZaHCDTEV-F6nOIBcYvw08gKZlSq100isR8g")
   @GET("api/messages/{id}")
-  Call<List<ChatMessage>> getConversationHistory(@Path("id") String conversationId);
+  Call<List<ChatMessage>> getConversationHistory(@Header("Authorization") String token, @Path("id") String conversationId);
+
+  @FormUrlEncoded
+  @POST("api/auth/facebook")
+  Call<User> facebookLogin(@Field("id") String id, @Field("username") String username, @Field("image") String image);
+
+  @FormUrlEncoded
+  @POST("api/auth/register")
+  Call<JsonElement> register(@Field("username") String username, @Field("password") String password);
+
+  @FormUrlEncoded
+  @POST("api/auth/login")
+  Call<User> login(@Field("username") String username, @Field("password") String password);
 }

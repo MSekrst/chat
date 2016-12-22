@@ -7,3 +7,7 @@ export const checkStatus = function(res) {
   err.response = res;
   throw err;
 };
+
+export const zeroPad = function (current) {
+  return current < 10 ? '0' + current : current;
+};

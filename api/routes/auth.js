@@ -29,7 +29,7 @@ authRouter.post('/register', (req, res) => {
       if (user) {
         return res.status(403).json({message: 'Username already exists.'});
       } else {
-        const newUser = { ...req.body, password: hash.generate(req.body.password)};
+        const newUser = { ...req.body, image: 'xxx', password: hash.generate(req.body.password)};
 
         db.collection('users').insertOne(newUser);
 
@@ -45,7 +45,7 @@ authRouter.get('/logout', (req, res) => {
 });
 
 authRouter.get('/facebook',
-  passport.authenticate('facebook', { session: false, scope: ['public_profile', 'email'] })
+  passport.authenticate('facebook', { session: false, scope: ['public_profile'] })
 );
 
 authRouter.get('/facebook/callback',
@@ -53,5 +53,28 @@ authRouter.get('/facebook/callback',
   authMiddleware.generateToken,
   authMiddleware.sendRedirect
 );
+
+authRouter.post('/facebook', (req, res, next) => {
+  const db = getDb();
+
+  const user = {
+    username: req.body.username,
+    image: req.body.image,
+    facebook: {
+      id: req.body.id,
+    },
+  };
+
+  db.collection('users').findOneAndUpdate({ username: user.username }, { $setOnInsert: user },
+    { upsert: true }, (err, data, p) => {
+      if (err) {
+        return res.status(500).json(err);
+      }
+
+      req['user'] = user;
+
+      next();
+    });
+}, authMiddleware.generateToken, authMiddleware.sendResponse);
 
 export default authRouter;

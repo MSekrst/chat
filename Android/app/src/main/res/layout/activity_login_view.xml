@@ -5,7 +5,7 @@
   android:id="@+id/activity_login_view"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:context="eu.rasus.fer.chat.LoginView"
+  tools:context="eu.rasus.fer.chat.Login.LoginView"
   android:fillViewport="true">
 
   <LinearLayout
@@ -50,12 +50,15 @@
       android:layout_marginTop="40dp">
 
       <EditText
+        android:id="@+id/login_username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/username_text"/>
       <EditText
+        android:id="@+id/login_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:inputType="textPassword"
         android:hint="@string/password_text"/>
 
       <Button

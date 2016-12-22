@@ -6,6 +6,9 @@ import com.facebook.stetho.Stetho;
 
 public class Application extends android.app.Application {
 
+  public static String USERNAME;
+  public static String TOKEN;
+
   public void onCreate() {
     super.onCreate();
     Stetho.initializeWithDefaults(this);

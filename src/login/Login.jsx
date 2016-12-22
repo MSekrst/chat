@@ -7,44 +7,45 @@ export default class Login extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      username: '',
+      password: '',
+    };
+
+    this.checkIfLogedIn = this.checkIfLogedIn.bind(this);
+    this.handleUsername = this.handleUsername.bind(this);
+    this.handlePassword = this.handlePassword.bind(this);
+    this.renderButton = this.renderButton.bind(this);
+    this.login = this.login.bind(this);
+
+    this.checkIfLogedIn();
+  }
+
+  checkIfLogedIn() {
     const ccToken = localStorage.ccToken || '';
 
-    if (!localStorage || !localStorage.ccToken) {
-      this.state = {
-        username: '',
-        password: '',
-      }
-    } else {
+    if (localStorage.ccToken) {
       fetch('/api/auth', {
         headers: {
-          'Authorization': 'Bearer ' + localStorage.ccToken || '',
+          'Authorization': 'Bearer ' + localStorage.ccToken,
         }
       }).then(checkStatus)
         .then((data) => {
           data.json().then(userData => {
             localStorage.ccUsername = userData.username;
+            localStorage.ccId = userData._id;
 
             this.setState({token: localStorage.ccToken});
           });
-        }).catch(err => {
-        this.setState = ({
-          username: '',
-          password: '',
-          wait: false,
+        })
+        .catch(err => {
+          this.setState = ({
+            username: '',
+            password: '',
+            wait: false,
+          });
         });
-      });
-
-      this.state = {
-        wait: true,
-        username: '',
-        password: '',
-      };
     }
-
-    this.handleUsername = this.handleUsername.bind(this);
-    this.handlePassword = this.handlePassword.bind(this);
-    this.renderButton = this.renderButton.bind(this);
-    this.login = this.login.bind(this);
   }
 
   // handlers
@@ -71,8 +72,8 @@ export default class Login extends React.Component {
       .then((res) => {
         const dataPromise = res.json();
 
-        dataPromise.then(token => {
-          this.setState({ redirect: true , token});
+        dataPromise.then(data => {
+          this.setState({ redirect: true , token: data.token });
         });
       })
       .catch(() => {

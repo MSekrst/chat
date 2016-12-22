@@ -72,6 +72,10 @@ html, body {
   background-color: #ffffff !important;
 }
 
+.rightAligned {
+  text-align: right;
+}
+
 /*----------------------------------------------*/
 /*NotFound.jsx*/
 
@@ -270,6 +274,8 @@ html, body {
   color: #d9534f;
 }
 
+/*----------------------------------*/
+/*Talk.jsx*/
 
 #talk{
   width: 75%;
@@ -302,4 +308,48 @@ html, body {
   position: absolute;
   left: 8px;
   top: 6px;
+}
+
+/*----------------------------------------------*/
+/*Conversation.jsx & Message.jsx*/
+
+.message {
+  padding: 15px 10px 15px 10px;
+  margin-left: 30%;
+  width: 32%;
+  background-color: #c1e1dc;
+  border-radius: 15px;
+  border: 1px solid #f5f5f5;
+}
+
+.messageContainer {
+  margin-top: -20px;
+  padding-top: 5px;
+}
+
+.reciver {
+  float: right;
+  margin-right: 37%;
+}
+
+.sender {
+  float: left;
+  margin-left: 67%;
+}
+
+/*----------------------------------------------*/
+/*TMP.jsx*/
+
+.inputForm {
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  margin: 0 auto;
+  height: 50px;
+}
+
+.inputMessage {
+  margin-left: 30%;
+  width: 70%;
+  height: 30px;
 }

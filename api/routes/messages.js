@@ -64,17 +64,25 @@ messageRouter.post('/:id', authMiddleware.checkToken, (req, res) => {
   const db = getDb();
   const connected = getConnected();
 
-  const messages = req.body.messages.map(m => {
-    m['sender'] = req.user.username;
-
-    return m;
-  });
-  
+  req.body.message['sender'] = req.user.username;
   const _id = ObjectID(req.params.id);
 
-  db.collection('messages').findOneAndUpdate({_id}, {
-    $push: {messages: {$each: messages}}
-  }, {upsert: true}, err => {
+  const users = db.collection('messages').findOne({_id});
+
+  users.then(data => {
+    for (let i = 0; i < data.users.length; i++) {
+      for (let i = 0; i < connected.length; i++) {
+          if (connected[i].user == data.users[i].username && data.users[i].username != req.user.username) {
+              connected[i].socket.emit('newMessages', req.body.message);
+              break;
+            }
+        }
+    }
+  });
+
+  db.collection('messages').updateOne({_id}, {
+    $push: {messages: req.body.message}
+  }, err => {
     if (err) {
       return res.status(500).json({message: err});
     }
@@ -83,5 +91,24 @@ messageRouter.post('/:id', authMiddleware.checkToken, (req, res) => {
   });
 });
 
+
+messageRouter.get('/private', authMiddleware.checkToken,
+  (req, res) => {
+    const connected = getConnected();
+    const username = req.user.username;
+    var ip;
+    for(var i = 0; i < connected.length; i++) {
+      if(username == connected.user.username) {
+        ip = connected.ip;
+        break;
+      }
+    }
+    const users = []
+    for(var i = 0; i < connected.length; i++) {
+      if(ip == connected.ip && username == connected.user.username) {
+        users.push(connected.user.username);
+      }
+    }
+})
 
 export default messageRouter;

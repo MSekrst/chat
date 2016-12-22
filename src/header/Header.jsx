@@ -15,7 +15,8 @@ export default class Header extends React.Component {
         </div>
         <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul className="nav navbar-nav navbar-right">
-            <li><a className="navButton" href="/profile"><span className="glyphicon glyphicon-user navIcon" />&nbsp;&nbsp;Profile</a></li>
+            <li className="rightAligned"><a className="navButton" href="/private"><span className="glyphicon glyphicon-lock navIcon" />&nbsp;&nbsp;Private Messages</a></li>
+            <li className="rightAligned"><a className="navButton" href="/profile"><span className="glyphicon glyphicon-user navIcon" />&nbsp;&nbsp;Profile</a></li>
           </ul>
         </div>
       </div>
