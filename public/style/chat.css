@@ -16,7 +16,7 @@ html, body {
 
 .centered {
   margin: 0 auto;
-  width: 80%;
+  width: 100%;
   text-align: center;
   background-color: #ffffff;
   padding: 0;
@@ -26,7 +26,6 @@ html, body {
   position: absolute;
   height: 100%;
   top: 0;
-  left: 10%;
 }
 
 #app {
@@ -99,8 +98,8 @@ html, body {
   top: 51px;
   left: 0;
   display: inline-block;
-  width: 30%;
-  height: 100%;
+  width: 25%;
+  height: calc(100% - 50px);
   background-color: whitesmoke;
   overflow: scroll;
   float: left;
@@ -275,6 +274,42 @@ html, body {
   color: #d9534f;
 }
 
+/*----------------------------------*/
+/*Talk.jsx*/
+
+#talk{
+  width: 75%;
+  height: calc(100% - 50px);
+  position: absolute;
+  top: 50px;
+  left: 25%;
+}
+
+#talkInput{
+  background-color: #ddd;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 50px;
+}
+
+.talkInput{
+  height: 30px;
+  margin-top: 10px;
+  width: 86%;
+  border-radius: 3px;
+  outline-color: #ffe87c;
+  outline-width: thick;
+  padding: 0.5%;
+}
+
+#smileyButton{
+  position: absolute;
+  left: 8px;
+  top: 6px;
+}
+
 /*----------------------------------------------*/
 /*Conversation.jsx & Message.jsx*/
 
@@ -320,4 +355,3 @@ html, body {
   width: 70%;
   height: 30px;
 }
-

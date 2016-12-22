@@ -18,7 +18,7 @@ export default class Chat extends React.Component {
       <Header/>
       <List messages={this.props.messages} click={this.props.click}/>
       <Conversation active={this.props.active} />
-      {/*<Talk />*/}
+      <Talk />
       <TMP sender={this.props.sender} />
     </div>;
   }

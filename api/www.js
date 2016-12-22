@@ -90,7 +90,8 @@ io.on('connect',
       console.log('Connected user: ' + user);
       const newUserSocket = {
         'user': user,
-        'socket': socket
+        'socket': socket,
+        'id': socket.handshake.address
       };
       userSockets.push(newUserSocket);
     });
