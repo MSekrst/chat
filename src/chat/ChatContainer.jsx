@@ -8,7 +8,10 @@ export default class ChatContainer extends React.Component {
   constructor(props) {
     super(props);
 
-    localStorage['ccToken'] = this.props.location.query ? this.props.location.query.token || '' : '';
+    if (this.props.location.query) {
+      localStorage['ccToken'] = this.props.location.query ? this.props.location.query.token || '' : '';
+      localStorage['ccUsername'] = this.props.location.query.username;
+    }
 
     this.state = {};
 
@@ -30,11 +33,17 @@ export default class ChatContainer extends React.Component {
         this.setState({ redirect: true });
     });
 
-    this.setState({ ...this.state, socketIo: window.io() });
+    const socketIo = window.io.connect('localhost', {
+      port: 3000,
+      secure: true,
+
+    });
+    this.setState({ ...this.state, socketIo });
   }
 
   componentDidMount() {
     const io = this.state.socketIo;
+    console.log('io', io);
 
     io.on('newMessage', m => {
       console.log('m', m);

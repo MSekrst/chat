@@ -35,7 +35,7 @@ export default class Login extends React.Component {
             localStorage.ccUsername = userData.username;
             localStorage.ccId = userData._id;
 
-            this.setState({token: localStorage.ccToken});
+            this.setState({token: localStorage.ccToken, username: localStorage.username});
           });
         })
         .catch(err => {
@@ -73,7 +73,8 @@ export default class Login extends React.Component {
         const dataPromise = res.json();
 
         dataPromise.then(data => {
-          this.setState({ redirect: true , token: data.token });
+          console.log('', data);
+          this.setState({ redirect: true , token: data.token, username: data.username });
         });
       })
       .catch(() => {
@@ -97,7 +98,7 @@ export default class Login extends React.Component {
 
   render() {
       if (this.state.token) {
-      const link = 'chat?token=' + this.state.token;
+      const link = 'chat?username=' + encodeURIComponent(this.state.username) + '&token=' + this.state.token;
 
       return <Redirect to={link}/>
     }

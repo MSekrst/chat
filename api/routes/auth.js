@@ -29,7 +29,7 @@ authRouter.post('/register', (req, res) => {
       if (user) {
         return res.status(403).json({message: 'Username already exists.'});
       } else {
-        const newUser = { ...req.body, image: 'xxx', password: hash.generate(req.body.password)};
+        const newUser = { ...req.body, image: '', password: hash.generate(req.body.password)};
 
         db.collection('users').insertOne(newUser);
 
@@ -51,7 +51,7 @@ authRouter.get('/facebook',
 authRouter.get('/facebook/callback',
   passport.authenticate('facebook', { session: false, succesRedirect: '/' }),
   authMiddleware.generateToken,
-  authMiddleware.sendRedirect
+  authMiddleware.sendRedirect,
 );
 
 authRouter.post('/facebook', (req, res, next) => {
@@ -66,7 +66,7 @@ authRouter.post('/facebook', (req, res, next) => {
   };
 
   db.collection('users').findOneAndUpdate({ username: user.username }, { $setOnInsert: user },
-    { upsert: true }, (err, data, p) => {
+    { upsert: true }, err => {
       if (err) {
         return res.status(500).json(err);
       }

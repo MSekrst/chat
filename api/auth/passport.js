@@ -39,7 +39,6 @@ const options = {
 };
 
 passport.use(new FacebookStrategy(options, (accessToken, refreshToken, profile, next) => {
-  console.log("slika" + profile.photos[0].value);
   process.nextTick(() => {
     const db = getDb();
 
