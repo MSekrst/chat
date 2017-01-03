@@ -33,19 +33,16 @@ export default class ChatContainer extends React.Component {
         this.setState({ redirect: true });
     });
 
-    const socketIo = window.io.connect('localhost', {
-      port: 3000,
-      secure: true,
-
+    const socketIo = window.io.connect();
+    socketIo.emit('user', {
+      username: localStorage.ccUsername,
     });
     this.setState({ ...this.state, socketIo });
   }
 
   componentDidMount() {
     const io = this.state.socketIo;
-    console.log('io', io);
-
-    io.on('newMessage', m => {
+    io.on('message', m => {
       console.log('m', m);
     });
   }

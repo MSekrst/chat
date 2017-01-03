@@ -85,42 +85,26 @@ const sServer = https.createServer(options, app);
 const io = socketio.listen(sServer);
 
 io.on('connection', socket => {
-  console.log('Connected', socket);
-});
+  socket.on('user', user => {
+    console.log('Connected: ' + user.username);
+    const newUserSocket = {
+      'user': user.username,
+      'socket': socket,
+      'id': socket.handshake.address
+    };
 
-// io.on('connection',
-//   (socket) => {
-//     console.log('da', socket);
-//
-//     socket.on('user', function (user) {
-//       console.log('Connected user: ' + user);
-//       const newUserSocket = {
-//         'user': user,
-//         'socket': socket,
-//         'id': socket.handshake.address
-//       };
-//       userSockets.push(newUserSocket);
-//     });
-//
-//     socket.on('message', function (data) {
-//       var message = JSON.parse(data);
-//       for (var i = 0; i < userSockets.length; i++) {
-//         if (userSockets[i].user === message.receiver) {
-//           userSockets[i].socket.emit('message', {data});
-//         }
-//       }
-//     });
-//
-//     socket.on('disconnect',
-//       ()=> {
-//         for (var i = 0; i < userSockets.length; i++) {
-//           if (userSockets[i].socket == socket) {
-//             console.log("Disconnected user: " + userSockets[i].user);
-//             userSockets.splice(i, 1);
-//           }
-//         }
-//       });
-//   });
+    userSockets.push(newUserSocket);
+  });
+
+  socket.on('disconnect', ()=> {
+      for (let i = 0; i < userSockets.length; i++) {
+        if (userSockets[i].socket == socket) {
+          console.log("Disconnected: " + userSockets[i].user);
+          userSockets.splice(i, 1);
+        }
+      }
+    });
+});
 
 /**
  * Event listener for HTTP server "listening" event.
