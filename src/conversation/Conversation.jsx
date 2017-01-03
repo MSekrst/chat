@@ -21,6 +21,7 @@ export default class ConversationContainer extends Component{
     this.sendMessage = this.sendMessage.bind(this);
     this.renderEmoji = this.renderEmoji.bind(this);
     this.emojiShow = this.emojiShow.bind(this);
+    this.addEmoji = this.addEmoji.bind(this);
   }
 
   componentDidMount() {
@@ -40,10 +41,16 @@ export default class ConversationContainer extends Component{
     this.setState({ text: e.target.value });
   }
 
+  addEmoji(emoji){
+    this.setState({ text: this.state.text + " " + emoji});
+  }
+
   renderEmoji(){
     if(this.state.emojiShow === true){
       return (<div style={{ position: "absolute", left: "0", bottom: "50px"}}>
-        <EmojiPicker onBlur={() => {
+        <EmojiPicker onChange={(data) => {
+                this.addEmoji(data.shortname);
+          }} onBlur={() => {
           this.setState({ emojiShow: false });
         }} />
       </div>);
