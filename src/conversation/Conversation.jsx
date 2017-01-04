@@ -1,11 +1,82 @@
-import React from 'react';
+import React, {Component} from 'react';
+import EmojiPicker from 'emojione-picker';
 
-import Message from './Message.jsx';
+import CurrentConversation from './CurrentConversation.jsx';
 
-export default class Conversation extends React.Component {
+function scroll() {
+  const element = document.getElementById("currentConversation");
+  element.scrollTop = element.scrollHeight;
+}
+
+export default class ConversationContainer extends Component{
+  constructor(props){
+    super(props);
+
+    this.state = {
+      text: '',
+      emojiShow: false,
+    };
+
+    this.handleText = this.handleText.bind(this);
+    this.sendMessage = this.sendMessage.bind(this);
+    this.renderEmoji = this.renderEmoji.bind(this);
+    this.emojiShow = this.emojiShow.bind(this);
+    this.addEmoji = this.addEmoji.bind(this);
+  }
+
+  componentDidMount() {
+    scroll();
+  }
+
+  componentDidUpdate() {
+    scroll();
+  }
+
+  sendMessage() {
+    this.props.sender(this.state.text);
+    this.setState({ text: '' });
+  }
+
+  handleText(e) {
+    this.setState({ text: e.target.value });
+  }
+
+  addEmoji(emoji){
+    this.setState({ text: this.state.text + " " + emoji});
+  }
+
+  renderEmoji(){
+    if(this.state.emojiShow === true){
+      return (<div style={{ position: "absolute", left: "0", bottom: "50px"}}>
+        <EmojiPicker onChange={(data) => {
+                this.addEmoji(data.shortname);
+          }} onBlur={() => {
+          this.setState({ emojiShow: false });
+        }} />
+      </div>);
+    }
+  }
+
+  emojiShow(){
+    this.setState({
+      emojiShow: !this.state.emojiShow,
+    });
+  }
+
   render() {
-    return <div className="messageContainer">
-      {this.props.active.messages.map(m => <Message sender={m.sender} key={m.date + '_' + m.time}>{m.text}</Message>)}
-    </div>
+    return (
+      <div id="talk">{this.renderEmoji()}
+        <CurrentConversation active={this.props.active}/>
+        <form id="talkInput" className="inputForm" onSubmit={(e) => {
+          e.preventDefault()
+        }}>
+          <img src="./images/smiley.png" width="35px" height="35px" id="smileyButton"
+               onClick={this.emojiShow}/>
+          <input className="talkInput" type="text" value={this.state.text}
+                 onChange={this.handleText}/>
+          <input type="submit" hidden="true" onClick={this.sendMessage}/>
+        </form>
+      </div>
+    );
   }
 }

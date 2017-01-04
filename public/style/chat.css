@@ -275,7 +275,7 @@ html, body {
 }
 
 /*----------------------------------*/
-/*Talk.jsx*/
+/*conversation.jsx*/
 
 #talk{
   width: 75%;
@@ -286,7 +286,7 @@ html, body {
 }
 
 #talkInput{
-  background-color: #ddd;
+  background-color: #fcbe98;
   position: absolute;
   left: 0;
   bottom: 0;
@@ -311,34 +311,34 @@ html, body {
 }
 
 /*----------------------------------------------*/
-/*Conversation.jsx & Message.jsx*/
+/*CurrentConversation.jsx & Message.jsx*/
 
 .message {
   padding: 15px 10px 15px 10px;
-  margin-left: 30%;
-  width: 32%;
-  background-color: #c1e1dc;
+  width: 47%;
   border-radius: 15px;
   border: 1px solid #f5f5f5;
 }
 
 .messageContainer {
-  margin-top: -20px;
-  padding-top: 5px;
+  padding: 5px 0 50px;
+  width: 100%;
+  height: calc(100% - 50px);
+  word-wrap: break-word;
+  overflow: auto;
 }
 
 .reciver {
-  float: right;
-  margin-right: 37%;
+  float: left;
+  margin: 0 52% 0 1%;
+  background-color: #c1e1dc ;
 }
 
 .sender {
   float: left;
-  margin-left: 67%;
+  margin-left: 52%;
+  background-color: #f1f1f1;
 }
-
-/*----------------------------------------------*/
-/*TMP.jsx*/
 
 .inputForm {
   position: absolute;
@@ -352,4 +352,10 @@ html, body {
   margin-left: 30%;
   width: 70%;
   height: 30px;
+}
+
+
+.emojione {
+  width: 25px;
+  height: 25px;
 }

@@ -10,6 +10,7 @@ export default class Login extends React.Component {
     this.state = {
       username: '',
       password: '',
+      wait: true,
     };
 
     this.checkIfLogedIn = this.checkIfLogedIn.bind(this);
@@ -22,8 +23,6 @@ export default class Login extends React.Component {
   }
 
   checkIfLogedIn() {
-    const ccToken = localStorage.ccToken || '';
-
     if (localStorage.ccToken) {
       fetch('/api/auth', {
         headers: {
@@ -35,11 +34,11 @@ export default class Login extends React.Component {
             localStorage.ccUsername = userData.username;
             localStorage.ccId = userData._id;
 
-            this.setState({token: localStorage.ccToken});
+            this.setState({token: localStorage.ccToken, username: localStorage.username});
           });
         })
         .catch(err => {
-          this.setState = ({
+          this.setState({
             username: '',
             password: '',
             wait: false,
@@ -73,7 +72,8 @@ export default class Login extends React.Component {
         const dataPromise = res.json();
 
         dataPromise.then(data => {
-          this.setState({ redirect: true , token: data.token });
+          console.log('', data);
+          this.setState({ redirect: true , token: data.token, username: data.username });
         });
       })
       .catch(() => {
@@ -96,8 +96,8 @@ export default class Login extends React.Component {
   }
 
   render() {
-      if (this.state.token) {
-      const link = 'chat?token=' + this.state.token;
+    if (this.state.token) {
+      const link = 'chat?username=' + encodeURIComponent(this.state.username) + '&token=' + this.state.token;
 
       return <Redirect to={link}/>
     }
@@ -113,28 +113,31 @@ export default class Login extends React.Component {
         <div className="loginFlow">
           <h4 className="loginSubtitle">Login</h4>
           <form onSubmit={ (e) => e.preventDefault() }>
-          <input className="formInput" value={this.state.username} name="username" type="text"
-                 placeholder="Username" onChange={this.handleUsername}/><br/>
-          <input className="formInput" value={this.state.password} name="password" type="password"
-                 placeholder="Password" onChange={this.handlePassword}/><br/>
-          {this.renderButton()}
+            <input className="formInput" value={this.state.username} name="username" type="text"
+                   placeholder="Username" onChange={this.handleUsername}/><br/>
+            <input className="formInput" value={this.state.password} name="password" type="password"
+                   placeholder="Password" onChange={this.handlePassword}/><br/>
+            {this.renderButton()}
           </form>
         </div>
         <div className="socialMedia">
           <h5 style={{marginLeft: '18%'}}>or login with social media:</h5>
-          <a href="/api/auth/facebook"><div className="fblogin">
-            <div className="imgFb">
-              <img src="./images/fbLogo.png" width="35px" height="35px"/>
+          <a href="/api/auth/facebook">
+            <div className="fblogin">
+              <div className="imgFb">
+                <img src="./images/fbLogo.png" width="35px" height="35px"/>
+              </div>
+              <div className="textFb">
+                Login with Facebook
+              </div>
             </div>
-            <div className="textFb">
-              Login with Facebook
-            </div>
-          </div></a>
+          </a>
         </div>
         <h4>if you don't have an account sign up <Link className="signUpHere" to="/register"><span>here</span></Link>
         </h4>
       </div>
-      <div id="loginModal" className="modal fade bs-example-modal-sm" role="dialog" aria-labelledby="mySmallModalLabel">
+      <div id="loginModal" className="modal fade bs-example-modal-sm" role="dialog"
+           aria-labelledby="mySmallModalLabel">
         <div className="modal-dialog modal-sm" role="document">
           <div className="modal-content authModal">
             Wrong username or password!

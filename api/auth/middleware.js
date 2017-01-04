@@ -4,6 +4,8 @@ export const authMiddleware = {
   generateToken(req, res, next) {
     const jwtSecret = process.env.JWT_SECRET;
 
+    console.log('', req.user);
+
     req.token = jwt.sign(req.user, jwtSecret);
 
     next();
@@ -14,7 +16,7 @@ export const authMiddleware = {
   },
 
   sendRedirect(req, res) {
-    res.redirect('/chat?token=' + req.token);
+    res.redirect('/chat?username=' + encodeURIComponent(req.user.username) + '&token=' + req.token);
   },
 
   checkToken(req, res, next) {

@@ -67,25 +67,24 @@ messageRouter.post('/:id', authMiddleware.checkToken, (req, res) => {
   // req.body.message['sender'] = req.user.username;
   const _id = ObjectID(req.params.id);
 
-  const users = db.collection('messages').findOne({_id});
-
-  users.then(data => {
-    for (let i = 0; i < data.users.length; i++) {
-      for (let i = 0; i < connected.length; i++) {
-          if (connected[i].user == data.users[i].username && data.users[i].username != req.user.username) {
-              connected[i].socket.emit('newMessages', req.body.message);
-              break;
-            }
-        }
-    }
-  });
-
   db.collection('messages').updateOne({_id}, {
     $push: {messages: req.body.message}
   }, err => {
     if (err) {
       return res.status(500).json({message: err});
     }
+
+    console.log('', req.body.message);
+
+    // for (let i = 0; i < data.users.length; i++) {
+    //   for (let i = 0; i < connected.length; i++) {
+    //     if (connected[i].user == data.users[i].username && data.users[i].username != req.user.username) {
+    //       console.log('saljem', req.body.message);
+    //       connected[i].socket.emit('message', req.body.message);
+    //       break;
+    //     }
+    //   }
+    // }
 
     return res.status(204).json();
   });
