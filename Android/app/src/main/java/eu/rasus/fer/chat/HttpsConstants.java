@@ -17,7 +17,7 @@ import okhttp3.OkHttpClient;
 
 public class HttpsConstants {
 
-  public static String ADDRES = "https://192.168.0.14:3000";
+  public static String ADDRES = "https://192.168.0.18:3000";
 
   public static HostnameVerifier HOSTNAME_VERIFIER = new HostnameVerifier() {
 
@@ -60,7 +60,8 @@ public class HttpsConstants {
     }
   }
 
-  public static void initializeSocket() {
+  public static Socket getSocket() {
+    if (socket == null) {
       try {
         SSLContext mySSLContext = SSLContext.getInstance("TLS");
         mySSLContext.init(null, HttpsConstants.TRUST_ALL_CERTS, null);
@@ -72,9 +73,7 @@ public class HttpsConstants {
         socket = IO.socket(HttpsConstants.ADDRES, opts);
       } catch (Exception e) {
       }
-  }
-
-  public static Socket getSocket() {
+    }
     return socket;
   }
 }

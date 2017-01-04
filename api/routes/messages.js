@@ -70,7 +70,7 @@ messageRouter.post('/:id', authMiddleware.checkToken, (req, res) => {
   const db = getDb();
   const connected = getConnected();
 
-  req.body.message['sender'] = req.user.username;
+  // req.body.message['sender'] = req.user.username;
   const _id = ObjectID(req.params.id);
 
   db.collection('messages').updateOne({_id}, {

@@ -1,4 +1,4 @@
-package eu.rasus.fer.chat.Login;
+package eu.rasus.fer.chat.login;
 
 import android.content.Context;
 import android.content.Intent;

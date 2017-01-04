@@ -1,4 +1,4 @@
-package eu.rasus.fer.chat.Login;
+package eu.rasus.fer.chat.login;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -53,6 +53,7 @@ public class LoginView extends AppCompatActivity {
   @BindView(R.id.login_password)
   TextView passwordView;
 
+  private ProgressDialog progressDialog;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +73,9 @@ public class LoginView extends AppCompatActivity {
       }
     });
 
+    progressDialog =new ProgressDialog(LoginView.this);
+    progressDialog.setIndeterminate(true);
+    progressDialog.setMessage("Authenticating...");
 
     FacebookSdk.sdkInitialize(this.getApplicationContext());
     mCallbackManager = CallbackManager.Factory.create();
@@ -80,9 +84,6 @@ public class LoginView extends AppCompatActivity {
       new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
-          final ProgressDialog progressDialog = new ProgressDialog(LoginView.this);
-          progressDialog.setIndeterminate(true);
-          progressDialog.setMessage("Authenticating...");
           progressDialog.show();
 
           GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
@@ -150,6 +151,7 @@ public class LoginView extends AppCompatActivity {
   @OnClick(R.id.login_button)
   public void login(View v){
     if (!usernameView.getText().toString().isEmpty() && !passwordView.getText().toString().isEmpty()){
+      progressDialog.show();
 
       Retrofit retrofit = new Retrofit.Builder().baseUrl(HttpsConstants.ADDRES).client(HttpsConstants.getUnsafeOkHttpClient()).addConverterFactory(
         GsonConverterFactory.create()).build();
@@ -161,7 +163,10 @@ public class LoginView extends AppCompatActivity {
 
         @Override
         public void onResponse(final Call<User> call, final Response<User> response) {
-          if (response.errorBody() != null)  Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+          if (response.errorBody() != null)  {
+            progressDialog.hide();
+            Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+          }
            else  loginSuccessful(response);
         }
 

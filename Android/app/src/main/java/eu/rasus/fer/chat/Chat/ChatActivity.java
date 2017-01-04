@@ -1,6 +1,7 @@
 package eu.rasus.fer.chat.Chat;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,15 +15,12 @@ import android.widget.TextView;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
+import com.google.gson.JsonElement;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -60,33 +58,35 @@ public class ChatActivity extends AppCompatActivity {
   TextView title;
 
   public ChatAdapter chatAdapter;
-
   private Gson gson;
-
-  private String sender;
   private String receiver;
-
   private ChatPreviewItem chatInfo;
+  private RestApi api;
 
   private Emitter.Listener handleIncomingMessage = new Emitter.Listener() {
 
     @Override
     public void call(final Object... args) {
-
       final ChatMessage chatMessage;
-      try {
-        chatMessage = gson.fromJson(((JSONObject) args[0]).get("data").toString(), ChatMessage.class);
-        chatMessage.isMine = false;
-        runOnUiThread(new Runnable() {
 
-          @Override
-          public void run() {
-            addMessageToAdapter(chatMessage);
-          }
-        });
-      } catch (JSONException e) {
-        e.printStackTrace();
-      }
+      chatMessage = gson.fromJson(args[0].toString(), ChatMessage.class);
+      chatMessage.isMine = false;
+
+      new AsyncTask<Void, Void, Void>() {
+
+        @Override
+        protected Void doInBackground(final Void... voids) {
+          return null;
+        }
+
+        @Override
+        protected void onPostExecute(final Void v) {
+          chatAdapter.add(chatMessage);
+          chatAdapter.notifyDataSetChanged();
+        }
+      }.execute();
+
+
     }
   };
 
@@ -101,37 +101,35 @@ public class ChatActivity extends AppCompatActivity {
     getSupportActionBar().setTitle(null);
 
     Bundle bundle = getIntent().getExtras();
-    sender = bundle.getString("SENDER");
     chatInfo = bundle.getParcelable("CHAT_PREVIEW_ITEM");
 
-    receiver = chatInfo.receiver;
+    if (chatInfo != null) {
+      receiver = chatInfo.receiver;
+    }
 
     title.setText(receiver);
     Picasso.with(this).load(chatInfo.image).placeholder(R.drawable.placeholder).error(R.drawable.placeholder).fit().centerCrop().noFade().into(image);
 
-    HttpsConstants.initializeSocket();
-    socket = HttpsConstants.getSocket();
-
-    socket.connect();
-    socket.emit("user", sender);
-    socket.on("message", handleIncomingMessage);
+    socket = Application.SOCEKT;
+    socket.on("newMessages", handleIncomingMessage);
 
     gson = new Gson();
 
     msgListView.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
     msgListView.setStackFromBottom(true);
 
-    Retrofit retrofit = new Retrofit.Builder().baseUrl(HttpsConstants.ADDRES).client(HttpsConstants.getUnsafeOkHttpClient()).addConverterFactory(GsonConverterFactory.create()).build();
-    RestApi api = retrofit.create(RestApi.class);
+    Retrofit retrofit = new Retrofit.Builder().baseUrl(HttpsConstants.ADDRES).client(HttpsConstants.getUnsafeOkHttpClient()).addConverterFactory(GsonConverterFactory.create())
+                                              .build();
+    api = retrofit.create(RestApi.class);
 
     Call<List<ChatMessage>> call = api.getConversationHistory(Application.TOKEN, chatInfo.id);
 
-    final Activity a = this;
-    call.enqueue(new Callback<List<ChatMessage>> (){
+    final Activity activity = this;
+    call.enqueue(new Callback<List<ChatMessage>>() {
 
       @Override
       public void onResponse(final Call<List<ChatMessage>> call, final Response<List<ChatMessage>> response) {
-        chatAdapter = new ChatAdapter(a, response.body());
+        chatAdapter = new ChatAdapter(activity, response.body());
         msgListView.setAdapter(chatAdapter);
       }
 
@@ -140,32 +138,41 @@ public class ChatActivity extends AppCompatActivity {
 
       }
     });
-
   }
 
   @OnClick(R.id.sendMessageButton)
   public void sendMessage(View v) {
     String message = msgEditText.getEditableText().toString().trim();
     if (!message.equalsIgnoreCase("")) {
-      ChatMessage chatMessage = new ChatMessage(sender, receiver, message, true);
+      ChatMessage chatMessage = new ChatMessage(Application.USERNAME, receiver, message, true);
 
       msgEditText.setText("");
 
       addMessageToAdapter(chatMessage);
 
-      socket.emit("message", gson.toJson(chatMessage));
+      ChatMessageWrapper wrapper = new ChatMessageWrapper();
+      wrapper.message = chatMessage;
+      Call<Void> call = api.sendMesssage(Application.TOKEN, chatInfo.id, wrapper);
+
+      call.enqueue(new Callback<Void>() {
+
+        @Override
+        public void onResponse(final Call<Void> call, final Response<Void> response) {
+
+        }
+
+        @Override
+        public void onFailure(final Call<Void> call, final Throwable t) {
+
+        }
+      });
+
     }
   }
 
   @OnClick(R.id.chat_back)
   public void back(View v) {
     onBackPressed();
-  }
-
-  @Override
-  public void onDestroy() {
-    super.onDestroy();
-    socket.disconnect();
   }
 
   public void addMessageToAdapter(ChatMessage chatMessage) {
