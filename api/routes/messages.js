@@ -1,14 +1,13 @@
 import express from 'express';
-import fs from 'fs'
-import socketio from 'socket.io';
+import fs from 'fs';
+import multipart from 'connect-multiparty';
+import {Binary} from 'mongodb';
 
 import {getDb} from '../mongo';
 import {ObjectID} from '../mongo';
 import {getConnected} from '../www';
 import {authMiddleware} from '../auth/middleware';
 
-var Binary = require('mongodb').Binary;
-var multipart = require('connect-multiparty');
 const multipartMiddleware = multipart();
 
 const messageRouter = express.Router();
