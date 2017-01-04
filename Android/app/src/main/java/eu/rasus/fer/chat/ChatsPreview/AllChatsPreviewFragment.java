@@ -41,10 +41,7 @@ public class AllChatsPreviewFragment extends Fragment {
 
   private ChatPreviewAdapter chatPreviewAdapter;
 
-//  public Socket socket;
-//  {
-//    socket = HttpsConstants.getUnsafeOkSocket();
-//  }
+  private  Call<List<ChatPreviewItem>> call;
 
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.chats_preview, container, false);
@@ -59,7 +56,18 @@ public class AllChatsPreviewFragment extends Fragment {
     Retrofit retrofit = new Retrofit.Builder().baseUrl(HttpsConstants.ADDRES).client(HttpsConstants.getUnsafeOkHttpClient()).addConverterFactory(GsonConverterFactory.create(gson)).build();
     RestApi api = retrofit.create(RestApi.class);
 
-    Call<List<ChatPreviewItem>> call = api.getAllMessages(Application.TOKEN);
+    call = api.getAllMessages(Application.TOKEN);
+
+    Application.SOCEKT = HttpsConstants.getSocket();
+    Application.SOCEKT.connect();
+    Application.SOCEKT.emit("user", Application.USERNAME);
+
+    return view;
+  }
+
+  @Override
+  public void onResume(){
+    super.onResume();
 
     call.enqueue(new Callback<List<ChatPreviewItem>>() {
 
@@ -77,15 +85,18 @@ public class AllChatsPreviewFragment extends Fragment {
 
       }
     });
-
-    return view;
   }
 
   @OnItemClick(R.id.chat_item_container)
   public void openChat(final AdapterView<?> adapter, final View view, final int position, final long id) {
     Intent intent = new Intent(getActivity(), ChatActivity.class);
-    intent.putExtra("SENDER", Application.USERNAME);
     intent.putExtra("CHAT_PREVIEW_ITEM", ((ChatPreviewItem)adapter.getItemAtPosition(position)));
     startActivity(intent);
+  }
+
+  @Override
+  public void onDestroy(){
+    Application.SOCEKT.disconnect();
+    super.onDestroy();
   }
 }

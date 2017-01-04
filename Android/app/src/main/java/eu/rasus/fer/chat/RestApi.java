@@ -1,19 +1,23 @@
 package eu.rasus.fer.chat;
 
 import com.google.gson.JsonElement;
+import com.squareup.okhttp.RequestBody;
 
 import java.util.List;
 
 import eu.rasus.fer.chat.Chat.ChatMessage;
+import eu.rasus.fer.chat.Chat.ChatMessageWrapper;
 import eu.rasus.fer.chat.ChatsPreview.ChatPreviewItem;
-import eu.rasus.fer.chat.Login.User;
+import eu.rasus.fer.chat.login.User;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 public interface RestApi {
@@ -34,4 +38,8 @@ public interface RestApi {
   @FormUrlEncoded
   @POST("api/auth/login")
   Call<User> login(@Field("username") String username, @Field("password") String password);
+
+  @Headers("Content-Type: application/json")
+  @POST("api/messages/{id}")
+  Call<Void> sendMesssage(@Header("Authorization") String token, @Path("id") String conversationId, @Body ChatMessageWrapper message);
 }

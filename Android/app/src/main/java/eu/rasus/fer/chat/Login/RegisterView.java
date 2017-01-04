@@ -1,4 +1,4 @@
-package eu.rasus.fer.chat.Login;
+package eu.rasus.fer.chat.login;
 
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -41,9 +41,6 @@ public class RegisterView extends AppCompatActivity {
 
   @BindView(R.id.register_repeat_password)
   TextView repeatPasswordView;
-
-  @BindView(R.id.register_error)
-  TextView errorView;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
