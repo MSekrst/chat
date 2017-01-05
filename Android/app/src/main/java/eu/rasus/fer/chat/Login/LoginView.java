@@ -27,6 +27,7 @@ import org.json.JSONObject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import eu.rasus.fer.chat.Application;
 import eu.rasus.fer.chat.HttpsConstants;
 import eu.rasus.fer.chat.MainActivity;
 import eu.rasus.fer.chat.R;
@@ -92,7 +93,7 @@ public class LoginView extends AppCompatActivity {
               public void onCompleted(JSONObject object, GraphResponse response) {
 
               try {
-                String id = object.getString("id");
+                String id = object.getString("chatId");
                 final String username = object.getString("name");
                 String image = ((JSONObject) ((JSONObject) object.get("picture")).get("data")).getString("url");
 
@@ -120,7 +121,7 @@ public class LoginView extends AppCompatActivity {
             }
           });
           Bundle parameters = new Bundle();
-          parameters.putString("fields", "id,name,picture");
+          parameters.putString("fields", "chatId,name,picture");
           request.setParameters(parameters);
           request.executeAsync();
         }
@@ -188,8 +189,8 @@ public class LoginView extends AppCompatActivity {
     editor.putString("TOKEN", token);
     editor.apply();
 
-    eu.rasus.fer.chat.Application.USERNAME =  response.body().username;
-    eu.rasus.fer.chat.Application.TOKEN = token;
+    Application.USERNAME =  response.body().username;
+    Application.TOKEN = token;
 
     Intent intent = new Intent(getApplication(), MainActivity.class);
     startActivity(intent);

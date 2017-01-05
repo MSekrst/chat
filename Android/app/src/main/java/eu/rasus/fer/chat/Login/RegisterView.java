@@ -11,8 +11,6 @@ import android.widget.TextView;
 
 import com.google.gson.JsonElement;
 
-import org.json.JSONException;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;

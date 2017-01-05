@@ -1,12 +1,11 @@
 package eu.rasus.fer.chat.Chat;
 
-import com.google.gson.annotations.Expose;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ChatMessage{
 
+  public String chatId;
   public String text;
   public String sender;
   public String receiver;
@@ -14,10 +13,11 @@ public class ChatMessage{
   public String time;
   public boolean isMine;
 
-  public ChatMessage(String sender, String receiver, String text, boolean isMINE) {
+  public ChatMessage(String chatId, String sender, String receiver, String text, boolean isMINE) {
     SimpleDateFormat time_formatter = new SimpleDateFormat("HH:mm:ss");
     SimpleDateFormat date_formatter = new SimpleDateFormat("dd.MM.yyyy.");
 
+    this.chatId = chatId;
     this.sender = sender;
     this.receiver = receiver;
     this.text = text;
@@ -25,5 +25,4 @@ public class ChatMessage{
     date = date_formatter.format(new Date());
     time = time_formatter.format(new Date());
   }
-
 }

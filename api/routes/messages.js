@@ -62,52 +62,63 @@ messageRouter.get('/:id', authMiddleware.checkToken,
 
 messageRouter.post('/:id', authMiddleware.checkToken, (req, res) => {
   const db = getDb();
+
+  const _id = ObjectID(req.params.id);
   const connected = getConnected();
 
-  // req.body.message['sender'] = req.user.username;
-  const _id = ObjectID(req.params.id);
+  db.collection('messages').findOneAndUpdate({_id},
+    {$push: {messages: req.body.message}}, (err, data) => {
+      if (err) return res.status(500).json({message: err});
 
-  db.collection('messages').updateOne({_id}, {
-    $push: {messages: req.body.message}
-  }, err => {
-    if (err) {
-      return res.status(500).json({message: err});
-    }
+      const users = data.value.users;
 
-    console.log('', req.body.message);
+      for(let i=0; i<users.length;i++){
+        for(let j=0; j<connected.length;j++){
+          if (connected[j].user == users[i].username && users[i].username != req.user.username) {
+            console.log('saljem');
+            connected[j].socket.emit('message', req.body.message);
+          }
+          if (i==users.length-1 && j==connected.length-1) res.status(200).json();
+        }
+      }
+    });
 
-    // for (let i = 0; i < data.users.length; i++) {
-    //   for (let i = 0; i < connected.length; i++) {
-    //     if (connected[i].user == data.users[i].username && data.users[i].username != req.user.username) {
-    //       console.log('saljem', req.body.message);
-    //       connected[i].socket.emit('message', req.body.message);
-    //       break;
-    //     }
-    //   }
-    // }
-
-    return res.status(204).json();
-  });
 });
-
 
 messageRouter.get('/private', authMiddleware.checkToken,
   (req, res) => {
     const connected = getConnected();
     const username = req.user.username;
     var ip;
-    for(var i = 0; i < connected.length; i++) {
-      if(username == connected.user.username) {
+    for (var i = 0; i < connected.length; i++) {
+      if (username == connected.user.username) {
         ip = connected.ip;
         break;
       }
     }
     const users = []
-    for(var i = 0; i < connected.length; i++) {
-      if(ip == connected.ip && username == connected.user.username) {
+    for (var i = 0; i < connected.length; i++) {
+      if (ip == connected.ip && username == connected.user.username) {
         users.push(connected.user.username);
       }
     }
-})
+  });
+
+function sendMessage(users, req) {
+  return new Promise((success)=> {
+    const connected = getConnected();
+    for (let i = 0; i < users.length; i++) {
+      for (let i = 0; i < connected.length; i++) {
+        if (connected[i].user == users[i].username && users[i].username != req.user.username) {
+          console.log('saljem');
+          connected[i].socket.emit('message', req.body.message);
+          break;
+        }
+      }
+      if (i == users.length - 1)
+        return success();
+    }
+  });
+}
 
 export default messageRouter;

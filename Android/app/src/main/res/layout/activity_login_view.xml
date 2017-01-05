@@ -5,7 +5,7 @@
   android:id="@+id/activity_login_view"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:context="eu.rasus.fer.chat.Login.LoginView"
+  tools:context="eu.rasus.fer.chat.login.LoginView"
   android:fillViewport="true">
 
   <LinearLayout

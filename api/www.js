@@ -86,9 +86,9 @@ const io = socketio.listen(sServer);
 
 io.on('connection', socket => {
   socket.on('user', user => {
-    console.log('Connected: ' + user.username);
+    console.log('Connected: ' + user);
     const newUserSocket = {
-      'user': user.username,
+      'user': user,
       'socket': socket,
       'id': socket.handshake.address
     };

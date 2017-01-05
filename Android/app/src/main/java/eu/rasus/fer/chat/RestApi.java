@@ -1,7 +1,6 @@
 package eu.rasus.fer.chat;
 
 import com.google.gson.JsonElement;
-import com.squareup.okhttp.RequestBody;
 
 import java.util.List;
 
@@ -17,19 +16,18 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
-import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 public interface RestApi {
   @GET("api/messages")
   Call<List<ChatPreviewItem>> getAllMessages(@Header("Authorization") String token);
 
-  @GET("api/messages/{id}")
-  Call<List<ChatMessage>> getConversationHistory(@Header("Authorization") String token, @Path("id") String conversationId);
+  @GET("api/messages/{chatId}")
+  Call<List<ChatMessage>> getConversationHistory(@Header("Authorization") String token, @Path("chatId") String conversationId);
 
   @FormUrlEncoded
   @POST("api/auth/facebook")
-  Call<User> facebookLogin(@Field("id") String id, @Field("username") String username, @Field("image") String image);
+  Call<User> facebookLogin(@Field("chatId") String id, @Field("username") String username, @Field("image") String image);
 
   @FormUrlEncoded
   @POST("api/auth/register")
@@ -40,6 +38,6 @@ public interface RestApi {
   Call<User> login(@Field("username") String username, @Field("password") String password);
 
   @Headers("Content-Type: application/json")
-  @POST("api/messages/{id}")
-  Call<Void> sendMesssage(@Header("Authorization") String token, @Path("id") String conversationId, @Body ChatMessageWrapper message);
+  @POST("api/messages/{chatId}")
+  Call<Void> sendMesssage(@Header("Authorization") String token, @Path("chatId") String conversationId, @Body ChatMessageWrapper message);
 }

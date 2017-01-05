@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
 
-import eu.rasus.fer.chat.MainActivity;
-
 public class SplashPresenter {
   SplashView mSplashView;
 

@@ -57,6 +57,13 @@ public class ChatPreviewAdapter extends BaseAdapter {
     return chatList.get(position);
   }
 
+  public ChatPreviewItem find(final String id) {
+    for (ChatPreviewItem chat: chatList) {
+      if (id.equals(chat.id)) return chat;
+    }
+    return null;
+  }
+
   @Override
   public long getItemId(final int position) {
     return position;
@@ -64,6 +71,12 @@ public class ChatPreviewAdapter extends BaseAdapter {
 
   public void add(ChatPreviewItem object) {
     chatList.add(object);
+  }
+
+  @Override
+  public void notifyDataSetChanged(){
+    Collections.sort(chatList);
+    super.notifyDataSetChanged();
   }
 
   static class ViewHolder {

@@ -1,8 +1,10 @@
 package eu.rasus.fer.chat.ChatsPreview;
 
-import android.content.Intent;
-import android.os.Bundle;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +12,13 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import butterknife.BindView;
@@ -22,6 +26,7 @@ import butterknife.ButterKnife;
 import butterknife.OnItemClick;
 import eu.rasus.fer.chat.Application;
 import eu.rasus.fer.chat.Chat.ChatActivity;
+import eu.rasus.fer.chat.Chat.ChatMessage;
 import eu.rasus.fer.chat.HttpsConstants;
 import eu.rasus.fer.chat.R;
 import eu.rasus.fer.chat.RestApi;
@@ -41,7 +46,44 @@ public class AllChatsPreviewFragment extends Fragment {
 
   private ChatPreviewAdapter chatPreviewAdapter;
 
-  private  Call<List<ChatPreviewItem>> call;
+  private Call<List<ChatPreviewItem>> call;
+
+  private Emitter.Listener handleIncomingMessage = new Emitter.Listener() {
+
+    @Override
+    public void call(final Object... args) {
+      final ChatMessage chatMessage;
+
+      Gson gson = new Gson();
+      chatMessage = gson.fromJson(args[0].toString(), ChatMessage.class);
+      chatMessage.isMine = false;
+
+      new AsyncTask<Void, Void, Void>() {
+
+        @Override
+        protected Void doInBackground(final Void... voids) {
+          return null;
+        }
+
+        @Override
+        protected void onPostExecute(final Void v) {
+          ChatPreviewItem chatPreviewItem= chatPreviewAdapter.find(chatMessage.chatId);
+          chatPreviewItem.lastMessageText=chatMessage.text;
+          try {
+            SimpleDateFormat date_formatter = new SimpleDateFormat("dd.MM.yyyy. HH:mm:ss");
+            chatPreviewItem.lastMessageTime = date_formatter.parse(chatMessage.date + " " + chatMessage.time);
+          } catch (ParseException e) {
+            e.printStackTrace();
+          }
+          chatPreviewAdapter.notifyDataSetChanged();
+        }
+      }.execute();
+
+
+    }
+  };
+
+  public Socket socket;
 
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.chats_preview, container, false);
@@ -53,21 +95,11 @@ public class AllChatsPreviewFragment extends Fragment {
         .registerTypeAdapter(ChatPreviewItem.class, new ChatPreviewItemDeserializer())
         .create();
 
-    Retrofit retrofit = new Retrofit.Builder().baseUrl(HttpsConstants.ADDRES).client(HttpsConstants.getUnsafeOkHttpClient()).addConverterFactory(GsonConverterFactory.create(gson)).build();
+    Retrofit retrofit = new Retrofit.Builder().baseUrl(HttpsConstants.ADDRES).client(HttpsConstants.getUnsafeOkHttpClient()).addConverterFactory(GsonConverterFactory.create(gson))
+                                              .build();
     RestApi api = retrofit.create(RestApi.class);
 
     call = api.getAllMessages(Application.TOKEN);
-
-    Application.SOCEKT = HttpsConstants.getSocket();
-    Application.SOCEKT.connect();
-    Application.SOCEKT.emit("user", Application.USERNAME);
-
-    return view;
-  }
-
-  @Override
-  public void onResume(){
-    super.onResume();
 
     call.enqueue(new Callback<List<ChatPreviewItem>>() {
 
@@ -76,7 +108,9 @@ public class AllChatsPreviewFragment extends Fragment {
         chatPreviewAdapter = new ChatPreviewAdapter(getActivity(), response.body());
 
         itemContainer.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
-        if (response.body().size()==0) noChats.setVisibility(View.VISIBLE);
+        if (response.body().size() == 0) {
+          noChats.setVisibility(View.VISIBLE);
+        }
         itemContainer.setAdapter(chatPreviewAdapter);
       }
 
@@ -85,18 +119,20 @@ public class AllChatsPreviewFragment extends Fragment {
 
       }
     });
+
+    socket = Application.SOCEKT;
+    socket.on("message", handleIncomingMessage);
+
+
+    return view;
   }
 
   @OnItemClick(R.id.chat_item_container)
   public void openChat(final AdapterView<?> adapter, final View view, final int position, final long id) {
     Intent intent = new Intent(getActivity(), ChatActivity.class);
-    intent.putExtra("CHAT_PREVIEW_ITEM", ((ChatPreviewItem)adapter.getItemAtPosition(position)));
+    intent.putExtra("CHAT_PREVIEW_ITEM", ((ChatPreviewItem) adapter.getItemAtPosition(position)));
     startActivity(intent);
-  }
-
-  @Override
-  public void onDestroy(){
-    Application.SOCEKT.disconnect();
-    super.onDestroy();
+    FragmentTransaction ft = getFragmentManager().beginTransaction();
+    ft.remove(this).commit();
   }
 }

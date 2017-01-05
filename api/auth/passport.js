@@ -7,7 +7,7 @@ import { getDb } from '../mongo';
 
 passport.use(new LocalStrategy((username, password, next)  => {
   const db = getDb();
-
+  
   const userPromise = db.collection('users').findOne({ username });
 
   // handle promise

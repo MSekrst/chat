@@ -70,6 +70,8 @@ public class ChatActivity extends AppCompatActivity {
       final ChatMessage chatMessage;
 
       chatMessage = gson.fromJson(args[0].toString(), ChatMessage.class);
+      if (!chatMessage.chatId.equals(chatInfo.id)) return;
+
       chatMessage.isMine = false;
 
       new AsyncTask<Void, Void, Void>() {
@@ -81,12 +83,13 @@ public class ChatActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(final Void v) {
-          chatAdapter.add(chatMessage);
-          chatAdapter.notifyDataSetChanged();
+          if (chatAdapter!=null){
+            chatAdapter.add(chatMessage);
+            chatAdapter.notifyDataSetChanged();
+          }
+
         }
       }.execute();
-
-
     }
   };
 
@@ -111,12 +114,17 @@ public class ChatActivity extends AppCompatActivity {
     Picasso.with(this).load(chatInfo.image).placeholder(R.drawable.placeholder).error(R.drawable.placeholder).fit().centerCrop().noFade().into(image);
 
     socket = Application.SOCEKT;
-    socket.on("newMessages", handleIncomingMessage);
+    socket.on("message", handleIncomingMessage);
 
     gson = new Gson();
 
     msgListView.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
     msgListView.setStackFromBottom(true);
+  }
+
+  @Override
+  public void onResume(){
+    super.onResume();
 
     Retrofit retrofit = new Retrofit.Builder().baseUrl(HttpsConstants.ADDRES).client(HttpsConstants.getUnsafeOkHttpClient()).addConverterFactory(GsonConverterFactory.create())
                                               .build();
@@ -138,13 +146,14 @@ public class ChatActivity extends AppCompatActivity {
 
       }
     });
+
   }
 
   @OnClick(R.id.sendMessageButton)
   public void sendMessage(View v) {
     String message = msgEditText.getEditableText().toString().trim();
     if (!message.equalsIgnoreCase("")) {
-      ChatMessage chatMessage = new ChatMessage(Application.USERNAME, receiver, message, true);
+      ChatMessage chatMessage = new ChatMessage(chatInfo.id, Application.USERNAME, receiver, message, true);
 
       msgEditText.setText("");
 
