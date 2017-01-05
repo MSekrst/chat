@@ -7,8 +7,8 @@
 html, body {
   height: 100%;
   width: 100%;
-  background-color: #c1e1dc;
-  overflow: hidden;
+  background-color: #6ec1e5;
+
 }
 
 /*----------------------------------------------*/
@@ -41,7 +41,7 @@ html, body {
 }
 
 .navBackground {
-  background-color: #ffccac;
+  background-color: #fc7575;
   /*padding-right: 0px;*/
 }
 
@@ -52,7 +52,7 @@ html, body {
 }
 
 .navbar-default{
-  background-color: #ffccac;
+  background-color: #fc7575;
   border: none;
 }
 
@@ -61,11 +61,11 @@ html, body {
 }
 
 .navIcon {
-  color: #cb8689;
+  color: white;
 }
 
 .navCollapsedButton {
-  background-color: #cb8689 !important;
+  background-color: white !important;
 }
 
 .navCollapsedButtonItem {
@@ -94,26 +94,43 @@ html, body {
 /*list*/
 
 #list {
+  overflow-x: hidden;
+  position: relative;
+  height: calc(100% - 51px);
+}
+
+#newTalk{
+  height: 50px;
+  width: 100%;
+  background-color: #c6c8ca;
+  color: white;
+  font-size: 18px;
+  line-height: 50px;
+}
+
+#talkList{
   position: absolute;
   top: 51px;
   left: 0;
   display: inline-block;
   width: 25%;
-  height: calc(100% - 50px);
+  height: calc(100% - 51px);
   background-color: whitesmoke;
-  overflow: scroll;
   float: left;
 }
 
 .item {
   width: 100%;
   height: 70px;
-  background-color: #fcf4c9;
+  background-color: whitesmoke;
   border-bottom: solid whitesmoke;
+  cursor:pointer;
+  font-size: 15px;
+  text-align: left;
 }
 
 .item:hover{
-  background-color: #ffeb94;
+  background-color: #dddddd;
 }
 
 .profileImage{
@@ -131,6 +148,13 @@ html, body {
 .nameItem{
   display: inline-block;
   margin-top: 25px;
+  margin-left: 15px;
+}
+
+.seperator{
+  border: 0;
+  height: 1px;
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
 }
 
 /*----------------------------------------------*/
@@ -145,7 +169,14 @@ html, body {
 
 .appName {
   font-family: 'Pacifico', sans-serif;
-  color: #ffccac;
+  color: #fc7575;
+}
+
+.header{
+  font-family: 'Pacifico', sans-serif;
+  color: white;
+  font-size: 30px;
+  line-height: 50px;
 }
 
 .loginSubtitle {
@@ -194,7 +225,7 @@ html, body {
 }
 
 .formButton {
-  background-color: #77dd77;
+  background-color: #52da52;
   float: right;
   border: none;
   color: white;
@@ -204,6 +235,7 @@ html, body {
   text-decoration: none;
   display: inline-block;
   font-size: 15px;
+  outline: none;
 }
 
 .formButton:hover{
@@ -286,7 +318,7 @@ html, body {
 }
 
 #talkInput{
-  background-color: #fcbe98;
+  background-color: #fc7575;
   position: absolute;
   left: 0;
   bottom: 0;
@@ -295,19 +327,35 @@ html, body {
 }
 
 .talkInput{
-  height: 30px;
-  margin-top: 10px;
-  width: 86%;
-  border-radius: 3px;
-  outline-color: #ffe87c;
-  outline-width: thick;
-  padding: 0.5%;
+  height: 35px;
+  width: calc(90% - 85px);
+  margin-top: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  padding: 12px 20px;
+  outline:none;
 }
 
 #smileyButton{
   position: absolute;
-  left: 8px;
+  left: 25px;
   top: 6px;
+  cursor:pointer
+}
+
+#sendButton{
+  position: absolute;
+  right: 8px;
+  top: 6px;
+  cursor:pointer
+}
+
+#fileButton{
+  position: absolute;
+  right: 50px;
+  top: 11px;
+  cursor:pointer
 }
 
 /*----------------------------------------------*/
@@ -315,7 +363,7 @@ html, body {
 
 .message {
   padding: 15px 10px 15px 10px;
-  width: 47%;
+  max-width: 47%;
   border-radius: 15px;
   border: 1px solid #f5f5f5;
 }
@@ -330,13 +378,17 @@ html, body {
 
 .reciver {
   float: left;
+  text-align: left;
   margin: 0 52% 0 1%;
-  background-color: #c1e1dc ;
+  background-color: #6ec1e5 ;
+  color: white;
 }
 
 .sender {
-  float: left;
+  float: right;
+  text-align: right;
   margin-left: 52%;
+  margin-right: 5px;
   background-color: #f1f1f1;
 }
 
@@ -358,4 +410,59 @@ html, body {
 .emojione {
   width: 25px;
   height: 25px;
+}
+
+/*trokuti*/
+
+.arrow-right {
+  width: 0;
+  height: 0;
+  border-top: 60px solid transparent;
+  border-bottom: 60px solid transparent;
+
+  border-left: 60px solid #f1f1f1;
+}
+
+.arrow-left {
+  width: 0;
+  height: 0;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+
+  border-right:10px solid #6ec1e5;
+}
+
+/*scroll style*/
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-button {
+  width: 0px;
+  height: 0px;
+}
+::-webkit-scrollbar-thumb {
+  background: #5f5f5f;;
+  border: 26px none #ffffff;
+  border-radius: 50px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #ffffff;
+}
+::-webkit-scrollbar-thumb:active {
+  background: #5f5f5f;;
+}
+::-webkit-scrollbar-track {
+  background: #d0d0d0;
+  border: 18px none #ffffff;
+  border-radius: 98px;
+}
+::-webkit-scrollbar-track:hover {
+  background: #d0d0d0;
+}
+::-webkit-scrollbar-track:active {
+  background: #d0d0d0;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
 }

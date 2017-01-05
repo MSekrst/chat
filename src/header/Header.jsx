@@ -31,7 +31,7 @@ export default class Header extends React.Component {
             <span className="icon-bar navCollapsedButtonItem" />
             <span className="icon-bar navCollapsedButtonItem" />
           </button>
-          <img className="navLogo" alt="Chit Chat" src="./images/smiley.png" height="50px" width="50px"/>
+          <span className="header">Chit Chat</span>
         </div>
         <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul className="nav navbar-nav navbar-right">

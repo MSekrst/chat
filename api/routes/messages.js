@@ -1,9 +1,14 @@
 import express from 'express';
+import fs from 'fs';
+import multipart from 'connect-multiparty';
+import {Binary} from 'mongodb';
 
 import {getDb} from '../mongo';
 import {ObjectID} from '../mongo';
 import {getConnected} from '../www';
 import {authMiddleware} from '../auth/middleware';
+
+const multipartMiddleware = multipart();
 
 const messageRouter = express.Router();
 
@@ -85,6 +90,68 @@ messageRouter.post('/:id', authMiddleware.checkToken, (req, res) => {
 
 });
 
+messageRouter.post('/uploadFile/:id', authMiddleware.checkToken, multipartMiddleware, (req, res) => {
+  const db = getDb();
+  const connected = getConnected();
+
+  req.body.message['sender'] = req.user.username;
+  const _id = ObjectID(req.params.id);
+  var message = req.body.message;
+  var fileName = req.files.file.originalFilename;
+  var filePath = req.files.file.path;
+  message.type = "file";
+  message.fileName = fileName;
+
+  var bin = fs.readFile(filePath, (err, data) => {
+
+    db.collection('files').insertOne({
+      fileName: fileName,
+      file: Binary(data),
+    }, (err, inserted) => {
+      if (err) {
+        return res.status(500).json(err);
+      }
+      message.fileId = inserted.insertedId;
+
+      db.collection('messages').updateOne({_id}, {
+        $push: {messages: message}
+      }, err => {
+        if (err) {
+          return res.status(500).json({message: err});
+        }
+      });
+    });
+    console.log('', req.body.message);
+  });
+    // for (let i = 0; i < data.users.length; i++) {
+    //   for (let i = 0; i < connected.length; i++) {
+    //     if (connected[i].user == data.users[i].username && data.users[i].username != req.user.username) {
+    //       console.log('saljem', req.body.message);
+    //       connected[i].socket.emit('message', req.body.message);
+    //       break;
+    //     }
+    //   }
+    // }
+  fs.unlink(filePath,() => {});
+  return res.status(204).json();
+
+});
+
+messageRouter.get('/getFile/:id', authMiddleware.checkToken, (req, res) => {
+  const db = getDb();
+  const _id = ObjectID(req.params.id);
+
+  db.collection('files').findOne({_id}, function(err, data) {
+    if (err) {
+      console.error(err);
+    }
+    res.setHeader('Content-Type', 'application/octet-stream');
+    res.setHeader('Content-Disposition', 'attachment; filename=' + data.fileName);
+
+    return res.send(data.file.buffer);
+  });
+});
+
 messageRouter.get('/private', authMiddleware.checkToken,
   (req, res) => {
     const connected = getConnected();
@@ -104,21 +171,5 @@ messageRouter.get('/private', authMiddleware.checkToken,
     }
   });
 
-function sendMessage(users, req) {
-  return new Promise((success)=> {
-    const connected = getConnected();
-    for (let i = 0; i < users.length; i++) {
-      for (let i = 0; i < connected.length; i++) {
-        if (connected[i].user == users[i].username && users[i].username != req.user.username) {
-          console.log('saljem');
-          connected[i].socket.emit('message', req.body.message);
-          break;
-        }
-      }
-      if (i == users.length - 1)
-        return success();
-    }
-  });
-}
 
 export default messageRouter;

@@ -58,6 +58,7 @@ export default class ConversationContainer extends Component{
   }
 
   emojiShow(){
+    console.log("event");
     this.setState({
       emojiShow: !this.state.emojiShow,
     });
@@ -70,11 +71,15 @@ export default class ConversationContainer extends Component{
         <form id="talkInput" className="inputForm" onSubmit={(e) => {
           e.preventDefault()
         }}>
-          <img src="./images/smiley.png" width="35px" height="35px" id="smileyButton"
-               onClick={this.emojiShow}/>
+          <img src="./images/smileyButton.png" width="35px" height="35px" id="smileyButton"
+              onBlur={this.emojiShow} onClick={this.emojiShow}/>
           <input className="talkInput" type="text" value={this.state.text}
                  onChange={this.handleText}/>
           <input type="submit" hidden="true" onClick={this.sendMessage}/>
+          <img src="./images/file.png" width="25px" height="25px" id="fileButton"
+               />
+          <img src="./images/send.png" width="35px" height="35px" id="sendButton"
+               onClick={this.sendMessage}/>
         </form>
       </div>
     );
