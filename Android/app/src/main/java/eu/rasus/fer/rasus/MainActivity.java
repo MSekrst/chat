@@ -58,8 +58,6 @@ public class MainActivity extends AppCompatActivity {
     getSupportActionBar().setTitle(null);
 
     Application.SOCEKT = HttpsConstants.getSocket();
-    Application.SOCEKT.connect();
-    Application.SOCEKT.emit("user", Application.USERNAME);
   }
 
   @Override
@@ -70,6 +68,12 @@ public class MainActivity extends AppCompatActivity {
   @Override
   public void onResume() {
     super.onResume();
+
+    if (!Application.SOCEKT.connected()){
+      Application.SOCEKT.connect();
+      Application.SOCEKT.emit("userAndroid", Application.USERNAME);
+    }
+
     FragmentTransaction ft = getFragmentManager().beginTransaction();
     ft.replace(R.id.container, new AllChatsPreviewFragment()).commit();
   }

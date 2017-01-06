@@ -63,7 +63,7 @@ messageRouter.post('/init', authMiddleware.checkToken, (req, res) => {
         console.log(err);
         return res.status(500).json(err);
       }
-
+        
       return res.status(200).json(data.value);
     });
   });
@@ -110,12 +110,12 @@ messageRouter.post('/:id', authMiddleware.checkToken, (req, res) => {
             console.log('saljem');
             connected[j].socket.emit('message', req.body.message);
           }
-          if (i == users.length - 1 && j == connected.length - 1) res.status(200).json();
+          if (i == users.length - 1 && j == connected.length - 1)   res.status(200).json();
         }
       }
     });
 
-  res.status(204).end();
+
 });
 
 messageRouter.post('/uploadFile/:id', authMiddleware.checkToken, multipartMiddleware, (req, res) => {

@@ -56,10 +56,10 @@ export default class ChatContainer extends React.Component {
   sendMessage(text) {
     const now = new Date();
     const message = {
-      date: now.getFullYear() + '.' + zeroPad(now.getMonth() + 1) + '.' + zeroPad(now.getDate()),
+      date: zeroPad(now.getDate()) + '.' + zeroPad(now.getMonth() + 1) + '.' + now.getFullYear(),
       time: zeroPad(now.getHours()) + ':' + zeroPad(now.getMinutes()) + ':' + zeroPad(now.getSeconds()),
       text,
-      _id: this.state.active._id,
+      chatId: this.state.active._id,
     };
 
     fetch('/api/messages/' + this.state.active._id, {

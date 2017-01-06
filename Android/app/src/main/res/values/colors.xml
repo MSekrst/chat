@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <!--<color name="colorPrimary">#3F51B5</color>-->
-  <color name="colorPrimary">#86cbc4</color>
-  <color name="colorPrimaryDark">#8dc1bc</color>
-  <color name="colorAccent">#cb8689</color>
+  <color name="colorPrimary">#fc7575</color>
+  <color name="colorPrimaryDark">#e26969</color>
+  <color name="colorAccent">#6ec1e5</color>
   <color name="greenBtn">#77dd77</color>
-  <color name="chitChatLogin">#ffccac</color>
   <color name="white">#ffffff</color>
   <color name="whitesmoke">#f5f5f5</color>
   <color name="link">#cb8689</color>
   <color name="gray">#d3d3d3</color>
+  <color name="backgroundColor">#fffafa</color>
+  <color name="darkGray">#333</color>
 </resources>

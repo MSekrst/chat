@@ -149,7 +149,7 @@ public class ChatActivity extends AppCompatActivity {
   public void sendMessage(View v) {
     String message = msgEditText.getEditableText().toString().trim();
     if (!message.equalsIgnoreCase("")) {
-      ChatMessage chatMessage = new ChatMessage(chatInfo.id, Application.USERNAME, receiver, message, true);
+      ChatMessage chatMessage = new ChatMessage(chatInfo.id, Application.USERNAME, message, true);
 
       msgEditText.setText("");
 

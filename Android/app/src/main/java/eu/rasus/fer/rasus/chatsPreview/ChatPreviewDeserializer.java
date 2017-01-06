@@ -41,7 +41,7 @@ public class ChatPreviewDeserializer implements JsonDeserializer<ChatPreview> {
       chatPreview.lastMessageText = lastMessage.text;
 
       try {
-        SimpleDateFormat date_formatter = new SimpleDateFormat("dd.MM.yyyy. HH:mm:ss");
+        SimpleDateFormat date_formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
         chatPreview.lastMessageTime = date_formatter.parse(lastMessage.date + " " + lastMessage.time);
       } catch (ParseException e) {
         e.printStackTrace();
