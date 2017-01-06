@@ -1,4 +1,4 @@
-package eu.rasus.fer.chat;
+package eu.rasus.fer.rasus;
 
 import org.junit.Test;
 

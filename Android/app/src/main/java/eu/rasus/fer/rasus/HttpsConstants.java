@@ -1,4 +1,4 @@
-package eu.rasus.fer.chat;
+package eu.rasus.fer.rasus;
 
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;

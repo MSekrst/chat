@@ -1,4 +1,4 @@
-package eu.rasus.fer.chat.ChatsPreview;
+package eu.rasus.fer.rasus.chatsPreview;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -19,17 +19,18 @@ import com.google.gson.GsonBuilder;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnItemClick;
-import eu.rasus.fer.chat.Application;
-import eu.rasus.fer.chat.Chat.ChatActivity;
-import eu.rasus.fer.chat.Chat.ChatMessage;
-import eu.rasus.fer.chat.HttpsConstants;
-import eu.rasus.fer.chat.R;
-import eu.rasus.fer.chat.RestApi;
+import eu.rasus.fer.rasus.Application;
+import eu.rasus.fer.rasus.HttpsConstants;
+import eu.rasus.fer.rasus.R;
+import eu.rasus.fer.rasus.RestApi;
+import eu.rasus.fer.rasus.chat.ChatActivity;
+import eu.rasus.fer.rasus.chat.ChatMessage;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -46,66 +47,79 @@ public class AllChatsPreviewFragment extends Fragment {
 
   private ChatPreviewAdapter chatPreviewAdapter;
 
-  private Call<List<ChatPreviewItem>> call;
+  private Gson gson;
+
+  private Retrofit retrofit;
+
+  private RestApi api;
+
+  private Call<List<ChatPreview>> call;
 
   private Emitter.Listener handleIncomingMessage = new Emitter.Listener() {
 
     @Override
     public void call(final Object... args) {
-      final ChatMessage chatMessage;
 
-      Gson gson = new Gson();
-      chatMessage = gson.fromJson(args[0].toString(), ChatMessage.class);
-      chatMessage.isMine = false;
-
-      new AsyncTask<Void, Void, Void>() {
+      call.clone().enqueue(new Callback<List<ChatPreview>>() {
 
         @Override
-        protected Void doInBackground(final Void... voids) {
-          return null;
-        }
+        public void onResponse(final Call<List<ChatPreview>> call, final Response<List<ChatPreview>> response) {
+          List<ChatPreview> chats = new ArrayList<ChatPreview>();
 
-        @Override
-        protected void onPostExecute(final Void v) {
-          ChatPreviewItem chatPreviewItem= chatPreviewAdapter.find(chatMessage.chatId);
-          chatPreviewItem.lastMessageText=chatMessage.text;
-          try {
-            SimpleDateFormat date_formatter = new SimpleDateFormat("dd.MM.yyyy. HH:mm:ss");
-            chatPreviewItem.lastMessageTime = date_formatter.parse(chatMessage.date + " " + chatMessage.time);
-          } catch (ParseException e) {
-            e.printStackTrace();
+          for (ChatPreview chat : response.body()) {
+            if (chat.lastMessageText != null) {
+              chats.add(chat);
+            }
           }
-          chatPreviewAdapter.notifyDataSetChanged();
+
+          chatPreviewAdapter = new ChatPreviewAdapter(getActivity(), chats);
+
+          itemContainer.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
+          if (response.body().size() == 0) {
+            noChats.setVisibility(View.VISIBLE);
+          }
+          itemContainer.setAdapter(chatPreviewAdapter);
         }
-      }.execute();
 
+        @Override
+        public void onFailure(final Call<List<ChatPreview>> call, final Throwable t) {
 
+        }
+      });
     }
   };
 
   public Socket socket;
 
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    View view = inflater.inflate(R.layout.chats_preview, container, false);
+    View view = inflater.inflate(R.layout.fragment_chats_preview, container, false);
 
     ButterKnife.bind(this, view);
 
-    Gson gson =
+    gson =
       new GsonBuilder()
-        .registerTypeAdapter(ChatPreviewItem.class, new ChatPreviewItemDeserializer())
+        .registerTypeAdapter(ChatPreview.class, new ChatPreviewDeserializer())
         .create();
 
-    Retrofit retrofit = new Retrofit.Builder().baseUrl(HttpsConstants.ADDRES).client(HttpsConstants.getUnsafeOkHttpClient()).addConverterFactory(GsonConverterFactory.create(gson))
+    retrofit = new Retrofit.Builder().baseUrl(HttpsConstants.ADDRES).client(HttpsConstants.getUnsafeOkHttpClient()).addConverterFactory(GsonConverterFactory.create(gson))
                                               .build();
-    RestApi api = retrofit.create(RestApi.class);
+    api = retrofit.create(RestApi.class);
 
     call = api.getAllMessages(Application.TOKEN);
 
-    call.enqueue(new Callback<List<ChatPreviewItem>>() {
+    call.enqueue(new Callback<List<ChatPreview>>() {
 
       @Override
-      public void onResponse(final Call<List<ChatPreviewItem>> call, final Response<List<ChatPreviewItem>> response) {
-        chatPreviewAdapter = new ChatPreviewAdapter(getActivity(), response.body());
+      public void onResponse(final Call<List<ChatPreview>> call, final Response<List<ChatPreview>> response) {
+        List<ChatPreview> chats = new ArrayList<ChatPreview>();
+
+        for (ChatPreview chat : response.body()) {
+          if (chat.lastMessageText != null) {
+            chats.add(chat);
+          }
+        }
+
+        chatPreviewAdapter = new ChatPreviewAdapter(getActivity(), chats);
 
         itemContainer.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         if (response.body().size() == 0) {
@@ -115,7 +129,7 @@ public class AllChatsPreviewFragment extends Fragment {
       }
 
       @Override
-      public void onFailure(final Call<List<ChatPreviewItem>> call, final Throwable t) {
+      public void onFailure(final Call<List<ChatPreview>> call, final Throwable t) {
 
       }
     });
@@ -123,14 +137,13 @@ public class AllChatsPreviewFragment extends Fragment {
     socket = Application.SOCEKT;
     socket.on("message", handleIncomingMessage);
 
-
     return view;
   }
 
   @OnItemClick(R.id.chat_item_container)
   public void openChat(final AdapterView<?> adapter, final View view, final int position, final long id) {
     Intent intent = new Intent(getActivity(), ChatActivity.class);
-    intent.putExtra("CHAT_PREVIEW_ITEM", ((ChatPreviewItem) adapter.getItemAtPosition(position)));
+    intent.putExtra("CHAT_PREVIEW_ITEM", ((ChatPreview) adapter.getItemAtPosition(position)));
     startActivity(intent);
     FragmentTransaction ft = getFragmentManager().beginTransaction();
     ft.remove(this).commit();

@@ -1,4 +1,4 @@
-package eu.rasus.fer.chat.login;
+package eu.rasus.fer.rasus.login;
 
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -14,9 +14,9 @@ import com.google.gson.JsonElement;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import eu.rasus.fer.chat.HttpsConstants;
-import eu.rasus.fer.chat.R;
-import eu.rasus.fer.chat.RestApi;
+import eu.rasus.fer.rasus.HttpsConstants;
+import eu.rasus.fer.rasus.R;
+import eu.rasus.fer.rasus.RestApi;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -76,8 +76,9 @@ public class RegisterView extends AppCompatActivity {
 
       @Override
       public void onResponse(final Call<JsonElement> call, final Response<JsonElement> response) {
-        if (response.errorBody()!=null)  usernameView.setError("Username already taken!!");
-          else {
+        if (response.errorBody() != null) {
+          usernameView.setError("Username already taken!!");
+        } else {
           Intent intent = new Intent(getApplication(), LoginView.class);
           startActivity(intent);
         }

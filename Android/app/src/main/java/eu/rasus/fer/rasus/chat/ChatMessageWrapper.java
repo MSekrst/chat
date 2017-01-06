@@ -1,5 +1,6 @@
-package eu.rasus.fer.chat.Chat;
+package eu.rasus.fer.rasus.chat;
 
 public class ChatMessageWrapper {
+
   ChatMessage message;
 }

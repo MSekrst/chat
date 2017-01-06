@@ -1,11 +1,11 @@
-package eu.rasus.fer.chat;
+package eu.rasus.fer.rasus;
 
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
@@ -13,7 +13,9 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import eu.rasus.fer.chat.ChatsPreview.AllChatsPreviewFragment;
+import butterknife.OnClick;
+import eu.rasus.fer.rasus.contactList.ContactListActivity;
+import eu.rasus.fer.rasus.chatsPreview.AllChatsPreviewFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -66,10 +68,15 @@ public class MainActivity extends AppCompatActivity {
   }
 
   @Override
-  public void onResume(){
+  public void onResume() {
     super.onResume();
     FragmentTransaction ft = getFragmentManager().beginTransaction();
-    ft.replace(R.id.container,new AllChatsPreviewFragment()).commit();
+    ft.replace(R.id.container, new AllChatsPreviewFragment()).commit();
   }
 
+  @OnClick(R.id.new_chat)
+  public void showAllUsers() {
+    Intent intent = new Intent(this, ContactListActivity.class);
+    startActivity(intent);
+  }
 }

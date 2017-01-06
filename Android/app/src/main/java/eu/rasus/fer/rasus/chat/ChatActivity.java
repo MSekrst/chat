@@ -1,4 +1,4 @@
-package eu.rasus.fer.chat.Chat;
+package eu.rasus.fer.rasus.chat;
 
 import android.app.Activity;
 import android.os.AsyncTask;
@@ -15,22 +15,18 @@ import android.widget.TextView;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.squareup.picasso.Picasso;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import eu.rasus.fer.chat.Application;
-import eu.rasus.fer.chat.ChatsPreview.ChatPreviewItem;
-import eu.rasus.fer.chat.HttpsConstants;
-import eu.rasus.fer.chat.R;
-import eu.rasus.fer.chat.RestApi;
+import eu.rasus.fer.rasus.Application;
+import eu.rasus.fer.rasus.HttpsConstants;
+import eu.rasus.fer.rasus.R;
+import eu.rasus.fer.rasus.RestApi;
+import eu.rasus.fer.rasus.chatsPreview.ChatPreview;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -60,7 +56,7 @@ public class ChatActivity extends AppCompatActivity {
   public ChatAdapter chatAdapter;
   private Gson gson;
   private String receiver;
-  private ChatPreviewItem chatInfo;
+  private ChatPreview chatInfo;
   private RestApi api;
 
   private Emitter.Listener handleIncomingMessage = new Emitter.Listener() {
@@ -70,7 +66,9 @@ public class ChatActivity extends AppCompatActivity {
       final ChatMessage chatMessage;
 
       chatMessage = gson.fromJson(args[0].toString(), ChatMessage.class);
-      if (!chatMessage.chatId.equals(chatInfo.id)) return;
+      if (!chatMessage.chatId.equals(chatInfo.id)) {
+        return;
+      }
 
       chatMessage.isMine = false;
 
@@ -83,11 +81,10 @@ public class ChatActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(final Void v) {
-          if (chatAdapter!=null){
+          if (chatAdapter != null) {
             chatAdapter.add(chatMessage);
             chatAdapter.notifyDataSetChanged();
           }
-
         }
       }.execute();
     }
@@ -97,7 +94,7 @@ public class ChatActivity extends AppCompatActivity {
 
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.chat_layout);
+    setContentView(R.layout.activity_chat);
     ButterKnife.bind(this);
 
     setSupportActionBar(toolbar);
@@ -123,7 +120,7 @@ public class ChatActivity extends AppCompatActivity {
   }
 
   @Override
-  public void onResume(){
+  public void onResume() {
     super.onResume();
 
     Retrofit retrofit = new Retrofit.Builder().baseUrl(HttpsConstants.ADDRES).client(HttpsConstants.getUnsafeOkHttpClient()).addConverterFactory(GsonConverterFactory.create())
@@ -146,7 +143,6 @@ public class ChatActivity extends AppCompatActivity {
 
       }
     });
-
   }
 
   @OnClick(R.id.sendMessageButton)
@@ -175,7 +171,6 @@ public class ChatActivity extends AppCompatActivity {
 
         }
       });
-
     }
   }
 

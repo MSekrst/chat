@@ -1,4 +1,4 @@
-package eu.rasus.fer.chat.ChatsPreview;
+package eu.rasus.fer.rasus.chatsPreview;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -17,14 +17,14 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import eu.rasus.fer.chat.R;
+import eu.rasus.fer.rasus.R;
 
 public class ChatPreviewAdapter extends BaseAdapter {
 
   private Context context;
-  private List<ChatPreviewItem> chatList;
+  private List<ChatPreview> chatList;
 
-  public ChatPreviewAdapter(final Context context, final List<ChatPreviewItem> chatList) {
+  public ChatPreviewAdapter(final Context context, final List<ChatPreview> chatList) {
     this.context = context;
     this.chatList = chatList;
     Collections.sort(chatList);
@@ -32,7 +32,7 @@ public class ChatPreviewAdapter extends BaseAdapter {
 
   @Override
   public View getView(final int position, View view, final ViewGroup parent) {
-    ChatPreviewItem chat = chatList.get(position);
+    ChatPreview chat = chatList.get(position);
     ViewHolder viewHolder;
 
     if (view == null) {
@@ -57,9 +57,11 @@ public class ChatPreviewAdapter extends BaseAdapter {
     return chatList.get(position);
   }
 
-  public ChatPreviewItem find(final String id) {
-    for (ChatPreviewItem chat: chatList) {
-      if (id.equals(chat.id)) return chat;
+  public ChatPreview find(final String id) {
+    for (ChatPreview chat : chatList) {
+      if (id.equals(chat.id)) {
+        return chat;
+      }
     }
     return null;
   }
@@ -69,12 +71,12 @@ public class ChatPreviewAdapter extends BaseAdapter {
     return position;
   }
 
-  public void add(ChatPreviewItem object) {
+  public void add(ChatPreview object) {
     chatList.add(object);
   }
 
   @Override
-  public void notifyDataSetChanged(){
+  public void notifyDataSetChanged() {
     Collections.sort(chatList);
     super.notifyDataSetChanged();
   }
@@ -97,7 +99,7 @@ public class ChatPreviewAdapter extends BaseAdapter {
       this.context = context;
     }
 
-    public void fillView(ChatPreviewItem chat) {
+    public void fillView(ChatPreview chat) {
       title.setText(chat.receiver);
       lastMessage.setText(chat.lastMessageText);
 

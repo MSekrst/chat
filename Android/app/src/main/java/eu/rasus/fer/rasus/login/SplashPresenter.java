@@ -1,4 +1,4 @@
-package eu.rasus.fer.chat.login;
+package eu.rasus.fer.rasus.login;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 
 public class SplashPresenter {
+
   SplashView mSplashView;
 
   public SplashPresenter(SplashView splashView) {
@@ -19,7 +20,7 @@ public class SplashPresenter {
 
     Intent intent;
 //    if (username.isEmpty() || token.isEmpty()) {
-     intent = new Intent(mSplashView, LoginView.class);
+    intent = new Intent(mSplashView, LoginView.class);
 
 //    }
 //    else {
@@ -32,9 +33,10 @@ public class SplashPresenter {
     mSplashView.finish();
   }
 
-  public void mockWait(){
+  public void mockWait() {
     Handler handler = new Handler();
     handler.postDelayed(new Runnable() {
+
       @Override
       public void run() {
         startApp();

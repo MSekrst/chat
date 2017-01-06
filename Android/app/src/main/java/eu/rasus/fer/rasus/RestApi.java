@@ -1,13 +1,15 @@
-package eu.rasus.fer.chat;
+package eu.rasus.fer.rasus;
 
 import com.google.gson.JsonElement;
 
 import java.util.List;
 
-import eu.rasus.fer.chat.Chat.ChatMessage;
-import eu.rasus.fer.chat.Chat.ChatMessageWrapper;
-import eu.rasus.fer.chat.ChatsPreview.ChatPreviewItem;
-import eu.rasus.fer.chat.login.User;
+import eu.rasus.fer.rasus.contactList.ChatUser;
+import eu.rasus.fer.rasus.contactList.ChatUserWrapper;
+import eu.rasus.fer.rasus.chat.ChatMessage;
+import eu.rasus.fer.rasus.chat.ChatMessageWrapper;
+import eu.rasus.fer.rasus.chatsPreview.ChatPreview;
+import eu.rasus.fer.rasus.login.User;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
@@ -19,8 +21,9 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public interface RestApi {
+
   @GET("api/messages")
-  Call<List<ChatPreviewItem>> getAllMessages(@Header("Authorization") String token);
+  Call<List<ChatPreview>> getAllMessages(@Header("Authorization") String token);
 
   @GET("api/messages/{chatId}")
   Call<List<ChatMessage>> getConversationHistory(@Header("Authorization") String token, @Path("chatId") String conversationId);
@@ -40,4 +43,11 @@ public interface RestApi {
   @Headers("Content-Type: application/json")
   @POST("api/messages/{chatId}")
   Call<Void> sendMesssage(@Header("Authorization") String token, @Path("chatId") String conversationId, @Body ChatMessageWrapper message);
+
+  @GET("api/messages/users")
+  Call<List<ChatUser>> getAllUsers(@Header("Authorization") String token);
+
+  @Headers("Content-Type: application/json")
+  @POST("api/messages/init")
+  Call<ChatPreview> init(@Header("Authorization") String token, @Body ChatUserWrapper users);
 }

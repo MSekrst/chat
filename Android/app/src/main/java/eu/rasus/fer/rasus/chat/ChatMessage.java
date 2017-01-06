@@ -1,9 +1,9 @@
-package eu.rasus.fer.chat.Chat;
+package eu.rasus.fer.rasus.chat;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ChatMessage{
+public class ChatMessage {
 
   public String chatId;
   public String text;

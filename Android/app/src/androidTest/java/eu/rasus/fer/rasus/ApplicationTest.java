@@ -1,4 +1,4 @@
-package eu.rasus.fer.chat;
+package eu.rasus.fer.rasus;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

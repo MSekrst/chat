@@ -1,4 +1,4 @@
-package eu.rasus.fer.chat;
+package eu.rasus.fer.rasus;
 
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;

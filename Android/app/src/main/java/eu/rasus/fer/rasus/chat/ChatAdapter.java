@@ -1,4 +1,4 @@
-package eu.rasus.fer.chat.Chat;
+package eu.rasus.fer.rasus.chat;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -10,14 +10,12 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import eu.rasus.fer.chat.Application;
-import eu.rasus.fer.chat.HttpsConstants;
-import eu.rasus.fer.chat.R;
+import eu.rasus.fer.rasus.Application;
+import eu.rasus.fer.rasus.R;
 
 public class ChatAdapter extends BaseAdapter {
 
@@ -28,8 +26,9 @@ public class ChatAdapter extends BaseAdapter {
     chatMessageList = list;
     this.context = context;
 
-    for (ChatMessage m: chatMessageList)
+    for (ChatMessage m : chatMessageList) {
       m.isMine = m.sender.equals(Application.USERNAME) ? true : false;
+    }
   }
 
   @Override

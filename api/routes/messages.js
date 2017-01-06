@@ -25,26 +25,57 @@ messageRouter.get('/', authMiddleware.checkToken,
     });
   });
 
+messageRouter.get('/users', authMiddleware.checkToken,
+  (req, res) => {
+    const db = getDb();
+    const user = req.user.username;
+    db.collection('users').find().toArray((err, data) => {
+      if (err) {
+        return res.status(500).json({message: err});
+      }
+
+      for (let i = 0; i < data.length; i++)
+        if (data[i].username == user) {
+          data.splice(i, 1);
+          break;
+        }
+      return res.status(200).json(data);
+    });
+  });
+
+
+// ova ruta radi za android, ako ju je potrebno mijenjati napraviti novu rutu :D
+// VAŽNO: useri u bazi moraju biti sortirani po usernameu i oblika _id, image, username da bi radilo!!!!
 messageRouter.post('/init', authMiddleware.checkToken, (req, res) => {
   const db = getDb();
 
   let users = req.body.users;
-  users.push(req.user);
 
-  db.collection('messages').insertOne({
-    title: req.body.title,
-    users,
-    messages: []
-  }, (err, inserted) => {
-    if (err) {
-      return res.status(500).json(err);
-    }
+  db.collection("users").findOne({"_id": ObjectID(req.user._id)}, (err, data) => {
 
-    return res.status(200).json(inserted.insertedId);
+    let user = {_id : data._id.toString(),
+      image : data.image,
+      username : data.username
+  };
+
+    users.push(user);
+
+    users = users.sort((user1, user2) =>  user1.username.localeCompare(user2.username));
+
+    console.log(users);
+
+    db.collection('messages').findOneAndUpdate({users: users}, { $setOnInsert: { title:"", messages:[] } },{returnOriginal: false, upsert: true},(err, data) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).json(err);
+      }
+      
+      return res.status(200).json(data.value);
+    });
   });
 });
 
-// get conversation hitory
+// get conversation history
 messageRouter.get('/:id', authMiddleware.checkToken,
   (req, res) => {
     const db = getDb();
@@ -65,6 +96,7 @@ messageRouter.get('/:id', authMiddleware.checkToken,
   }
 );
 
+// ova ruta radi za android, ako ju je potrebno mijenjati napraviti novu rutu :D
 messageRouter.post('/:id', authMiddleware.checkToken, (req, res) => {
   const db = getDb();
 
@@ -77,13 +109,13 @@ messageRouter.post('/:id', authMiddleware.checkToken, (req, res) => {
 
       const users = data.value.users;
 
-      for(let i=0; i<users.length;i++){
-        for(let j=0; j<connected.length;j++){
+      for (let i = 0; i < users.length; i++) {
+        for (let j = 0; j < connected.length; j++) {
           if (connected[j].user == users[i].username && users[i].username != req.user.username) {
             console.log('saljem');
             connected[j].socket.emit('message', req.body.message);
           }
-          if (i==users.length-1 && j==connected.length-1) res.status(200).json();
+          if (i == users.length - 1 && j == connected.length - 1) res.status(200).json();
         }
       }
     });
@@ -123,16 +155,17 @@ messageRouter.post('/uploadFile/:id', authMiddleware.checkToken, multipartMiddle
     });
     console.log('', req.body.message);
   });
-    // for (let i = 0; i < data.users.length; i++) {
-    //   for (let i = 0; i < connected.length; i++) {
-    //     if (connected[i].user == data.users[i].username && data.users[i].username != req.user.username) {
-    //       console.log('saljem', req.body.message);
-    //       connected[i].socket.emit('message', req.body.message);
-    //       break;
-    //     }
-    //   }
-    // }
-  fs.unlink(filePath,() => {});
+  // for (let i = 0; i < data.users.length; i++) {
+  //   for (let i = 0; i < connected.length; i++) {
+  //     if (connected[i].user == data.users[i].username && data.users[i].username != req.user.username) {
+  //       console.log('saljem', req.body.message);
+  //       connected[i].socket.emit('message', req.body.message);
+  //       break;
+  //     }
+  //   }
+  // }
+  fs.unlink(filePath, () => {
+  });
   return res.status(204).json();
 
 });
@@ -141,7 +174,7 @@ messageRouter.get('/getFile/:id', authMiddleware.checkToken, (req, res) => {
   const db = getDb();
   const _id = ObjectID(req.params.id);
 
-  db.collection('files').findOne({_id}, function(err, data) {
+  db.collection('files').findOne({_id}, function (err, data) {
     if (err) {
       console.error(err);
     }

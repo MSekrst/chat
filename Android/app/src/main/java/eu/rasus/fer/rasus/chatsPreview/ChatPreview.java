@@ -1,11 +1,11 @@
-package eu.rasus.fer.chat.ChatsPreview;
+package eu.rasus.fer.rasus.chatsPreview;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.Date;
 
-public class ChatPreviewItem implements Comparable, Parcelable {
+public class ChatPreview implements Comparable, Parcelable {
 
   public String id;
   public String receiver;
@@ -15,11 +15,11 @@ public class ChatPreviewItem implements Comparable, Parcelable {
 
   @Override
   public int compareTo(final Object o) {
-    ChatPreviewItem message = (ChatPreviewItem) o;
+    ChatPreview message = (ChatPreview) o;
     return -lastMessageTime.compareTo(message.lastMessageTime);
   }
 
-  public ChatPreviewItem() {}
+  public ChatPreview() {}
 
   @Override
   public int describeContents() { return 0; }
@@ -33,7 +33,7 @@ public class ChatPreviewItem implements Comparable, Parcelable {
     dest.writeLong(this.lastMessageTime != null ? this.lastMessageTime.getTime() : -1);
   }
 
-  protected ChatPreviewItem(Parcel in) {
+  protected ChatPreview(Parcel in) {
     this.id = in.readString();
     this.receiver = in.readString();
     this.image = in.readString();
@@ -42,12 +42,12 @@ public class ChatPreviewItem implements Comparable, Parcelable {
     this.lastMessageTime = tmpLastMessageTime == -1 ? null : new Date(tmpLastMessageTime);
   }
 
-  public static final Creator<ChatPreviewItem> CREATOR = new Creator<ChatPreviewItem>() {
+  public static final Creator<ChatPreview> CREATOR = new Creator<ChatPreview>() {
 
     @Override
-    public ChatPreviewItem createFromParcel(Parcel source) {return new ChatPreviewItem(source);}
+    public ChatPreview createFromParcel(Parcel source) {return new ChatPreview(source);}
 
     @Override
-    public ChatPreviewItem[] newArray(int size) {return new ChatPreviewItem[size];}
+    public ChatPreview[] newArray(int size) {return new ChatPreview[size];}
   };
 }
