@@ -41,8 +41,9 @@ messageRouter.get('/users', authMiddleware.checkToken, (req, res) => {
   });
 });
 
-// ova ruta radi za android, ako ju je potrebno mijenjati napraviti novu rutu :D
-// VAŽNO: useri u bazi moraju biti sortirani po usernameu i oblika _id, image, username da bi radilo!!!!
+/*
+  IMPORTANT: Users array must be sorted by username!
+ */
 messageRouter.post('/init', authMiddleware.checkToken, (req, res) => {
   const db = getDb();
 
@@ -88,7 +89,6 @@ messageRouter.get('/:id', authMiddleware.checkToken, (req, res) => {
   });
 });
 
-// ova ruta radi za android, ako ju je potrebno mijenjati napraviti novu rutu :D
 messageRouter.post('/:id', authMiddleware.checkToken, (req, res) => {
   const db = getDb();
 
@@ -98,20 +98,18 @@ messageRouter.post('/:id', authMiddleware.checkToken, (req, res) => {
   const _id = ObjectID(req.params.id);
   const connected = getConnected();
 
-  console.log('', req.body.message);
-
   db.collection('messages').findOneAndUpdate({_id},
     {$push: {messages: req.body.message}}, (err, data) => {
       if (err) return res.status(500).json({message: err});
 
       const users = data.value.users;
 
-      console.log('users', users);
-      console.log('live', connected);
+      console.log('SALJE: ', req.user.username);
 
       for (let i = 0; i < users.length; i++) {
         for (let j = 0; j < connected.length; j++) {
-          if (connected[j].user == users[i].username && users[i].username != req.user.username) {
+          console.log(connected[j].user,users[i].username);
+          if (connected[j].user === users[i].username && users[i].username !== req.user.username) {
             console.log('saljem');
             connected[j].socket.emit('message', req.body.message);
           }
@@ -202,6 +200,5 @@ messageRouter.get('/private', authMiddleware.checkToken, (req, res) => {
     }
   }
 });
-
 
 export default messageRouter;

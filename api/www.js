@@ -1,79 +1,50 @@
 /* eslint-disable no-console */
 
-import debug from 'debug';
 import http from 'http';
 import https from 'https';
 import fs from 'fs';
-import {resolve} from 'path';
-
-import app from './app';
 import socketio from 'socket.io';
+import { resolve } from 'path';
+import express from 'express';
+import logger from 'morgan';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import favicon from 'serve-favicon';
+import passport from 'passport';
 
-/**
- * Normalize a port into a number, string, or false.
- */
+dotenv.config({ silent: true });
 
-const userSockets = [];
+import routes from './routes';
+import { connectDatabase } from './mongo';
 
-function normalizePort(val) {
-  const port = parseInt(val, 10);
+const app = express();
 
-  if (isNaN(port)) {
-    // named pipe
-    return val;
-  }
+// connect to database
+connectDatabase();
 
-  if (port >= 0) {
-    // port number
-    return port;
-  }
+// get ports
+const port = process.env.PORT || 3080;
+const sPort = process.env.SPORT || 3000;
 
-  return false;
-}
+// middlewares
+app.use(cors());
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(favicon('public/images/favicon.ico'));
 
-/**
- * Get port from environment and store in Express.
- */
-const port = normalizePort(process.env.PORT || 3001);
-const sPort = normalizePort(process.env.SPORT || 3000);
-// app.set('port', port);
+// passport initialization
+app.use(express.static('public'));
+app.use(passport.initialize());
 
-/**
- * Event listener for HTTP server "error" event.
- */
-function onError(error) {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
+// HTTP Server
+const server = http.createServer((req, res) => {
+  res.writeHead(301, { "Location": "https://localhost:3443" + req.url });
+  res.end();
+});
 
-  const bind = typeof port === 'string'
-    ? `Pipe ${port}`
-    : `Port ${port}`;
-
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case 'EACCES':
-      console.error(`${bind} requires elevated privileges`);
-      process.exit(1);
-      break;
-    case 'EADDRINUSE':
-      console.error(`${bind} is already in use`);
-      process.exit(1);
-      break;
-    default:
-      throw error;
-  }
-}
-
-// // HTTPS Proxy server
-const server = http.createServer(
-  app
-  // function (req, res) {
-  //   res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
-  //   res.end();
-  // }
-);
-
+// HTTPS Server
 const options = {
   key: fs.readFileSync(resolve('./cert/server.key')),
   cert: fs.readFileSync(resolve('./cert/server.crt'))
@@ -81,7 +52,17 @@ const options = {
 
 const sServer = https.createServer(options, app);
 
+// use routes defined in an index file
+app.use('/api', routes);
+// wildcard route middleware -> returns index.html for react-router to work properly
+// must be last middleware -> after all routes
+app.get('/*', (req, res) => {
+  res.sendFile(resolve(__dirname, '../public/index.html'));
+});
+
 // Sockets
+const userSockets = [];
+
 const io = socketio.listen(sServer);
 
 io.on('connection', socket => {
@@ -108,35 +89,20 @@ io.on('connection', socket => {
     userSockets.push(newUserSocket);
   });
 
-  socket.on('disconnect', ()=> {
-      for (let i = 0; i < userSockets.length; i++) {
-        if (userSockets[i].socket == socket) {
-          console.log("Disconnected: " + userSockets[i].user);
-          userSockets.splice(i, 1);
-        }
+  socket.on('disconnect', () => {
+    for (let i = 0; i < userSockets.length; i++) {
+      if (userSockets[i].socket == socket) {
+        console.log("Disconnected: " + userSockets[i].user);
+        userSockets.splice(i, 1);
       }
-    });
+    }
+  });
 });
 
-/**
- * Event listener for HTTP server "listening" event.
- */
-function onListening() {
-  const addr = server.address();
-  const bind = typeof addr === 'string'
-    ? `pipe ${addr}`
-    : `port ${addr.port}`;
-  debug(`Listening on ${bind}`);
-}
-
-/**
- * Listen on provided port, on all network interfaces.
- */
-console.log('Server is running!');
+// STARTUP
+console.log('HTTPS server is running on port', sPort, 'and HTTP is on port', port);
 server.listen(port);
 sServer.listen(sPort);
-server.on('error', onError);
-server.on('listening', onListening);
 
 export const getConnected = function () {
   return userSockets;

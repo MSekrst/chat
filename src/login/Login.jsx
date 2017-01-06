@@ -40,6 +40,12 @@ export default class Login extends React.Component {
             wait: false,
           });
         });
+    } else {
+      this.setState({
+        username: '',
+        password: '',
+        wait: false,
+      });
     }
   }
 

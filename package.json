@@ -20,7 +20,6 @@
     "body-parser": "~1.15.1",
     "connect-multiparty": "^2.0.0",
     "cors": "^2.8.1",
-    "debug": "~2.2.0",
     "dotenv": "^2.0.0",
     "emojione-picker": "^1.1.0",
     "express": "~4.13.4",
