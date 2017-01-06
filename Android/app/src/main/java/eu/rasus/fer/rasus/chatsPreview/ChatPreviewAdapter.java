@@ -106,7 +106,7 @@ public class ChatPreviewAdapter extends BaseAdapter {
       Picasso.with(context).load(chat.image).placeholder(R.drawable.placeholder).error(R.drawable.placeholder).fit().centerCrop().noFade().into(image);
 
       SimpleDateFormat time_formatter = new SimpleDateFormat("HH:mm");
-      SimpleDateFormat date_formatter = new SimpleDateFormat("dd.MM.yyyy.");
+      SimpleDateFormat date_formatter = new SimpleDateFormat("dd.MM.yyyy");
 
       lastMessageTime.setText(date_formatter.format(chat.lastMessageTime).equals(date_formatter.format(new Date())) ? time_formatter.format(chat.lastMessageTime)
                                                                                                                     : date_formatter.format(chat.lastMessageTime));

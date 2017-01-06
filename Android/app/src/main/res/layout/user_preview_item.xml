@@ -18,7 +18,7 @@
     android:layout_marginTop="12dp"
     android:layout_marginLeft="12dp"
     android:id="@+id/user_username"
-    android:textColor="?attr/colorAccent"
+    android:textColor="@color/darkGray"
     android:textSize="20sp"
     android:maxLines="1"
     android:layout_centerVertical="true"

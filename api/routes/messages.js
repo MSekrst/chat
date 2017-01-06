@@ -63,7 +63,7 @@ messageRouter.post('/init', authMiddleware.checkToken, (req, res) => {
         console.log(err);
         return res.status(500).json(err);
       }
-
+        
       return res.status(200).json(data.value);
     });
   });
@@ -100,9 +100,9 @@ messageRouter.post('/:id', authMiddleware.checkToken, (req, res) => {
 
   console.log('', req.body.message);
 
-  db.collection('messages').findOneAndUpdate({ _id },
-    { $push: { messages: req.body.message } }, (err, data) => {
-      if (err) return res.status(500).json({ message: err });
+  db.collection('messages').findOneAndUpdate({_id},
+    {$push: {messages: req.body.message}}, (err, data) => {
+      if (err) return res.status(500).json({message: err});
 
       const users = data.value.users;
 

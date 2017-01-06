@@ -114,6 +114,7 @@ public class ContactListActivity extends AppCompatActivity {
 
       @Override
       public void onFailure(final Call<ChatPreview> call, final Throwable t) {
+        int s = 1+2;
       }
     });
   }

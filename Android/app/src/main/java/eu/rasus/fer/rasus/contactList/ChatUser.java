@@ -2,7 +2,6 @@ package eu.rasus.fer.rasus.contactList;
 
 public class ChatUser implements Comparable {
 
-  public String _id;
   public String username;
   public String image;
 

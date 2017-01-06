@@ -86,11 +86,23 @@ const io = socketio.listen(sServer);
 
 io.on('connection', socket => {
   socket.on('user', user => {
+    console.log('Connected: ' + user.username);
+    const newUserSocket = {
+      'user': user.username,
+      'socket': socket,
+      'id': socket.handshake.address
+    };
+
+    userSockets.push(newUserSocket);
+  });
+
+  socket.on('userAndroid', user => {
     console.log('Connected: ' + user);
     const newUserSocket = {
       'user': user,
       'socket': socket,
-      'id': socket.handshake.address
+      'id': socket.handshake.address,
+      'mobile': true
     };
 
     userSockets.push(newUserSocket);
