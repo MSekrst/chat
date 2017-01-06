@@ -13,7 +13,7 @@ export default class Chat extends React.Component {
 
   render() {
     return <div>
-      <Header/>
+      <Header username={localStorage.ccUsername}/>
       <List messages={this.props.messages} click={this.props.click}/>
       <CurrentConversation sender={this.props.sender} active={this.props.active}/>
     </div>;

@@ -156,6 +156,7 @@ html, body {
   display: inline-block;
   margin-top: 25px;
   margin-left: 15px;
+  font-weight: bold;
 }
 
 .seperator{

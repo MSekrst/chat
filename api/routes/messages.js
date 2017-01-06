@@ -57,7 +57,7 @@ messageRouter.post('/init', authMiddleware.checkToken, (req, res) => {
     users.push(user);
     users = users.sort((user1, user2) =>  user1.username.localeCompare(user2.username));
 
-    db.collection('messages').findOneAndUpdate({ users: users }, { $setOnInsert: { title:"", messages:[] } },
+    db.collection('messages').findOneAndUpdate({ users: users }, { $setOnInsert: { title: req.body.title || '', messages:[] } },
       { returnOriginal: false, upsert: true },(err, data) => {
       if (err) {
         console.log(err);
@@ -98,9 +98,9 @@ messageRouter.post('/:id', authMiddleware.checkToken, (req, res) => {
   const _id = ObjectID(req.params.id);
   const connected = getConnected();
 
-  db.collection('messages').findOneAndUpdate({_id},
-    {$push: {messages: req.body.message}}, (err, data) => {
-      if (err) return res.status(500).json({message: err});
+  db.collection('messages').findOneAndUpdate({ _id },
+    { $push: { messages: req.body.message } }, (err, data) => {
+      if (err) return res.status(500).json({ message: err });
 
       const users = data.value.users;
 
@@ -114,6 +114,8 @@ messageRouter.post('/:id', authMiddleware.checkToken, (req, res) => {
         }
       }
     });
+
+  res.status(204).end();
 });
 
 messageRouter.post('/uploadFile/:id', authMiddleware.checkToken, multipartMiddleware, (req, res) => {

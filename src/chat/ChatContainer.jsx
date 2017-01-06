@@ -43,7 +43,7 @@ export default class ChatContainer extends React.Component {
   componentDidMount() {
     const io = this.state.socketIo;
     io.on('message', m => {
-      console.log('m', m);
+      console.log('new message', m);
     });
   }
 
@@ -59,10 +59,8 @@ export default class ChatContainer extends React.Component {
       date: now.getFullYear() + '.' + zeroPad(now.getMonth() + 1) + '.' + zeroPad(now.getDate()),
       time: zeroPad(now.getHours()) + ':' + zeroPad(now.getMinutes()) + ':' + zeroPad(now.getSeconds()),
       text,
-      title: this.state.active.title,
+      _id: this.state.active._id,
     };
-
-    console.log('', message);
 
     fetch('/api/messages/' + this.state.active._id, {
       method: 'POST',

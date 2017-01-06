@@ -13,16 +13,13 @@ export default class Login extends React.Component {
       wait: true,
     };
 
-    this.checkIfLogedIn = this.checkIfLogedIn.bind(this);
     this.handleUsername = this.handleUsername.bind(this);
     this.handlePassword = this.handlePassword.bind(this);
     this.renderButton = this.renderButton.bind(this);
     this.login = this.login.bind(this);
-
-    this.checkIfLogedIn();
   }
 
-  checkIfLogedIn() {
+  componentWillMount() {
     if (localStorage.ccToken) {
       fetch('/api/auth', {
         headers: {
@@ -96,8 +93,6 @@ export default class Login extends React.Component {
   }
 
   render() {
-    console.log('', this.state);
-
     if (this.state.token) {
       const link = 'chat?username=' + localStorage.ccUsername + '&token=' + this.state.token;
 
