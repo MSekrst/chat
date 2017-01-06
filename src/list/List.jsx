@@ -9,9 +9,10 @@ class List extends Component {
           <div ><span className="glyphicon glyphicon-plus talkIcon" />&nbsp;&nbsp;Add new talk</div>
         </button>
           <div id="list">
-          {this.props.messages.map(m => { return <Item key={m._id} name={m.title}  click={() => this.props.click(m._id)} /> })}
+          {this.props.messages.map(m => { console.log('m', m); return <Item key={m._id} name={m.title}  click={() => this.props.click(m._id)} /> })}
         </div>
-        <div className="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+        <div className="modal fade" id="myModal" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
           <div className="modal-dialog" role="document">
             <div className="modal-content">
               <div className="modal-header">
@@ -26,6 +27,7 @@ class List extends Component {
             </div>
           </div>
         </div>
+
       </div>
     );
   }

@@ -228,7 +228,7 @@ html, body {
   border-radius: 4px;
   box-sizing: border-box;
   padding: 12px 20px;
-  outline-color: #ffe87c;
+  outline-color: #6ec1e5;
 }
 
 .formButton {
@@ -250,14 +250,15 @@ html, body {
 }
 
 .signUpHere {
-  color: #cb8689;
+  color: #fc7575;
   font-weight: bold;
   text-decoration: none;
 }
 
 .signUpHere:hover{
-  color: #ffccac;
+  color: #fc7575;
   text-decoration: none;
+  opacity: 0.85;
 }
 
 .fblogin{
@@ -298,7 +299,7 @@ html, body {
 }
 
 .validation {
-  color: #ffccac;
+  color: #fc7575;
   text-align: center;
   width: 100%;
   /*padding-top: 5px;*/

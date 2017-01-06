@@ -62,6 +62,8 @@ export default class ChatContainer extends React.Component {
       title: this.state.active.title,
     };
 
+    console.log('', message);
+
     fetch('/api/messages/' + this.state.active._id, {
       method: 'POST',
       headers: {

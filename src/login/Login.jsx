@@ -32,7 +32,6 @@ export default class Login extends React.Component {
         .then((data) => {
           data.json().then(userData => {
             localStorage.ccUsername = userData.username;
-            localStorage.ccId = userData._id;
 
             this.setState({token: localStorage.ccToken, username: localStorage.username});
           });
@@ -48,7 +47,6 @@ export default class Login extends React.Component {
   }
 
   // handlers
-
   handlePassword(e) {
     this.setState({ ...this.state, password: e.target.value });
   }
@@ -73,6 +71,8 @@ export default class Login extends React.Component {
 
         dataPromise.then(data => {
           console.log('', data);
+          localStorage.ccUsername = data.username;
+
           this.setState({ redirect: true , token: data.token, username: data.username });
         });
       })
@@ -96,8 +96,10 @@ export default class Login extends React.Component {
   }
 
   render() {
+    console.log('', this.state);
+
     if (this.state.token) {
-      const link = 'chat?username=' + encodeURIComponent(this.state.username) + '&token=' + this.state.token;
+      const link = 'chat?username=' + localStorage.ccUsername + '&token=' + this.state.token;
 
       return <Redirect to={link}/>
     }

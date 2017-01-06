@@ -12,37 +12,34 @@ const multipartMiddleware = multipart();
 
 const messageRouter = express.Router();
 
-messageRouter.get('/', authMiddleware.checkToken,
-  (req, res) => {
-    const db = getDb();
-    const user = req.user.username;
-    db.collection('messages').find({'users.username': {$in: [user]}}).toArray((err, data) => {
-      if (err) {
-        return res.status(500).json({message: err});
-      }
+messageRouter.get('/', authMiddleware.checkToken, (req, res) => {
+  const db = getDb();
+  const user = req.user.username;
+  db.collection('messages').find({'users.username': {$in: [user]}}).toArray((err, data) => {
+    if (err) {
+      return res.status(500).json({message: err});
+    }
 
-      return res.status(200).json(data);
-    });
+    return res.status(200).json(data);
   });
+});
 
-messageRouter.get('/users', authMiddleware.checkToken,
-  (req, res) => {
-    const db = getDb();
-    const user = req.user.username;
-    db.collection('users').find().toArray((err, data) => {
-      if (err) {
-        return res.status(500).json({message: err});
+messageRouter.get('/users', authMiddleware.checkToken, (req, res) => {
+  const db = getDb();
+  const user = req.user.username;
+  db.collection('users').find().toArray((err, data) => {
+    if (err) {
+      return res.status(500).json({message: err});
+    }
+
+    for (let i = 0; i < data.length; i++)
+      if (data[i].username == user) {
+        data.splice(i, 1);
+        break;
       }
-
-      for (let i = 0; i < data.length; i++)
-        if (data[i].username == user) {
-          data.splice(i, 1);
-          break;
-        }
-      return res.status(200).json(data);
-    });
+    return res.status(200).json(data);
   });
-
+});
 
 // ova ruta radi za android, ako ju je potrebno mijenjati napraviti novu rutu :D
 // VAŽNO: useri u bazi moraju biti sortirani po usernameu i oblika _id, image, username da bi radilo!!!!
@@ -52,53 +49,51 @@ messageRouter.post('/init', authMiddleware.checkToken, (req, res) => {
   let users = req.body.users;
 
   db.collection("users").findOne({"_id": ObjectID(req.user._id)}, (err, data) => {
-
-    let user = {_id : data._id.toString(),
+    let user = {
       image : data.image,
       username : data.username
   };
 
     users.push(user);
-
     users = users.sort((user1, user2) =>  user1.username.localeCompare(user2.username));
 
-    console.log(users);
-
-    db.collection('messages').findOneAndUpdate({users: users}, { $setOnInsert: { title:"", messages:[] } },{returnOriginal: false, upsert: true},(err, data) => {
+    db.collection('messages').findOneAndUpdate({ users: users }, { $setOnInsert: { title:"", messages:[] } },
+      { returnOriginal: false, upsert: true },(err, data) => {
       if (err) {
         console.log(err);
         return res.status(500).json(err);
       }
-      
+
       return res.status(200).json(data.value);
     });
   });
 });
 
 // get conversation history
-messageRouter.get('/:id', authMiddleware.checkToken,
-  (req, res) => {
-    const db = getDb();
+messageRouter.get('/:id', authMiddleware.checkToken, (req, res) => {
+  const db = getDb();
 
-    const _id = ObjectID(req.params.id);
+  const _id = ObjectID(req.params.id);
 
-    const conversation = db.collection('messages').findOne({_id});
+  const conversation = db.collection('messages').findOne({_id});
 
-    conversation.then(data => {
-      if (!data) {
-        res.status(404).json({message: "Route does not exist"});
-      } else {
-        res.status(200).json(data.messages);
-      }
-    }).catch(err => {
-      res.status(500).json(err);
-    });
-  }
-);
+  conversation.then(data => {
+    if (!data) {
+      res.status(404).json({message: "Route does not exist"});
+    } else {
+      res.status(200).json(data.messages);
+    }
+  }).catch(err => {
+    res.status(500).json(err);
+  });
+});
 
 // ova ruta radi za android, ako ju je potrebno mijenjati napraviti novu rutu :D
 messageRouter.post('/:id', authMiddleware.checkToken, (req, res) => {
   const db = getDb();
+
+  // adds sender parameter to message
+  req.body.message['sender'] = req.user.username;
 
   const _id = ObjectID(req.params.id);
   const connected = getConnected();
@@ -119,7 +114,6 @@ messageRouter.post('/:id', authMiddleware.checkToken, (req, res) => {
         }
       }
     });
-
 });
 
 messageRouter.post('/uploadFile/:id', authMiddleware.checkToken, multipartMiddleware, (req, res) => {
@@ -185,24 +179,23 @@ messageRouter.get('/getFile/:id', authMiddleware.checkToken, (req, res) => {
   });
 });
 
-messageRouter.get('/private', authMiddleware.checkToken,
-  (req, res) => {
-    const connected = getConnected();
-    const username = req.user.username;
-    var ip;
-    for (var i = 0; i < connected.length; i++) {
-      if (username == connected.user.username) {
-        ip = connected.ip;
-        break;
-      }
+messageRouter.get('/private', authMiddleware.checkToken, (req, res) => {
+  const connected = getConnected();
+  const username = req.user.username;
+  var ip;
+  for (var i = 0; i < connected.length; i++) {
+    if (username == connected.user.username) {
+      ip = connected.ip;
+      break;
     }
-    const users = []
-    for (var i = 0; i < connected.length; i++) {
-      if (ip == connected.ip && username == connected.user.username) {
-        users.push(connected.user.username);
-      }
+  }
+  const users = [];
+  for (var i = 0; i < connected.length; i++) {
+    if (ip == connected.ip && username == connected.user.username) {
+      users.push(connected.user.username);
     }
-  });
+  }
+});
 
 
 export default messageRouter;
