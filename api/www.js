@@ -40,7 +40,7 @@ app.use(passport.initialize());
 
 // HTTP Server
 const server = http.createServer((req, res) => {
-  res.writeHead(301, { "Location": "https://localhost:3443" + req.url });
+  res.writeHead(301, { "Location": "https://localhost:3000" + req.url });
   res.end();
 });
 

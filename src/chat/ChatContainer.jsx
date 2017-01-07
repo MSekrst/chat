@@ -17,6 +17,7 @@ export default class ChatContainer extends React.Component {
 
     this.clickHandler = this.clickHandler.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
+    this.uploadFile = this.uploadFile.bind(this);
   }
 
   componentWillMount() {
@@ -51,6 +52,23 @@ export default class ChatContainer extends React.Component {
   clickHandler(id) {
     // [0] to extract matching object from array
     this.setState({ ...this.state, active: this.state.messages.filter(c => c._id === id )[0]});
+  }
+
+  uploadFile(file){
+    console.log(file);
+    var data = new FormData();
+    data.append('file', file);
+
+    fetch('/api/messages/uploadFile/'+this.state.active._id, {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + localStorage.ccToken,
+        'enctype': "multipart/form-data"
+      },
+      body: data
+    });
+    console.log("uploading file ");
+    console.log(data.get('file'));
   }
 
   sendMessage(text) {
@@ -90,7 +108,7 @@ export default class ChatContainer extends React.Component {
       return (
         <div style={{width: "100%", height: "100%"}}>
           <div className="container centered chat">
-            <Chat messages={this.state.messages} active={this.state.active} click={this.clickHandler} sender={this.sendMessage}/>
+            <Chat messages={this.state.messages} active={this.state.active} click={this.clickHandler} sender={this.sendMessage} uploadFile={this.uploadFile}/>
           </div>
         </div>
       );
