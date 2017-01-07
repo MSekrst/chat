@@ -33,6 +33,7 @@
     "password-hash": "^1.2.2",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
+    "react-dropzone": "^3.8.0",
     "react-router": "next",
     "react-select": "^1.0.0-rc.2",
     "rimraf": "^2.5.4",

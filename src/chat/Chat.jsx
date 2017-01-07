@@ -2,7 +2,7 @@ import React from 'react';
 
 import Header from '../header/Header.jsx';
 import List from '../list/List.jsx';
-import CurrentConversation from '../conversation/Conversation.jsx';
+import Conversation from '../conversation/Conversation.jsx';
 
 export default class Chat extends React.Component {
   constructor(props) {
@@ -15,7 +15,7 @@ export default class Chat extends React.Component {
 
   renderActive() {
     if (this.props.active) {
-      return <CurrentConversation sender={this.props.sender} active={this.props.active}/>;
+      return <Conversation sender={this.props.sender} active={this.props.active} uploadFile={this.props.uploadFile}/>;
     }
   }
 

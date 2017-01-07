@@ -13,12 +13,13 @@ export default class ChatContainer extends React.Component {
       localStorage['ccUsername'] = this.props.location.query.username;
     }
 
-    this.state = { received: [] };
+    this.state = {received: []};
 
     this.clickHandler = this.clickHandler.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
     this.getUsers = this.getUsers.bind(this);
     this.openConversation = this.openConversation.bind(this);
+    this.uploadFile = this.uploadFile.bind(this);
   }
 
   componentWillMount() {
@@ -29,17 +30,17 @@ export default class ChatContainer extends React.Component {
     }).then(checkStatus)
       .then(res => {
         res.json().then(messages => {
-          this.setState({ messages, active: messages[0] });
+          this.setState({messages, active: messages[0]});
         });
       }).catch(() => {
-        this.setState({ redirect: true });
+      this.setState({redirect: true});
     });
 
     const socketIo = window.io.connect();
     socketIo.emit('user', {
       username: localStorage.ccUsername,
     });
-    this.setState({ ...this.state, socketIo });
+    this.setState({...this.state, socketIo});
   }
 
   componentDidMount() {
@@ -48,7 +49,7 @@ export default class ChatContainer extends React.Component {
     this.getUsers();
 
     io.on('message', received => {
-      const state = { ...this.state };
+      const state = {...this.state};
       for (const m of state.messages) {
         if (m._id === received.chatId) {
           m.messages.push(received);
@@ -68,7 +69,24 @@ export default class ChatContainer extends React.Component {
   // passed as click prop
   clickHandler(id) {
     // [0] to extract matching object from array
-    this.setState({ ...this.state, active: this.state.messages.filter(c => c._id === id )[0]});
+    this.setState({...this.state, active: this.state.messages.filter(c => c._id === id)[0]});
+  }
+
+  uploadFile(file) {
+    console.log(file);
+    var data = new FormData();
+    data.append('file', file);
+
+    fetch('/api/messages/uploadFile/' + this.state.active._id, {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + localStorage.ccToken,
+        'enctype': "multipart/form-data"
+      },
+      body: data
+    });
+    console.log("uploading file ");
+    console.log(data.get('file'));
   }
 
   sendMessage(text) {
@@ -86,13 +104,13 @@ export default class ChatContainer extends React.Component {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + localStorage.ccToken,
       },
-      body: JSON.stringify({ message }),
+      body: JSON.stringify({message}),
     }).then(checkStatus)
       .then(() => {
         const active = this.state.active;
         active.messages.push(message);
 
-        this.setState({ ...this.state, active });
+        this.setState({...this.state, active});
       })
       .catch(err => {
         // message not saved
@@ -107,9 +125,11 @@ export default class ChatContainer extends React.Component {
     }).then(checkStatus)
       .then(res => {
         res.json().then(users => {
-          users = users.map(u => { return { label: u.username, image: u.image, value:u._id } });
+          users = users.map(u => {
+            return {label: u.username, image: u.image, value: u._id}
+          });
 
-          this.setState({ ...this.state, users });
+          this.setState({...this.state, users});
         });
       })
       .catch(err => {
@@ -162,10 +182,11 @@ export default class ChatContainer extends React.Component {
 
     if (this.state.messages) {
       return (
-          <div className="container centered chat">
-            <Chat messages={this.state.messages} active={this.state.active}
-                  received={this.state.received} open={this.openConversation}
-                  click={this.clickHandler} sender={this.sendMessage} users={this.state.users}/>
+        <div className="container centered chat">
+          <Chat messages={this.state.messages} active={this.state.active}
+                received={this.state.received} open={this.openConversation}
+                uploadFile={this.uploadFile}
+                click={this.clickHandler} sender={this.sendMessage} users={this.state.users}/>
         </div>
       );
     }
