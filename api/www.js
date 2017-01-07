@@ -40,7 +40,7 @@ app.use(passport.initialize());
 
 // HTTP Server
 const server = http.createServer((req, res) => {
-  res.writeHead(301, { "Location": "https://localhost:3443" + req.url });
+  res.writeHead(301, { "Location": "https://localhost:" + sPort + req.url });
   res.end();
 });
 
@@ -69,9 +69,9 @@ io.on('connection', socket => {
   socket.on('user', user => {
     console.log('Connected: ' + user.username);
     const newUserSocket = {
-      'user': user.username,
-      'socket': socket,
-      'id': socket.handshake.address
+      user: user.username,
+      socket: socket,
+      id: socket.handshake.address
     };
 
     userSockets.push(newUserSocket);
@@ -80,10 +80,10 @@ io.on('connection', socket => {
   socket.on('userAndroid', user => {
     console.log('Connected: ' + user);
     const newUserSocket = {
-      'user': user,
-      'socket': socket,
-      'id': socket.handshake.address,
-      'mobile': true
+      user: user,
+      socket: socket,
+      id: socket.handshake.address,
+      mobile: true
     };
 
     userSockets.push(newUserSocket);

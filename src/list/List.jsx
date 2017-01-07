@@ -1,15 +1,19 @@
 import React, {Component} from 'react';
+import Select from 'react-select';
 import Item from './Item.jsx';
 
 class List extends Component {
   render() {
+    console.log('', this.props);
+
     return (
       <div id="talkList">
         <button id="newTalk" type="button" data-toggle="modal" data-target="#myModal">
           <div ><span className="glyphicon glyphicon-plus talkIcon"/>&nbsp;&nbsp;Add new talk</div>
         </button>
         <div id="list">
-          {this.props.messages.map(m => {
+          {
+            this.props.messages.map(m => {
             const reciver = m.users.filter(u => u.username !== localStorage.ccUsername)[0];
             return <Item key={m._id}
                          name={reciver.username}
@@ -31,7 +35,11 @@ class List extends Component {
                   friend</h4>
               </div>
               <div className="modal-body">
-                ...
+                <Select
+                  name="users"
+                  options={this.props.users}
+                  onChange={this.props.open}
+                />
               </div>
             </div>
           </div>

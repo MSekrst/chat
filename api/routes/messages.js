@@ -104,8 +104,6 @@ messageRouter.post('/:id', authMiddleware.checkToken, (req, res) => {
 
       const users = data.value.users;
 
-      console.log('SALJE: ', req.user.username);
-
       for (let i = 0; i < users.length; i++) {
         for (let j = 0; j < connected.length; j++) {
           console.log(connected[j].user,users[i].username);

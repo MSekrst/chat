@@ -121,7 +121,7 @@ html, body {
   top: 51px;
   left: 0;
   display: inline-block;
-  width: 25%;
+  width: 200px;
   height: calc(100% - 51px);
   background-color: whitesmoke;
   float: left;
@@ -319,11 +319,11 @@ html, body {
 /*conversation.jsx*/
 
 #talk{
-  width: 75%;
+  width: calc(100% - 200px);
   height: calc(100% - 50px);
   position: absolute;
   top: 50px;
-  left: 25%;
+  left: 200px;
 }
 
 #talkInput{
@@ -403,7 +403,7 @@ html, body {
 
 .inputForm {
   position: absolute;
-  bottom: 0px;
+  bottom: 0;
   width: 100%;
   margin: 0 auto;
   height: 50px;

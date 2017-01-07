@@ -13,10 +13,12 @@ export default class ChatContainer extends React.Component {
       localStorage['ccUsername'] = this.props.location.query.username;
     }
 
-    this.state = {};
+    this.state = { received: [] };
 
     this.clickHandler = this.clickHandler.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
+    this.getUsers = this.getUsers.bind(this);
+    this.openConversation = this.openConversation.bind(this);
   }
 
   componentWillMount() {
@@ -42,8 +44,24 @@ export default class ChatContainer extends React.Component {
 
   componentDidMount() {
     const io = this.state.socketIo;
-    io.on('message', m => {
-      console.log('new message', m);
+
+    this.getUsers();
+
+    io.on('message', received => {
+      const state = { ...this.state };
+      for (const m of state.messages) {
+        if (m._id === received.chatId) {
+          m.messages.push(received);
+
+          if (state.active._id !== received.chatId) {
+            state.received.push(received.chatId);
+          }
+
+          break;
+        }
+      }
+
+      this.setState(state);
     });
   }
 
@@ -81,6 +99,62 @@ export default class ChatContainer extends React.Component {
       });
   }
 
+  getUsers() {
+    fetch('/api/users', {
+      headers: {
+        'Authorization': 'Bearer ' + localStorage.ccToken,
+      },
+    }).then(checkStatus)
+      .then(res => {
+        res.json().then(users => {
+          users = users.map(u => { return { label: u.username, image: u.image, value:u._id } });
+
+          this.setState({ ...this.state, users });
+        });
+      })
+      .catch(err => {
+        // message not saved
+      });
+  }
+
+  openConversation(rec) {
+    console.log('rec', rec);
+
+    const users = [{
+      username: rec.label,
+      image: rec.image,
+    }];
+
+    fetch('/api/messages/init', {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.ccToken,
+      },
+      body: JSON.stringify({users}),
+    }).then(checkStatus)
+      .then(res => {
+        res.json().then(conversation => {
+          console.log('con', conversation);
+
+          const messages = this.state.messages;
+          messages.push(conversation);
+
+          // close add chat modal
+          $('#myModal').modal('hide');
+
+          this.setState({
+            ...this.state,
+            messages,
+            active: conversation,
+          });
+        });
+      })
+      .catch(() => {
+        // conversation not opened
+      });
+  }
+
   render() {
     if (this.state && this.state.redirect) {
       return <Redirect to="/"/>
@@ -88,10 +162,10 @@ export default class ChatContainer extends React.Component {
 
     if (this.state.messages) {
       return (
-        <div style={{width: "100%", height: "100%"}}>
           <div className="container centered chat">
-            <Chat messages={this.state.messages} active={this.state.active} click={this.clickHandler} sender={this.sendMessage}/>
-          </div>
+            <Chat messages={this.state.messages} active={this.state.active}
+                  received={this.state.received} open={this.openConversation}
+                  click={this.clickHandler} sender={this.sendMessage} users={this.state.users}/>
         </div>
       );
     }

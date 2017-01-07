@@ -22,7 +22,9 @@ export default class Chat extends React.Component {
   render() {
     return <div>
       <Header username={localStorage.ccUsername}/>
-      <List messages={this.props.messages} click={this.props.click}/>
+      <List messages={this.props.messages} received={this.props.received}
+            active={this.props.active } users={this.props.users}
+            open={this.props.open} click={this.props.click}/>
       {this.renderActive()}
     </div>;
   }
