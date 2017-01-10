@@ -48,11 +48,11 @@ messageRouter.post('/init', authMiddleware.checkToken, (req, res) => {
   const db = getDb();
 
   let users = req.body.users;
+  db.collection("users").findOne({username: req.user.username}, (err, data) => {
 
-  db.collection("users").findOne({"_id": ObjectID(req.user._id)}, (err, data) => {
     let user = {
+      username : data.username,
       image : data.image,
-      username : data.username
   };
 
     users.push(user);

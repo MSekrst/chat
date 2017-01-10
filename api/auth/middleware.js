@@ -41,9 +41,8 @@ export const authMiddleware = {
 
       req.user = {
         username: decoded.username,
-        _id: decoded._id,
       };
-      
+
       return next();
     });
   }

@@ -145,20 +145,26 @@ export default class ChatContainer extends React.Component {
       image: rec.image,
     }];
 
+    console.log('users', users);
+
     fetch('/api/messages/init', {
       method: "POST",
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + localStorage.ccToken,
       },
-      body: JSON.stringify({users}),
+      body: JSON.stringify({ users }),
     }).then(checkStatus)
       .then(res => {
         res.json().then(conversation => {
           console.log('con', conversation);
 
           const messages = this.state.messages;
-          messages.push(conversation);
+          let contains = false;
+          messages.filter(m => {console.log(m._id, conversation._id); if (m._id === conversation._id) contains = true; });
+          if (!contains) {
+            messages.push(conversation);
+          }
 
           // close add chat modal
           $('#myModal').modal('hide');
