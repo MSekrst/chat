@@ -73,14 +73,17 @@ export default class ChatContainer extends React.Component {
     this.setState({...this.state, active: this.state.messages.filter(c => c._id === id)[0]});
   }
 
-  uploadFile(file) {
-    const blobFile = file[0];
-    fetch(blobFile.preview).then(res => {
+  uploadFile(file, title) {
+    fetch(file.preview).then(res => {
       res.blob().then(data => {
         const reader = new FileReader();
+        console.log('data', data);
         reader.addEventListener("loadend", loadedFile => {
           const toSend = loadedFile.currentTarget.result;
-          console.log('', toSend);
+          console.log('', loadedFile);
+          const message = generateMessage();
+          message.bin = toSend;
+          message.text = title;
           fetch('/api/messages/uploadFile/' + this.state.active._id, {
             method: 'POST',
             headers: {
@@ -96,13 +99,8 @@ export default class ChatContainer extends React.Component {
   }
 
   sendMessage(text) {
-    const now = new Date();
-    const message = {
-      date: zeroPad(now.getDate()) + '.' + zeroPad(now.getMonth() + 1) + '.' + now.getFullYear(),
-      time: zeroPad(now.getHours()) + ':' + zeroPad(now.getMinutes()) + ':' + zeroPad(now.getSeconds()),
-      text,
-      chatId: this.state.active._id,
-    };
+    const message = generateMessage();
+    message.text = text;
 
     fetch('/api/messages/' + this.state.active._id, {
       method: 'POST',
@@ -205,4 +203,14 @@ export default class ChatContainer extends React.Component {
 
     return <div></div>
   }
+}
+
+function generateMessage() {
+  const now = new Date();
+
+  return {
+    date: zeroPad(now.getDate()) + '.' + zeroPad(now.getMonth() + 1) + '.' + now.getFullYear(),
+    time: zeroPad(now.getHours()) + ':' + zeroPad(now.getMinutes()) + ':' + zeroPad(now.getSeconds()),
+    chatId: this.state.active._id,
+  };
 }
