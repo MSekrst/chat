@@ -40,6 +40,7 @@ export default class ChatContainer extends React.Component {
     socketIo.emit('user', {
       username: localStorage.ccUsername,
     });
+
     this.setState({...this.state, socketIo});
   }
 
