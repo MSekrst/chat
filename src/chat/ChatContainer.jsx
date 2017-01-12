@@ -73,20 +73,25 @@ export default class ChatContainer extends React.Component {
   }
 
   uploadFile(file) {
-    console.log(file);
-    var data = new FormData();
-    data.append('file', file);
-
-    fetch('/api/messages/uploadFile/' + this.state.active._id, {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer ' + localStorage.ccToken,
-        'enctype': "multipart/form-data"
-      },
-      body: data
+    const blobFile = file[0];
+    fetch(blobFile.preview).then(res => {
+      res.blob().then(data => {
+        const reader = new FileReader();
+        reader.addEventListener("loadend", loadedFile => {
+          const toSend = loadedFile.currentTarget.result;
+          console.log('', toSend);
+          fetch('/api/messages/uploadFile/' + this.state.active._id, {
+            method: 'POST',
+            headers: {
+              'Authorization': 'Bearer ' + localStorage.ccToken,
+              'Content-Type': "application/json",
+            },
+            body: JSON.stringify({bin: toSend}),
+          });
+        });
+        reader.readAsBinaryString(data);
+      })
     });
-    console.log("uploading file ");
-    console.log(data.get('file'));
   }
 
   sendMessage(text) {
