@@ -1,5 +1,7 @@
 package eu.rasus.fer.rasus.chat;
 
+import android.util.Base64OutputStream;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -11,6 +13,8 @@ public class ChatMessage {
   public String sender;
   public String date;
   public String time;
+  public Base64OutputStream bin;
+
   public transient boolean  isMine;
 
   public ChatMessage(String chatId, String sender, String text, boolean isMINE) {

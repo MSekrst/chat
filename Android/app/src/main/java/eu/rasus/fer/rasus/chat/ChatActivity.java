@@ -1,10 +1,19 @@
 package eu.rasus.fer.rasus.chat;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Path;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
+import android.util.Base64OutputStream;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -17,6 +26,16 @@ import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.util.List;
 
 import butterknife.BindView;
@@ -27,6 +46,10 @@ import eu.rasus.fer.rasus.HttpsConstants;
 import eu.rasus.fer.rasus.R;
 import eu.rasus.fer.rasus.RestApi;
 import eu.rasus.fer.rasus.chatsPreview.ChatPreview;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -91,6 +114,8 @@ public class ChatActivity extends AppCompatActivity {
   };
 
   public Socket socket;
+
+  protected static final int PICK_FILE = 1;
 
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -182,5 +207,61 @@ public class ChatActivity extends AppCompatActivity {
   public void addMessageToAdapter(ChatMessage chatMessage) {
     chatAdapter.add(chatMessage);
     chatAdapter.notifyDataSetChanged();
+  }
+
+  @OnClick(R.id.chat_send_file)
+  public void sendFile() {
+    Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+    intent.setType("image/*");
+    startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_FILE);
+  }
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (requestCode == PICK_FILE && resultCode == Activity.RESULT_OK) {
+      if (data == null) {
+        return;
+      }
+
+      try {
+        Uri uri = data.getData();
+        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(HttpsConstants.ADDRES).client(HttpsConstants.getUnsafeOkHttpClient()).addConverterFactory(GsonConverterFactory.create())
+                                                  .build();
+
+        RestApi api = retrofit.create(RestApi.class);
+
+       ChatMessage chatMessage = new ChatMessage(chatInfo.id, Application.USERNAME, "File", true);
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
+        chatMessage.bin = new Base64OutputStream(stream,0);
+
+        chatAdapter.add(chatMessage);
+        chatAdapter.notifyDataSetChanged();
+
+        ChatMessageWrapper wrapper = new ChatMessageWrapper();
+        wrapper.message = chatMessage;
+        Call<Void> call = api.sendMesssage(Application.TOKEN, chatInfo.id, wrapper);
+
+        call.enqueue(new Callback<Void>() {
+
+          @Override
+          public void onResponse(final Call<Void> call, final Response<Void> response) {
+
+          }
+
+          @Override
+          public void onFailure(final Call<Void> call, final Throwable t) {
+          int a= 2+3;
+          }
+        });
+
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
   }
 }

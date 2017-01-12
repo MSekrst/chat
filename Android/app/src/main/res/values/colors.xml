@@ -10,5 +10,6 @@
   <color name="link">#cb8689</color>
   <color name="gray">#d3d3d3</color>
   <color name="backgroundColor">#fffafa</color>
+  <color name="backgroundColorDark">#f1ebeb</color>
   <color name="darkGray">#333</color>
 </resources>

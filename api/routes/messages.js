@@ -122,10 +122,10 @@ messageRouter.post('/:id', authMiddleware.checkToken, (req, res) => {
     });
 });
 
-messageRouter.post('/uploadFile/:id', authMiddleware.checkToken, multipartMiddleware, (req, res) => {
+messageRouter.post('/uploadFile/:id', (req, res) => { console.log(req);}, authMiddleware.checkToken, multipartMiddleware, (req, res) => {
   const db = getDb();
   const connected = getConnected();
-
+  
   req.body.message['sender'] = req.user.username;
   const _id = ObjectID(req.params.id);
   var message = req.body.message;
@@ -186,6 +186,7 @@ messageRouter.get('/getFile/:id', authMiddleware.checkToken, (req, res) => {
 });
 
 messageRouter.get('/private', authMiddleware.checkToken, (req, res) => {
+  console.log("usao");
   const connected = getConnected();
   const username = req.user.username;
   var ip;
@@ -195,9 +196,10 @@ messageRouter.get('/private', authMiddleware.checkToken, (req, res) => {
       break;
     }
   }
+  console.log(ip);
   const users = [];
   for (var i = 0; i < connected.length; i++) {
-    if (ip == connected.ip && username == connected.user.username) {
+    if (ip == connected.ip && username != connected.user.username) {
       users.push(connected.user.username);
     }
   }
