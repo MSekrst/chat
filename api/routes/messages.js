@@ -155,9 +155,6 @@ messageRouter.post('/uploadFile/:id', authMiddleware.checkToken, (req, res) => {
     });
   });
 
-
-  fs.unlink(filePath, () => {
-  });
   return res.status(204).json();
 
 
