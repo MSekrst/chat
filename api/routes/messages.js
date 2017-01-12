@@ -42,7 +42,7 @@ messageRouter.get('/users', authMiddleware.checkToken, (req, res) => {
 });
 
 /*
-  IMPORTANT: Users array must be sorted by username!
+ IMPORTANT: Users array must be sorted by username!
  */
 messageRouter.post('/init', authMiddleware.checkToken, (req, res) => {
   const db = getDb();
@@ -51,22 +51,27 @@ messageRouter.post('/init', authMiddleware.checkToken, (req, res) => {
   db.collection("users").findOne({username: req.user.username}, (err, data) => {
 
     let user = {
-      username : data.username,
-      image : data.image,
-  };
+      username: data.username,
+      image: data.image,
+    };
 
     users.push(user);
-    users = users.sort((user1, user2) =>  user1.username.localeCompare(user2.username));
+    users = users.sort((user1, user2) => user1.username.localeCompare(user2.username));
 
-    db.collection('messages').findOneAndUpdate({ users: users }, { $setOnInsert: { title: req.body.title || '', messages:[] } },
-      { returnOriginal: false, upsert: true },(err, data) => {
-      if (err) {
-        console.log(err);
-        return res.status(500).json(err);
-      }
-        
-      return res.status(200).json(data.value);
-    });
+    db.collection('messages').findOneAndUpdate({users: users}, {
+        $setOnInsert: {
+          title: req.body.title || '',
+          messages: []
+        }
+      },
+      {returnOriginal: false, upsert: true}, (err, data) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json(err);
+        }
+
+        return res.status(200).json(data.value);
+      });
   });
 });
 
@@ -106,7 +111,7 @@ messageRouter.post('/:id', authMiddleware.checkToken, (req, res) => {
 
       for (let i = 0; i < users.length; i++) {
         for (let j = 0; j < connected.length; j++) {
-          console.log(connected[j].user,users[i].username);
+          console.log(connected[j].user, users[i].username);
           if (connected[j].user === users[i].username && users[i].username !== req.user.username) {
             console.log('saljem');
             connected[j].socket.emit('message', req.body.message);
@@ -118,51 +123,43 @@ messageRouter.post('/:id', authMiddleware.checkToken, (req, res) => {
     });
 });
 
-messageRouter.post('/uploadFile/:id', authMiddleware.checkToken, multipartMiddleware, (req, res) => {
+messageRouter.post('/uploadFile/:id', authMiddleware.checkToken, (req, res) => {
   const db = getDb();
   const connected = getConnected();
+  console.log(req.body);
 
-  req.body.message['sender'] = req.user.username;
+  var message = req.body;
+  console.log(message);
+  message['sender'] = req.user.username;
+
   const _id = ObjectID(req.params.id);
-  var message = req.body.message;
-  var fileName = req.files.file.originalFilename;
-  var filePath = req.files.file.path;
+
+  var fileName = message.text;
   message.type = "file";
-  message.fileName = fileName;
 
-  var bin = fs.readFile(filePath, (err, data) => {
-
-    db.collection('files').insertOne({
-      fileName: fileName,
-      file: Binary(data),
-    }, (err, inserted) => {
+  db.collection('files').insertOne({
+    fileName: fileName,
+    file: Binary(message.bin),
+  }, (err, inserted) => {
+    if (err) {
+      return res.status(500).json(err);
+    }
+    message.fileId = inserted.insertedId;
+    delete message['bin'];
+    db.collection('messages').updateOne({_id}, {
+      $push: {messages: message}
+    }, err => {
       if (err) {
-        return res.status(500).json(err);
+        return res.status(500).json({message: err});
       }
-      message.fileId = inserted.insertedId;
-
-      db.collection('messages').updateOne({_id}, {
-        $push: {messages: message}
-      }, err => {
-        if (err) {
-          return res.status(500).json({message: err});
-        }
-      });
     });
-    console.log('', req.body.message);
   });
-  // for (let i = 0; i < data.users.length; i++) {
-  //   for (let i = 0; i < connected.length; i++) {
-  //     if (connected[i].user == data.users[i].username && data.users[i].username != req.user.username) {
-  //       console.log('saljem', req.body.message);
-  //       connected[i].socket.emit('message', req.body.message);
-  //       break;
-  //     }
-  //   }
-  // }
+
+
   fs.unlink(filePath, () => {
   });
   return res.status(204).json();
+
 
 });
 
