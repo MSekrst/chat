@@ -63,7 +63,6 @@ export default class ConversationContainer extends Component{
   }
 
   emojiShow(){
-    console.log("event");
     this.setState({
       emojiShow: !this.state.emojiShow,
     });
