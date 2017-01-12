@@ -4,8 +4,6 @@ import Item from './Item.jsx';
 
 class List extends Component {
   render() {
-    console.log('', this.props);
-
     return (
       <div id="talkList">
         <button id="newTalk" type="button" data-toggle="modal" data-target="#myModal">

@@ -19,3 +19,6 @@ database
 
 #other files
 .env
+
+#server
+api/www.js

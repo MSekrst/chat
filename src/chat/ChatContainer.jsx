@@ -20,6 +20,7 @@ export default class ChatContainer extends React.Component {
     this.getUsers = this.getUsers.bind(this);
     this.openConversation = this.openConversation.bind(this);
     this.uploadFile = this.uploadFile.bind(this);
+    this.generateMessage = this.generateMessage.bind(this);
   }
 
   componentWillMount() {
@@ -67,20 +68,33 @@ export default class ChatContainer extends React.Component {
     });
   }
 
+  generateMessage() {
+    const now = new Date();
+
+    return {
+      date: zeroPad(now.getDate()) + '.' + zeroPad(now.getMonth() + 1) + '.' + now.getFullYear(),
+      time: zeroPad(now.getHours()) + ':' + zeroPad(now.getMinutes()) + ':' + zeroPad(now.getSeconds()),
+      chatId: this.state.active._id,
+    };
+  }
+
   // passed as click prop
   clickHandler(id) {
     // [0] to extract matching object from array
     this.setState({...this.state, active: this.state.messages.filter(c => c._id === id)[0]});
   }
 
-  uploadFile(file) {
-    const blobFile = file[0];
-    fetch(blobFile.preview).then(res => {
+  uploadFile(file, title) {
+    fetch(file.preview).then(res => {
       res.blob().then(data => {
         const reader = new FileReader();
+        console.log('data', data);
         reader.addEventListener("loadend", loadedFile => {
           const toSend = loadedFile.currentTarget.result;
-          console.log('', toSend);
+          console.log('', loadedFile);
+          const message = this.generateMessage();
+          message.bin = toSend;
+          message.text = title;
           fetch('/api/messages/uploadFile/' + this.state.active._id, {
             method: 'POST',
             headers: {
@@ -96,13 +110,8 @@ export default class ChatContainer extends React.Component {
   }
 
   sendMessage(text) {
-    const now = new Date();
-    const message = {
-      date: zeroPad(now.getDate()) + '.' + zeroPad(now.getMonth() + 1) + '.' + now.getFullYear(),
-      time: zeroPad(now.getHours()) + ':' + zeroPad(now.getMinutes()) + ':' + zeroPad(now.getSeconds()),
-      text,
-      chatId: this.state.active._id,
-    };
+    const message = this.generateMessage();
+    message.text = text;
 
     fetch('/api/messages/' + this.state.active._id, {
       method: 'POST',
@@ -144,14 +153,10 @@ export default class ChatContainer extends React.Component {
   }
 
   openConversation(rec) {
-    console.log('rec', rec);
-
     const users = [{
       username: rec.label,
       image: rec.image,
     }];
-
-    console.log('users', users);
 
     fetch('/api/messages/init', {
       method: "POST",
