@@ -168,8 +168,6 @@ export default class ChatContainer extends React.Component {
     }).then(checkStatus)
       .then(res => {
         res.json().then(conversation => {
-          console.log('con', conversation);
-
           const messages = this.state.messages;
           let contains = false;
           messages.filter(m => {console.log(m._id, conversation._id); if (m._id === conversation._id) contains = true; });

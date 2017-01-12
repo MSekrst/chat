@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 
 export const authMiddleware = {
   generateToken(req, res, next) {
-    const jwtSecret = process.env.JWT_SECRET;
+    const jwtSecret = process.env.JWT_SECRET || 'littleTalksBJTLKM';
 
     req.token = jwt.sign(req.user, jwtSecret);
 
