@@ -64,23 +64,20 @@ export default class ConversationContainer extends Component{
   }
 
   emojiShow(){
-    console.log("event");
     this.setState({
       emojiShow: !this.state.emojiShow,
     });
   }
 
   onDrop(acceptedFiles, rejectedFiles) {
-    console.log('Received files: ', acceptedFiles.length);
-    if(acceptedFiles.length){
-      this.props.uploadFile(acceptedFiles);
+    if (acceptedFiles.length) {
+      this.props.uploadFile(acceptedFiles[0], acceptedFiles[0].name);
       $('#myModal2').modal('hide');
-    }else{
+    } else {
       var modal = $('#myModal2');
       modal.find('.modal-body div').text('Error occured during the uploading of the file. Maximum length you can upload is 16MB. Try again. ');
       console.log("error");
     }
-
   }
 
   render() {
