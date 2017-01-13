@@ -123,12 +123,13 @@ messageRouter.post('/:id', authMiddleware.checkToken, (req, res) => {
     });
 });
 
+
 messageRouter.post('/uploadFile/:id', authMiddleware.checkToken, (req, res) => {
   const db = getDb();
   const connected = getConnected();
-  console.log(req.body);
+  console.log(req.body.message);
 
-  var message = req.body;
+  var message = req.body.message;
   console.log(message);
   message['sender'] = req.user.username;
 
@@ -137,26 +138,24 @@ messageRouter.post('/uploadFile/:id', authMiddleware.checkToken, (req, res) => {
   var fileName = message.text;
   message.type = "file";
 
-  db.collection('files').insertOne({
-    fileName: fileName,
-    file: Binary(message.bin),
-  }, (err, inserted) => {
+  db.collection('files').insertOne({fileName: fileName, file: message.bin}, (err, inserted) => {
     if (err) {
-      return res.status(500).json(err);
+       res.status(500).json(err);
     }
-    message.fileId = inserted.insertedId;
-    delete message['bin'];
-    db.collection('messages').updateOne({_id}, {
-      $push: {messages: message}
-    }, err => {
-      if (err) {
-        return res.status(500).json({message: err});
-      }
-    });
+    else {
+      message.fileId = inserted.insertedId.toString();
+      delete message['bin'];
+      db.collection('messages').updateOne({_id}, {
+        $push: {messages: message}
+      }, err => {
+        if (err) {
+           res.status(500).json({message: err});
+        }
+        console.log(message);
+         res.status(200).json(message);
+      });
+    }
   });
-
-  return res.status(204).json();
-
 
 });
 
@@ -176,6 +175,7 @@ messageRouter.get('/getFile/:id', authMiddleware.checkToken, (req, res) => {
 });
 
 messageRouter.get('/private', authMiddleware.checkToken, (req, res) => {
+  console.log("usao");
   const connected = getConnected();
   const username = req.user.username;
   var ip;
@@ -185,9 +185,10 @@ messageRouter.get('/private', authMiddleware.checkToken, (req, res) => {
       break;
     }
   }
+  console.log(ip);
   const users = [];
   for (var i = 0; i < connected.length; i++) {
-    if (ip == connected.ip && username == connected.user.username) {
+    if (ip == connected.ip && username != connected.user.username) {
       users.push(connected.user.username);
     }
   }
