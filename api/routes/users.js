@@ -1,9 +1,8 @@
 import express from 'express';
 
-import {authMiddleware} from '../auth/middleware';
-import {getDb} from '../mongo';
-
-import {ObjectID} from '../mongo';
+import { authMiddleware } from '../auth/middleware';
+import { getDb, ObjectID } from '../mongo';
+import { getConnected } from '../www';
 
 const usersRouter = express.Router();
 
@@ -19,6 +18,33 @@ usersRouter.get('/', authMiddleware.checkToken, (req, res) => {
   });
 });
 
+usersRouter.get('/private', authMiddleware.checkToken, (req, res) => {
+  const connected = getConnected();
+
+  // TODO - (Matija) - FIX 500
+
+  const username = req.user.username;
+  let ip;
+
+  for (let i = 0; i < connected.length; i++) {
+    if (username == connected.user.username) {
+      ip = connected.ip;
+      break;
+    }
+  }
+
+  console.log('my ip', ip);
+
+  const users = [];
+  for (let i = 0; i < connected.length; i++) {
+    console.log('con ip', connected.ip);
+    if (ip == connected.ip && username == connected.user.username) {
+      users.push(connected.user.username);
+    }
+  }
+
+  res.status(200).json(users);
+});
 
 usersRouter.get('/:id', authMiddleware.checkToken, (req, res) => {
   const db = getDb();

@@ -1,8 +1,7 @@
 import React from 'react';
-import { Redirect } from 'react-router';
 
 import Chat from './Chat.jsx';
-import { checkStatus, zeroPad } from '../helpers';
+import { checkStatus } from '../helpers';
 
 export default class ChatContainer extends React.Component {
   constructor(props) {
@@ -13,6 +12,23 @@ export default class ChatContainer extends React.Component {
     this.openPrivate = this.openPrivate.bind(this);
   }
 
+  componentWillMount() {
+    fetch('/api/users/private', {
+      headers: {
+        'Authorization': 'Bearer ' + localStorage.ccToken,
+      }
+    }).then(checkStatus)
+      .then(res => {
+        res.json().then(users => {
+          console.log('users', users);
+        })
+      })
+      .catch(err => {
+        // users error
+      });
+
+  }
+
   openPrivate(){
     $('#myModal3').modal('hide');
     this.setState({
@@ -21,11 +37,6 @@ export default class ChatContainer extends React.Component {
   }
 
   render() {
-    console.log("priv", this.state);
-    if (this.state && this.state.private) {
-      return <Redirect to="/private"/>
-    }
-
     return <div className="container centered chat">
       <Chat active={this.state.active}
             received={this.state.received} openPrivate={this.openPrivate}

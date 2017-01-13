@@ -1,11 +1,9 @@
 import express from 'express';
 import { resolve } from 'path';
-import {Binary} from 'mongodb';
 
-import {getDb} from '../mongo';
-import {ObjectID} from '../mongo';
-import {getConnected} from '../www';
-import {authMiddleware} from '../auth/middleware';
+import { getDb, ObjectID } from '../mongo';
+import { getConnected } from '../www';
+import { authMiddleware } from '../auth/middleware';
 
 const messageRouter = express.Router();
 
@@ -158,24 +156,6 @@ messageRouter.get('/getFile/:id', authMiddleware.checkToken, (req, res) => {
   });
 });
 
-messageRouter.get('/private', authMiddleware.checkToken, (req, res) => {
-  const connected = getConnected();
-  const username = req.user.username;
-  var ip;
-  for (var i = 0; i < connected.length; i++) {
-    if (username == connected.user.username) {
-      ip = connected.ip;
-      break;
-    }
-  }
-  const users = [];
-  for (var i = 0; i < connected.length; i++) {
-    if (ip == connected.ip && username == connected.user.username) {
-      users.push(connected.user.username);
-    }
-  }
-});
-
 //  HELPERS
 
 const sendToActiveUsers = (users, current, message) => {
@@ -184,7 +164,6 @@ const sendToActiveUsers = (users, current, message) => {
   for (let i = 0; i < users.length; i++) {
     for (let j = 0; j < connected.length; j++) {
       if (connected[j].user === users[i].username && users[i].username !== current.username) {
-        console.log('saljem');
         connected[j].socket.emit('message', message);
       }
     }

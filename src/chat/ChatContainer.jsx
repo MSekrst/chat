@@ -22,6 +22,7 @@ export default class ChatContainer extends React.Component {
     this.uploadFile = this.uploadFile.bind(this);
     this.openPrivate = this.openPrivate.bind(this);
     this.generateMessage = this.generateMessage.bind(this);
+    this.getPrivateUsers = this.getPrivateUsers.bind(this);
   }
 
   componentWillMount() {
@@ -50,6 +51,7 @@ export default class ChatContainer extends React.Component {
     const io = this.state.socketIo;
 
     this.getUsers();
+    this.getPrivateUsers();
 
     io.on('message', received => {
       const state = { ...this.state };
@@ -158,6 +160,10 @@ export default class ChatContainer extends React.Component {
       .catch(err => {
         // message not saved
       });
+  }
+
+  getPrivateUsers() {
+     // TODO - (MATIJA) - get private users for first usage
   }
 
   openConversation(rec) {
