@@ -20,6 +20,7 @@ export default class ChatContainer extends React.Component {
     this.getUsers = this.getUsers.bind(this);
     this.openConversation = this.openConversation.bind(this);
     this.uploadFile = this.uploadFile.bind(this);
+    this.openPrivate = this.openPrivate.bind(this);
   }
 
   componentWillMount() {
@@ -175,17 +176,29 @@ export default class ChatContainer extends React.Component {
       });
   }
 
+  openPrivate(){
+    $('#myModal3').modal('hide');
+    this.setState({
+      ...this.state, private: true
+    });
+  }
+
   render() {
     if (this.state && this.state.redirect) {
       return <Redirect to="/"/>
+    }
+
+    if (this.state && this.state.private){
+      return <Redirect to="/private" />
     }
 
     if (this.state.messages) {
       return (
         <div className="container centered chat">
           <Chat messages={this.state.messages} active={this.state.active}
-                received={this.state.received} open={this.openConversation}
+                received={this.state.received} open={this.openConversation} openPrivate={this.openPrivate}
                 uploadFile={this.uploadFile}
+                private={false}
                 click={this.clickHandler} sender={this.sendMessage} users={this.state.users}/>
         </div>
       );
