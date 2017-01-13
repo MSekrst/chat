@@ -14,8 +14,9 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import eu.rasus.fer.rasus.contactList.ContactListActivity;
 import eu.rasus.fer.rasus.chatsPreview.AllChatsPreviewFragment;
+import eu.rasus.fer.rasus.contactList.ContactListActivity;
+import eu.rasus.fer.rasus.profile.ProfileActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,9 +39,12 @@ public class MainActivity extends AppCompatActivity {
   public boolean onOptionsItemSelected(MenuItem item) {
     int id = item.getItemId();
 
-    if (id == R.id.action_settings) {
+    if (id == R.id.action_profile) {
+      Intent intent = new Intent(this, ProfileActivity.class);
+      startActivity(intent);
       return true;
     }
+
     return super.onOptionsItemSelected(item);
   }
 
@@ -69,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
   public void onResume() {
     super.onResume();
 
-    if (!Application.SOCEKT.connected()){
+    if (!Application.SOCEKT.connected()) {
       Application.SOCEKT.connect();
       Application.SOCEKT.emit("userAndroid", Application.USERNAME);
     }

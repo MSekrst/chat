@@ -36,15 +36,6 @@
           android:textSize="24sp"/>
 
         <ImageButton
-          android:id="@+id/private_chat"
-          android:layout_width="30dp"
-          android:layout_height="30dp"
-          android:layout_centerVertical="true"
-          android:layout_gravity="right"
-          android:background="@mipmap/ic_lock"
-          android:paddingStart="20dp"/>
-
-        <ImageButton
           android:id="@+id/new_chat"
           android:layout_width="28dp"
           android:layout_height="28dp"
