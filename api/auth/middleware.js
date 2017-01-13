@@ -18,7 +18,7 @@ export const authMiddleware = {
   },
 
   checkToken(req, res, next) {
-    const jwtSecret = process.env.JWT_SECRET;
+    const jwtSecret = process.env.JWT_SECRET || 'littleTalksBJTLKM';
 
     const header = req.get('Authorization');
 
@@ -36,6 +36,7 @@ export const authMiddleware = {
 
     jwt.verify(token, jwtSecret, (err, decoded) => {
       if (err) {
+        console.log("err"+ err);
         return res.status(401).send("Unauthorized");
       }
 
