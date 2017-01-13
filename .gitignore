@@ -17,8 +17,6 @@ database
 #word working files
 ~$b*
 
-#other files
+# production files
 .env
-
-#server
-
+api/www.js

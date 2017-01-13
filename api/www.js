@@ -18,6 +18,7 @@ dotenv.config({ silent: true });
 import routes from './routes';
 import { connectDatabase } from './mongo';
 
+
 const app = express();
 
 // connect to database
