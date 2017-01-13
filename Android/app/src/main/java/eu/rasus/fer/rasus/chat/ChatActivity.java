@@ -310,10 +310,4 @@ public class ChatActivity extends AppCompatActivity {
       }
     }
   }
-
-//  @OnItemClick(R.id.msgListView)
-//  public void downloadFile(final AdapterView<?> adapter, final View view, final int position, final long id) {
-//
-//
-//  }
 }

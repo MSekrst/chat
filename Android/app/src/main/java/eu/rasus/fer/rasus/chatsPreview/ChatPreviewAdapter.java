@@ -102,9 +102,9 @@ public class ChatPreviewAdapter extends BaseAdapter {
     public void fillView(ChatPreview chat) {
       title.setText(chat.receiver);
       lastMessage.setText(chat.lastMessageText);
-
+      Picasso.with(context).cancelRequest(image);
       if (chat.image != null && !chat.image.equals("")) {
-        Picasso.with(context).load(chat.image).fit().centerCrop().noFade().into(image);
+        Picasso.with(context).load(chat.image).error(R.drawable.placeholder).placeholder(R.drawable.placeholder).fit().centerCrop().noFade().into(image);
       } else {
         image.setImageResource(R.drawable.placeholder);
       }
