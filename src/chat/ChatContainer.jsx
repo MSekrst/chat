@@ -87,11 +87,12 @@ export default class ChatContainer extends React.Component {
   uploadFile(file, title) {
     fetch(file.preview).then(res => {
       res.blob().then(data => {
-        const reader = new FileReader();
         console.log('data', data);
+        const reader = new FileReader();
         reader.addEventListener("loadend", loadedFile => {
           const toSend = loadedFile.currentTarget.result;
-          console.log('', loadedFile);
+          console.log('lf', loadedFile);
+          console.log('ts', toSend);
           const message = this.generateMessage();
           message.bin = toSend;
           message.text = title;
@@ -104,7 +105,7 @@ export default class ChatContainer extends React.Component {
             body: JSON.stringify({bin: toSend}),
           });
         });
-        reader.readAsBinaryString(data);
+        reader.readAsArrayBuffer(data);
       })
     });
   }
