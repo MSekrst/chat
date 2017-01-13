@@ -1,243 +1,289 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingStart="15dp"
-                android:paddingEnd="15dp">
+<LinearLayout
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
-  <TextView
-    android:id="@+id/profile_username"
-    android:textSize="35sp"
-    android:layout_width="match_parent"
-    android:padding="10dp"
-    android:layout_height="wrap_content"/>
+    <android.support.design.widget.AppBarLayout
+      android:id="@+id/appbar"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingTop="@dimen/appbar_padding_top"
+      android:theme="@style/AppTheme.AppBarOverlay">
 
-  <View
-    android:id="@+id/profile_separator1"
-    android:layout_width="match_parent"
-    android:layout_height="1dp"
-    android:layout_below="@+id/profile_username"
-    android:background="@android:color/darker_gray"/>
+      <android.support.v7.widget.Toolbar
+        android:id="@+id/profile_toolbar"
+        app:layout_scrollFlags="scroll|enterAlways"
+        app:popupTheme="@style/AppTheme.PopupOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary">
 
-  <TextView
-    android:id="@+id/profile_label_no_open_chats"
-    android:layout_width="wrap_content"
-    android:paddingTop="15dp"
-    android:paddingBottom="15dp"
-    android:textSize="16sp"
-    android:layout_below="@+id/profile_separator1"
-    android:layout_height="wrap_content"
-    android:text="Number of open chats:"/>
+        <ImageButton
+          android:id="@+id/profile_back"
+          android:layout_width="30dp"
+          android:layout_height="30dp"
+          android:padding="10dp"
+          android:layout_centerVertical="true"
+          android:background="@mipmap/ic_back"/>
 
-  <TextView
-    android:id="@+id/profile_no_open_chats"
-    android:paddingTop="5dp"
-    android:textSize="30sp"
-    android:textColor="@color/colorAccent"
-    android:gravity="right"
-    android:layout_below="@+id/profile_separator1"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"/>
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_centerVertical="true"
+          android:text="Profile"
+          android:paddingLeft="10dp"
+          android:paddingStart="10dp"
+          android:textColor="@color/white"
+          android:textSize="21sp"/>
 
-  <TextView
-    android:id="@+id/profile_label_sent"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingBottom="15dp"
-    android:textSize="16sp"
-    android:layout_below="@+id/profile_label_no_open_chats"
-    android:text="Number of sent messages:"/>
+      </android.support.v7.widget.Toolbar>
 
-  <TextView
-    android:id="@+id/profile_sent"
-    android:textSize="30sp"
-    android:layout_marginTop="-9dp"
-    android:textColor="@color/colorAccent"
-    android:layout_width="match_parent"
-    android:layout_below="@+id/profile_label_no_open_chats"
-    android:gravity="right"
-    android:layout_height="wrap_content"/>
+    </android.support.design.widget.AppBarLayout>
 
-  <TextView
-    android:id="@+id/profile_label_recv"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:textSize="16sp"
-    android:paddingBottom="15dp"
-    android:layout_below="@+id/profile_label_sent"
-    android:text="Number of received messages:"/>
+  <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
-  <TextView
-    android:id="@+id/profile_recv"
-    android:layout_marginTop="-9dp"
-    android:textSize="30sp"
-    android:textColor="@color/colorAccent"
-    android:layout_below="@+id/profile_label_sent"
-    android:gravity="right"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"/>
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:orientation="vertical"
+                  android:paddingEnd="15dp"
+                  android:paddingStart="15dp">
 
-  <View
-    android:id="@+id/profile_separator2"
-    android:layout_width="match_parent"
-    android:layout_height="1dp"
-    android:layout_below="@+id/profile_label_recv"
-    android:background="@android:color/darker_gray"/>
+    <TextView
+      android:id="@+id/profile_username"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:padding="10dp"
+      android:textSize="35sp"/>
 
-  <TextView
-    android:id="@+id/profile_label_favourites"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:textColor="@color/colorPrimary"
-    android:textSize="25sp"
-    android:paddingTop="20dp"
-    android:paddingBottom="20dp"
-    android:layout_below="@+id/profile_separator2"
-    android:text="Favourites:"/>
+    <View
+      android:id="@+id/profile_separator1"
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:layout_below="@+id/profile_username"
+      android:background="@android:color/darker_gray"/>
 
-  <de.hdodenhof.circleimageview.CircleImageView
-    android:id="@+id/profile_favourites_image1"
-    android:layout_width="62dp"
-    android:layout_height="62dp"
-    android:layout_below="@id/profile_label_favourites"/>
+    <TextView
+      android:id="@+id/profile_label_no_open_chats"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/profile_separator1"
+      android:paddingBottom="15dp"
+      android:paddingTop="15dp"
+      android:text="Number of open chats:"
+      android:textSize="16sp"/>
 
-  <TextView
-    android:id="@+id/profile_favourites_username1"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:textSize="20sp"
-    android:layout_marginLeft="10dp"
-    android:layout_marginTop="18dp"
-    android:layout_below="@id/profile_label_favourites"
-    android:layout_toRightOf="@id/profile_favourites_image1"/>
+    <TextView
+      android:id="@+id/profile_no_open_chats"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/profile_separator1"
+      android:gravity="right"
+      android:paddingTop="5dp"
+      android:textColor="@color/colorAccent"
+      android:textSize="30sp"/>
 
-  <LinearLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_alignParentEnd="true"
-    android:orientation="vertical"
-    android:layout_marginTop="5dp"
-    android:layout_below="@id/profile_label_favourites">
+    <TextView
+      android:id="@+id/profile_label_sent"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/profile_label_no_open_chats"
+      android:paddingBottom="15dp"
+      android:text="Number of sent messages:"
+      android:textSize="16sp"/>
+
+    <TextView
+      android:id="@+id/profile_sent"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/profile_label_no_open_chats"
+      android:layout_marginTop="-9dp"
+      android:gravity="right"
+      android:textColor="@color/colorAccent"
+      android:textSize="30sp"/>
+
+    <TextView
+      android:id="@+id/profile_label_recv"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/profile_label_sent"
+      android:paddingBottom="15dp"
+      android:text="Number of received messages:"
+      android:textSize="16sp"/>
+
+    <TextView
+      android:id="@+id/profile_recv"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/profile_label_sent"
+      android:layout_marginTop="-9dp"
+      android:gravity="right"
+      android:textColor="@color/colorAccent"
+      android:textSize="30sp"/>
+
+    <View
+      android:id="@+id/profile_separator2"
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:layout_below="@+id/profile_label_recv"
+      android:background="@android:color/darker_gray"/>
+
+    <TextView
+      android:id="@+id/profile_label_favourites"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/profile_separator2"
+      android:paddingBottom="20dp"
+      android:paddingTop="20dp"
+      android:text="Favourites:"
+      android:textColor="@color/colorPrimary"
+      android:textSize="25sp"/>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+      android:id="@+id/profile_favourites_image1"
+      android:layout_width="62dp"
+      android:layout_height="62dp"
+      android:layout_below="@id/profile_label_favourites"/>
+
+    <TextView
+      android:id="@+id/profile_favourites_username1"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/profile_label_favourites"
+      android:layout_marginLeft="10dp"
+      android:layout_marginTop="18dp"
+      android:layout_toRightOf="@id/profile_favourites_image1"
+      android:textSize="20sp"/>
 
     <LinearLayout
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      android:layout_gravity="right">
+      android:layout_alignParentEnd="true"
+      android:layout_below="@id/profile_label_favourites"
+      android:layout_marginTop="5dp"
+      android:orientation="vertical">
 
-      <TextView
-        android:id="@+id/profile_favourites_label_sent1"
-        android:textSize="16sp"
-        android:text=""
-        android:layout_marginRight="5dp"
+      <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:orientation="horizontal">
 
-      <TextView
-        android:id="@+id/profile_favourites_sent1"
-        android:textSize="20sp"
-        android:textColor="@color/colorAccent"
+        <TextView
+          android:id="@+id/profile_favourites_label_sent1"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginRight="5dp"
+          android:text=""
+          android:textSize="16sp"/>
+
+        <TextView
+          android:id="@+id/profile_favourites_sent1"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textColor="@color/colorAccent"
+          android:textSize="20sp"/>
+
+      </LinearLayout>
+
+      <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
+        <TextView
+          android:id="@+id/profile_favourites_label_recv1"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginRight="5dp"
+          android:text=""
+          android:textSize="16sp"/>
+
+        <TextView
+          android:id="@+id/profile_favourites_recv1"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textColor="@color/colorAccent"
+          android:textSize="20sp"/>
+
+      </LinearLayout>
     </LinearLayout>
+
+    <!---->
+
+    <de.hdodenhof.circleimageview.CircleImageView
+      android:id="@+id/profile_favourites_image2"
+      android:layout_width="62dp"
+      android:layout_height="62dp"
+      android:layout_below="@id/profile_favourites_image1"
+      android:layout_marginTop="15dp"/>
+
+    <TextView
+      android:id="@+id/profile_favourites_username2"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/profile_favourites_image1"
+      android:layout_marginLeft="10dp"
+      android:layout_marginTop="33dp"
+      android:layout_toRightOf="@id/profile_favourites_image2"
+      android:textSize="20sp"/>
 
     <LinearLayout
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:orientation="horizontal">
+      android:layout_alignParentEnd="true"
+      android:layout_below="@id/profile_favourites_image1"
+      android:layout_marginTop="20dp"
+      android:orientation="vertical">
 
-      <TextView
-        android:id="@+id/profile_favourites_label_recv1"
-        android:textSize="16sp"
-        android:text=""
-        android:layout_marginRight="5dp"
+      <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:orientation="horizontal">
 
-      <TextView
-        android:id="@+id/profile_favourites_recv1"
-        android:textSize="20sp"
-        android:textColor="@color/colorAccent"
+        <TextView
+          android:id="@+id/profile_favourites_label_sent2"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginRight="5dp"
+          android:text=""
+          android:textSize="16sp"/>
+
+        <TextView
+          android:id="@+id/profile_favourites_sent2"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textColor="@color/colorAccent"
+          android:textSize="20sp"/>
+
+      </LinearLayout>
+
+      <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
+        <TextView
+          android:id="@+id/profile_favourites_label_recv2"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginRight="5dp"
+          android:text=""
+          android:textSize="16sp"/>
+
+        <TextView
+          android:id="@+id/profile_favourites_recv2"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textColor="@color/colorAccent"
+          android:textSize="20sp"/>
+
+      </LinearLayout>
     </LinearLayout>
+  </RelativeLayout>
   </LinearLayout>
 
-  <!---->
 
-  <de.hdodenhof.circleimageview.CircleImageView
-    android:id="@+id/profile_favourites_image2"
-    android:layout_marginTop="15dp"
-    android:layout_width="62dp"
-    android:layout_height="62dp"
-    android:layout_below="@id/profile_favourites_image1"/>
-
-  <TextView
-    android:id="@+id/profile_favourites_username2"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:textSize="20sp"
-    android:layout_marginLeft="10dp"
-    android:layout_marginTop="33dp"
-    android:layout_below="@id/profile_favourites_image1"
-    android:layout_toRightOf="@id/profile_favourites_image2"/>
-
-  <LinearLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_alignParentEnd="true"
-    android:orientation="vertical"
-    android:layout_marginTop="20dp"
-    android:layout_below="@id/profile_favourites_image1">
-
-    <LinearLayout
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      android:layout_gravity="right">
-
-      <TextView
-        android:id="@+id/profile_favourites_label_sent2"
-        android:textSize="16sp"
-        android:text=""
-        android:layout_marginRight="5dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-      <TextView
-        android:id="@+id/profile_favourites_sent2"
-        android:textSize="20sp"
-        android:textColor="@color/colorAccent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal">
-
-      <TextView
-        android:id="@+id/profile_favourites_label_recv2"
-        android:textSize="16sp"
-        android:text=""
-        android:layout_marginRight="5dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-      <TextView
-        android:id="@+id/profile_favourites_recv2"
-        android:textSize="20sp"
-        android:textColor="@color/colorAccent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    </LinearLayout>
-
-  </LinearLayout>
-
-</RelativeLayout>

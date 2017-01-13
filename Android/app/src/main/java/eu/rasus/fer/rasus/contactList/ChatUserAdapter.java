@@ -86,7 +86,11 @@ public class ChatUserAdapter extends BaseAdapter {
 
     public void fillView(ChatUser user) {
       username.setText(user.username);
-      Picasso.with(context).load(user.image).placeholder(R.drawable.placeholder).error(R.drawable.placeholder).fit().centerCrop().noFade().into(image);
-    }
+      Picasso.with(context).cancelRequest(image);
+      if (user.image != null && !user.image.equals("")) {
+        Picasso.with(context).load(user.image).placeholder(R.drawable.placeholder).error(R.drawable.placeholder).fit().centerCrop().noFade().into(image);
+      }
+      else image.setImageResource(R.drawable.placeholder);
+      }
   }
 }

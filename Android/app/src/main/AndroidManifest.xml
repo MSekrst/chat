@@ -20,7 +20,7 @@
 
     <activity
       android:name=".profile.ProfileActivity"
-      android:label="Profile">
+      android:theme="@style/AppTheme.NoActionBar">
     </activity>
 
     <activity
