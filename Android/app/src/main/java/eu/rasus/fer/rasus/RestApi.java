@@ -1,5 +1,6 @@
 package eu.rasus.fer.rasus;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -12,6 +13,7 @@ import eu.rasus.fer.rasus.chat.ChatMessage;
 import eu.rasus.fer.rasus.chat.ChatMessageWrapper;
 import eu.rasus.fer.rasus.chatsPreview.ChatPreview;
 import eu.rasus.fer.rasus.login.User;
+import eu.rasus.fer.rasus.profile.Profile;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
@@ -63,5 +65,8 @@ public interface RestApi {
   Call<ChatMessage> sendFile(@Header("Authorization") String token, @Path("chatId") String conversationId, @Body ChatMessageWrapper message);
 
   @GET("api/messages/getFile/{fileId}")
-  Call<JsonObject> downloadFile(@Header("Authorization") String token, @Path("fileId") String fileId);
+  Call< byte[] > downloadFile(@Header("Authorization") String token, @Path("fileId") String fileId);
+
+  @GET("api/users/profile")
+  Call<Profile> getProfile(@Header("Authorization") String token);
 }

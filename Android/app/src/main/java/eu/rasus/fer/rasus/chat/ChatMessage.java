@@ -2,6 +2,8 @@ package eu.rasus.fer.rasus.chat;
 
 import android.util.Base64OutputStream;
 
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -14,7 +16,7 @@ public class ChatMessage {
   public String date;
   public String time;
   public String fileId;
-  public byte[] bin;
+  public short[] bin;
 
   public transient boolean  isMine;
 

@@ -20,21 +20,19 @@ usersRouter.get('/', authMiddleware.checkToken, (req, res) => {
 });
 
 
-usersRouter.get('/:id', authMiddleware.checkToken, (req, res) => {
+usersRouter.get('/profile', authMiddleware.checkToken, (req, res) => {
   const db = getDb();
 
-  const _id = ObjectID(req.params.id);
-  const user = db.collection('users').findOne({_id});
+  const username=req.user.username;
+  const user = db.collection('users').findOne({username});
   user.then(data => {
     const conversation = db.collection('messages').find({users: {$elemMatch: {username: data.username}}}).toArray((err, conversations) => {
       if (err) {
         res.status(500).json(err);
       }
-      delete data['password'];
-      delete data['facebook'];
-
       var statistic = {
-        user: data
+        username: data.username,
+        image: data.image
       }
 
       var numberOfConversations = 0;
@@ -83,11 +81,9 @@ usersRouter.get('/:id', authMiddleware.checkToken, (req, res) => {
       statistic['favourites'].push(firstFavourite);
       statistic['favourites'].push(secondFavourite);
 
-
-      res.status(200).json(statistic);
+      res.status(203).json(statistic);
     });
   });
-
 });
 
 export default usersRouter;

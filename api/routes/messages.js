@@ -140,6 +140,7 @@ messageRouter.post('/uploadFile/:id', authMiddleware.checkToken, (req, res) => {
 
   db.collection('files').insertOne({fileName: fileName, file: message.bin}, (err, inserted) => {
     if (err) {
+      console.log(err);
        res.status(500).json(err);
     }
     else {

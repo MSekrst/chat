@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Path;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -25,18 +27,22 @@ import android.widget.TextView;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.util.List;
 
@@ -135,7 +141,11 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     title.setText(receiver);
-    Picasso.with(this).load(chatInfo.image).placeholder(R.drawable.placeholder).error(R.drawable.placeholder).fit().centerCrop().noFade().into(image);
+
+    if (chatInfo.image!=null && !chatInfo.image.equals("")) {
+      Picasso.with(this).load(chatInfo.image).fit().centerCrop().noFade().into(image);
+    }
+    else image.setImageResource(R.drawable.placeholder);
 
     socket = Application.SOCEKT;
     socket.on("message", handleIncomingMessage);
@@ -156,20 +166,33 @@ public class ChatActivity extends AppCompatActivity {
                                                     .build();
           RestApi api = retrofit.create(RestApi.class);
 
-          Call<JsonObject> call = api.downloadFile(Application.TOKEN, message.fileId);
-
-          call.enqueue(new Callback<JsonObject>() {
-
-            @Override
-            public void onResponse(final Call<JsonObject> call, final Response<JsonObject> response) {
-              int a = 2+3;
-            }
-
-            @Override
-            public void onFailure(final Call<JsonObject> call, final Throwable t) {
-              int a = 2+3;
-            }
-          });
+//          Call< byte[] > call = api.downloadFile(Application.TOKEN, message.fileId);
+//
+//          call.enqueue(new Callback< byte[] >() {
+//
+//            @Override
+//            public void onResponse(final Call< byte[] > call, final Response< byte[] > response) {
+//              Bitmap bitmap = BitmapFactory.decodeByteArray(response.body(), 0, response.body().length);
+//              int b = 2+3;
+//              String filename = "file.jpeg";
+//              File sd = Environment.getExternalStorageDirectory();
+//              File dest = new File(sd, filename);
+//
+//              try {
+//                FileOutputStream out = new FileOutputStream(dest);
+//                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, out);
+//                out.flush();
+//                out.close();
+//              } catch (Exception e) {
+//                e.printStackTrace();
+//              }
+//            }
+//
+//            @Override
+//            public void onFailure(final Call< byte[] > call, final Throwable t) {
+//              int a = 2+3;
+//            }
+//          });
 
         }
       }
@@ -281,8 +304,11 @@ public class ChatActivity extends AppCompatActivity {
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
-        chatMessage.bin = stream.toByteArray();
+        chatMessage.bin = new short[stream.toByteArray().length];
 
+        for (int i=0;i<stream.toByteArray().length;i++){
+          chatMessage.bin[i]  = (short) ((256 + (short)stream.toByteArray()[i])%256);
+        }
 
 
         ChatMessageWrapper wrapper = new ChatMessageWrapper();

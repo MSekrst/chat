@@ -19,6 +19,11 @@
       android:value="@string/facebook_app_id"/>
 
     <activity
+      android:name=".profile.ProfileActivity"
+      android:label="Profile">
+    </activity>
+
+    <activity
       android:name="eu.rasus.fer.rasus.MainActivity"
       android:theme="@style/AppTheme.NoActionBar">
     </activity>
