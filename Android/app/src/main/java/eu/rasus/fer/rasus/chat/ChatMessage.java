@@ -13,7 +13,8 @@ public class ChatMessage {
   public String sender;
   public String date;
   public String time;
-  public Base64OutputStream bin;
+  public String fileId;
+  public byte[] bin;
 
   public transient boolean  isMine;
 

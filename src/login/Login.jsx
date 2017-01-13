@@ -40,6 +40,12 @@ export default class Login extends React.Component {
             wait: false,
           });
         });
+    } else {
+      this.setState({
+        username: '',
+        password: '',
+        wait: false,
+      });
     }
   }
 
@@ -67,7 +73,6 @@ export default class Login extends React.Component {
         const dataPromise = res.json();
 
         dataPromise.then(data => {
-          console.log('', data);
           localStorage.ccUsername = data.username;
 
           this.setState({ redirect: true , token: data.token, username: data.username });

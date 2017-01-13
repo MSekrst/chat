@@ -13,10 +13,14 @@ export default class ChatContainer extends React.Component {
       localStorage['ccUsername'] = this.props.location.query.username;
     }
 
-    this.state = {};
+    this.state = {received: []};
 
     this.clickHandler = this.clickHandler.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
+    this.getUsers = this.getUsers.bind(this);
+    this.openConversation = this.openConversation.bind(this);
+    this.uploadFile = this.uploadFile.bind(this);
+    this.generateMessage = this.generateMessage.bind(this);
   }
 
   componentWillMount() {
@@ -27,40 +31,87 @@ export default class ChatContainer extends React.Component {
     }).then(checkStatus)
       .then(res => {
         res.json().then(messages => {
-          this.setState({ messages, active: messages[0] });
+          this.setState({messages, active: messages[0]});
         });
       }).catch(() => {
-        this.setState({ redirect: true });
+      this.setState({redirect: true});
     });
 
     const socketIo = window.io.connect();
     socketIo.emit('user', {
       username: localStorage.ccUsername,
     });
-    this.setState({ ...this.state, socketIo });
+
+    this.setState({...this.state, socketIo});
   }
 
   componentDidMount() {
     const io = this.state.socketIo;
-    io.on('message', m => {
-      console.log('new message', m);
+
+    this.getUsers();
+
+    io.on('message', received => {
+      const state = {...this.state};
+      for (const m of state.messages) {
+        if (m._id === received.chatId) {
+          m.messages.push(received);
+
+          if (state.active._id !== received.chatId) {
+            state.received.push(received.chatId);
+          }
+
+          break;
+        }
+      }
+
+      this.setState(state);
     });
+  }
+
+  generateMessage() {
+    const now = new Date();
+
+    return {
+      date: zeroPad(now.getDate()) + '.' + zeroPad(now.getMonth() + 1) + '.' + now.getFullYear(),
+      time: zeroPad(now.getHours()) + ':' + zeroPad(now.getMinutes()) + ':' + zeroPad(now.getSeconds()),
+      chatId: this.state.active._id,
+    };
   }
 
   // passed as click prop
   clickHandler(id) {
     // [0] to extract matching object from array
-    this.setState({ ...this.state, active: this.state.messages.filter(c => c._id === id )[0]});
+    this.setState({...this.state, active: this.state.messages.filter(c => c._id === id)[0]});
+  }
+
+  uploadFile(file, title) {
+    fetch(file.preview).then(res => {
+      res.blob().then(data => {
+        const reader = new FileReader();
+        console.log('data', data);
+        reader.addEventListener("loadend", loadedFile => {
+          const toSend = loadedFile.currentTarget.result;
+          console.log('', loadedFile);
+          const message = this.generateMessage();
+          message.bin = toSend;
+          message.text = title;
+          fetch('/api/messages/uploadFile/' + this.state.active._id, {
+            method: 'POST',
+            headers: {
+              'Authorization': 'Bearer ' + localStorage.ccToken,
+              'Content-Type': "application/json",
+            },
+            body: JSON.stringify(message),
+          });
+        });
+        reader.readAsBinaryString(data);
+      })
+    });
   }
 
   sendMessage(text) {
-    const now = new Date();
-    const message = {
-      date: zeroPad(now.getDate()) + '.' + zeroPad(now.getMonth() + 1) + '.' + now.getFullYear(),
-      time: zeroPad(now.getHours()) + ':' + zeroPad(now.getMinutes()) + ':' + zeroPad(now.getSeconds()),
-      text,
-      chatId: this.state.active._id,
-    };
+    const message = this.generateMessage();
+    message.text = text;
 
     fetch('/api/messages/' + this.state.active._id, {
       method: 'POST',
@@ -68,16 +119,74 @@ export default class ChatContainer extends React.Component {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + localStorage.ccToken,
       },
-      body: JSON.stringify({ message }),
+      body: JSON.stringify({message}),
     }).then(checkStatus)
       .then(() => {
         const active = this.state.active;
         active.messages.push(message);
 
-        this.setState({ ...this.state, active });
+        this.setState({...this.state, active});
       })
       .catch(err => {
         // message not saved
+      });
+  }
+
+  getUsers() {
+    fetch('/api/users', {
+      headers: {
+        'Authorization': 'Bearer ' + localStorage.ccToken,
+      },
+    }).then(checkStatus)
+      .then(res => {
+        res.json().then(users => {
+          users = users.map(u => {
+            return {label: u.username, image: u.image, value: u._id}
+          });
+
+          this.setState({...this.state, users});
+        });
+      })
+      .catch(err => {
+        // message not saved
+      });
+  }
+
+  openConversation(rec) {
+    const users = [{
+      username: rec.label,
+      image: rec.image,
+    }];
+
+    fetch('/api/messages/init', {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.ccToken,
+      },
+      body: JSON.stringify({ users }),
+    }).then(checkStatus)
+      .then(res => {
+        res.json().then(conversation => {
+          const messages = this.state.messages;
+          let contains = false;
+          messages.filter(m => {console.log(m._id, conversation._id); if (m._id === conversation._id) contains = true; });
+          if (!contains) {
+            messages.push(conversation);
+          }
+
+          // close add chat modal
+          $('#myModal').modal('hide');
+
+          this.setState({
+            ...this.state,
+            messages,
+            active: conversation,
+          });
+        });
+      })
+      .catch(() => {
+        // conversation not opened
       });
   }
 
@@ -88,10 +197,11 @@ export default class ChatContainer extends React.Component {
 
     if (this.state.messages) {
       return (
-        <div style={{width: "100%", height: "100%"}}>
-          <div className="container centered chat">
-            <Chat messages={this.state.messages} active={this.state.active} click={this.clickHandler} sender={this.sendMessage}/>
-          </div>
+        <div className="container centered chat">
+          <Chat messages={this.state.messages} active={this.state.active}
+                received={this.state.received} open={this.openConversation}
+                uploadFile={this.uploadFile}
+                click={this.clickHandler} sender={this.sendMessage} users={this.state.users}/>
         </div>
       );
     }

@@ -41,31 +41,37 @@ messageRouter.get('/users', authMiddleware.checkToken, (req, res) => {
   });
 });
 
-// ova ruta radi za android, ako ju je potrebno mijenjati napraviti novu rutu :D
-// VAŽNO: useri u bazi moraju biti sortirani po usernameu i oblika _id, image, username da bi radilo!!!!
+/*
+ IMPORTANT: Users array must be sorted by username!
+ */
 messageRouter.post('/init', authMiddleware.checkToken, (req, res) => {
   const db = getDb();
 
   let users = req.body.users;
+  db.collection("users").findOne({username: req.user.username}, (err, data) => {
 
-  db.collection("users").findOne({"_id": ObjectID(req.user._id)}, (err, data) => {
     let user = {
-      image : data.image,
-      username : data.username
-  };
+      username: data.username,
+      image: data.image,
+    };
 
     users.push(user);
-    users = users.sort((user1, user2) =>  user1.username.localeCompare(user2.username));
+    users = users.sort((user1, user2) => user1.username.localeCompare(user2.username));
 
-    db.collection('messages').findOneAndUpdate({ users: users }, { $setOnInsert: { title: req.body.title || '', messages:[] } },
-      { returnOriginal: false, upsert: true },(err, data) => {
-      if (err) {
-        console.log(err);
-        return res.status(500).json(err);
-      }
-        
-      return res.status(200).json(data.value);
-    });
+    db.collection('messages').findOneAndUpdate({users: users}, {
+        $setOnInsert: {
+          title: req.body.title || '',
+          messages: []
+        }
+      },
+      {returnOriginal: false, upsert: true}, (err, data) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json(err);
+        }
+
+        return res.status(200).json(data.value);
+      });
   });
 });
 
@@ -88,7 +94,6 @@ messageRouter.get('/:id', authMiddleware.checkToken, (req, res) => {
   });
 });
 
-// ova ruta radi za android, ako ju je potrebno mijenjati napraviti novu rutu :D
 messageRouter.post('/:id', authMiddleware.checkToken, (req, res) => {
   const db = getDb();
 
@@ -98,20 +103,16 @@ messageRouter.post('/:id', authMiddleware.checkToken, (req, res) => {
   const _id = ObjectID(req.params.id);
   const connected = getConnected();
 
-  console.log('', req.body.message);
-
   db.collection('messages').findOneAndUpdate({_id},
     {$push: {messages: req.body.message}}, (err, data) => {
       if (err) return res.status(500).json({message: err});
 
       const users = data.value.users;
 
-      console.log('users', users);
-      console.log('live', connected);
-
       for (let i = 0; i < users.length; i++) {
         for (let j = 0; j < connected.length; j++) {
-          if (connected[j].user == users[i].username && users[i].username != req.user.username) {
+          console.log(connected[j].user, users[i].username);
+          if (connected[j].user === users[i].username && users[i].username !== req.user.username) {
             console.log('saljem');
             connected[j].socket.emit('message', req.body.message);
           }
@@ -122,51 +123,39 @@ messageRouter.post('/:id', authMiddleware.checkToken, (req, res) => {
     });
 });
 
-messageRouter.post('/uploadFile/:id', (req, res) => { console.log(req);}, authMiddleware.checkToken, multipartMiddleware, (req, res) => {
+
+messageRouter.post('/uploadFile/:id', authMiddleware.checkToken, (req, res) => {
   const db = getDb();
   const connected = getConnected();
-  
-  req.body.message['sender'] = req.user.username;
-  const _id = ObjectID(req.params.id);
+  console.log(req.body.message);
+
   var message = req.body.message;
-  var fileName = req.files.file.originalFilename;
-  var filePath = req.files.file.path;
+  console.log(message);
+  message['sender'] = req.user.username;
+
+  const _id = ObjectID(req.params.id);
+
+  var fileName = message.text;
   message.type = "file";
-  message.fileName = fileName;
 
-  var bin = fs.readFile(filePath, (err, data) => {
-
-    db.collection('files').insertOne({
-      fileName: fileName,
-      file: Binary(data),
-    }, (err, inserted) => {
-      if (err) {
-        return res.status(500).json(err);
-      }
-      message.fileId = inserted.insertedId;
-
+  db.collection('files').insertOne({fileName: fileName, file: message.bin}, (err, inserted) => {
+    if (err) {
+       res.status(500).json(err);
+    }
+    else {
+      message.fileId = inserted.insertedId.toString();
+      delete message['bin'];
       db.collection('messages').updateOne({_id}, {
         $push: {messages: message}
       }, err => {
         if (err) {
-          return res.status(500).json({message: err});
+           res.status(500).json({message: err});
         }
+        console.log(message);
+         res.status(200).json(message);
       });
-    });
-    console.log('', req.body.message);
+    }
   });
-  // for (let i = 0; i < data.users.length; i++) {
-  //   for (let i = 0; i < connected.length; i++) {
-  //     if (connected[i].user == data.users[i].username && data.users[i].username != req.user.username) {
-  //       console.log('saljem', req.body.message);
-  //       connected[i].socket.emit('message', req.body.message);
-  //       break;
-  //     }
-  //   }
-  // }
-  fs.unlink(filePath, () => {
-  });
-  return res.status(204).json();
 
 });
 
@@ -204,6 +193,5 @@ messageRouter.get('/private', authMiddleware.checkToken, (req, res) => {
     }
   }
 });
-
 
 export default messageRouter;

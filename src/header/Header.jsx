@@ -11,8 +11,8 @@ export default class Header extends React.Component {
   }
 
   logout() {
-    localStorage.ccUsername = undefined;
-    localStorage.ccToken = undefined;
+    localStorage.removeItem('ccUsername');
+    localStorage.removeItem('ccToken');
 
     this.setState({redirect: true});
   }

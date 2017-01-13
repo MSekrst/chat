@@ -1,6 +1,7 @@
 package eu.rasus.fer.rasus;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import java.io.InputStream;
 import java.util.List;
@@ -57,8 +58,10 @@ public interface RestApi {
   @POST("api/messages/init")
   Call<ChatPreview> init(@Header("Authorization") String token, @Body ChatUserWrapper users);
 
-  @Multipart
-  @Headers("Content-Type: multipart/form-data; boundary=-----6hz5rhtetetet")
+  @Headers("Content-Type: application/json")
   @POST("api/messages/uploadFile/{chatId}")
-  Call<ResponseBody> sendFile(@Header("Authorization") String token, @Path("chatId") String conversationId, @Part MultipartBody.Part file);
+  Call<ChatMessage> sendFile(@Header("Authorization") String token, @Path("chatId") String conversationId, @Body ChatMessageWrapper message);
+
+  @GET("api/messages/getFile/{fileId}")
+  Call<JsonObject> downloadFile(@Header("Authorization") String token, @Path("fileId") String fileId);
 }

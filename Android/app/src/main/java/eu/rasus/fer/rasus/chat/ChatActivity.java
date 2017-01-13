@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Base64OutputStream;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -24,6 +25,7 @@ import android.widget.TextView;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
@@ -41,6 +43,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnItemClick;
 import eu.rasus.fer.rasus.Application;
 import eu.rasus.fer.rasus.HttpsConstants;
 import eu.rasus.fer.rasus.R;
@@ -80,7 +83,6 @@ public class ChatActivity extends AppCompatActivity {
   private Gson gson;
   private String receiver;
   private ChatPreview chatInfo;
-  private RestApi api;
 
   private Emitter.Listener handleIncomingMessage = new Emitter.Listener() {
 
@@ -142,15 +144,50 @@ public class ChatActivity extends AppCompatActivity {
 
     msgListView.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
     msgListView.setStackFromBottom(true);
+
+    msgListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+      @Override
+      public void onItemClick(final AdapterView<?> adapter, final View view, final int position, final long l) {
+        ChatMessage message = (ChatMessage) chatAdapter.getItem(position);
+
+        if (message.fileId!=null && message.fileId!=""){
+          Retrofit retrofit = new Retrofit.Builder().baseUrl(HttpsConstants.ADDRES).client(HttpsConstants.getUnsafeOkHttpClient()).addConverterFactory(GsonConverterFactory.create())
+                                                    .build();
+          RestApi api = retrofit.create(RestApi.class);
+
+          Call<JsonObject> call = api.downloadFile(Application.TOKEN, message.fileId);
+
+          call.enqueue(new Callback<JsonObject>() {
+
+            @Override
+            public void onResponse(final Call<JsonObject> call, final Response<JsonObject> response) {
+              int a = 2+3;
+            }
+
+            @Override
+            public void onFailure(final Call<JsonObject> call, final Throwable t) {
+              int a = 2+3;
+            }
+          });
+
+        }
+      }
+    });
   }
 
   @Override
   public void onResume() {
     super.onResume();
 
+    if (!Application.SOCEKT.connected()){
+      Application.SOCEKT.connect();
+      Application.SOCEKT.emit("userAndroid", Application.USERNAME);
+    }
+
     Retrofit retrofit = new Retrofit.Builder().baseUrl(HttpsConstants.ADDRES).client(HttpsConstants.getUnsafeOkHttpClient()).addConverterFactory(GsonConverterFactory.create())
                                               .build();
-    api = retrofit.create(RestApi.class);
+    RestApi api = retrofit.create(RestApi.class);
 
     Call<List<ChatMessage>> call = api.getConversationHistory(Application.TOKEN, chatInfo.id);
 
@@ -182,6 +219,13 @@ public class ChatActivity extends AppCompatActivity {
 
       ChatMessageWrapper wrapper = new ChatMessageWrapper();
       wrapper.message = chatMessage;
+
+      Retrofit retrofit = new Retrofit.Builder().baseUrl(HttpsConstants.ADDRES).client(HttpsConstants.getUnsafeOkHttpClient()).addConverterFactory(GsonConverterFactory.create())
+                                                .build();
+
+      RestApi api = retrofit.create(RestApi.class);
+
+
       Call<Void> call = api.sendMesssage(Application.TOKEN, chatInfo.id, wrapper);
 
       call.enqueue(new Callback<Void>() {
@@ -237,24 +281,26 @@ public class ChatActivity extends AppCompatActivity {
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
-        chatMessage.bin = new Base64OutputStream(stream,0);
+        chatMessage.bin = stream.toByteArray();
 
-        chatAdapter.add(chatMessage);
-        chatAdapter.notifyDataSetChanged();
+
 
         ChatMessageWrapper wrapper = new ChatMessageWrapper();
         wrapper.message = chatMessage;
-        Call<Void> call = api.sendMesssage(Application.TOKEN, chatInfo.id, wrapper);
+        Call<ChatMessage> call = api.sendFile(Application.TOKEN, chatInfo.id, wrapper);
 
-        call.enqueue(new Callback<Void>() {
+        call.enqueue(new Callback<ChatMessage>() {
 
           @Override
-          public void onResponse(final Call<Void> call, final Response<Void> response) {
-
+          public void onResponse(final Call<ChatMessage> call, final Response<ChatMessage> response) {
+            ChatMessage message = response.body();
+            message.isMine = true;
+            chatAdapter.add(message);
+            chatAdapter.notifyDataSetChanged();
           }
 
           @Override
-          public void onFailure(final Call<Void> call, final Throwable t) {
+          public void onFailure(final Call<ChatMessage> call, final Throwable t) {
           int a= 2+3;
           }
         });
@@ -264,4 +310,10 @@ public class ChatActivity extends AppCompatActivity {
       }
     }
   }
+
+//  @OnItemClick(R.id.msgListView)
+//  public void downloadFile(final AdapterView<?> adapter, final View view, final int position, final long id) {
+//
+//
+//  }
 }
