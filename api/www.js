@@ -41,7 +41,7 @@ app.use(passport.initialize());
 
 // HTTP Server
 const server = http.createServer((req, res) => {
-  res.writeHead(301, { "Location": "https://localhost:" + sPort + req.url });
+  res.writeHead(301, { "Location": "https://" + req.headers.host + ":" + sPort + req.url });
   res.end();
 });
 
@@ -49,6 +49,11 @@ const server = http.createServer((req, res) => {
 const options = {
   key: fs.readFileSync(resolve('./cert/server.key')),
   cert: fs.readFileSync(resolve('./cert/server.crt'))
+};
+
+const optionsProduction = {
+  key: fs.readFileSync(resolve('/etc/letsencrypt/archive/chitchat.cf/privkey1.pem')),
+  cert: fs.readFileSync(resolve('/etc/letsencrypt/archive/chitchat.cf/keychain1.pem'))
 };
 
 const sServer = https.createServer(options, app);
