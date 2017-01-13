@@ -58,19 +58,21 @@ usersRouter.get('/:id', authMiddleware.checkToken, (req, res) => {
           }
           var reciever;
           if (conversation.users[0].username == data.username) {
-            reciever = conversation.users[1].username;
+            reciever = conversation.users[1];
           } else {
-            reciever = conversation.users[0].username;
+            reciever = conversation.users[0];
           }
           if (firstFavourite.sendMessages == undefined || firstFavourite.sendMessages < sendMessages) {
             secondFavourite = firstFavourite;
             firstFavourite = {
-              username: reciever,
+              username: reciever.username,
+              img: reciever.image,
               sendMessages: sendMessages
             }
           } else if (secondFavourite.sendMessages == undefined || secondFavourite.sendMessages < sendMessages) {
             secondFavourite = {
-              username: reciever,
+              username: reciever.username,
+              img: reciever.image,
               sendMessages: sendMessages
             }
           }
@@ -83,7 +85,7 @@ usersRouter.get('/:id', authMiddleware.checkToken, (req, res) => {
       statistic['favourites'].push(firstFavourite);
       statistic['favourites'].push(secondFavourite);
 
-
+      console.log(statistic);
       res.status(200).json(statistic);
     });
   });
