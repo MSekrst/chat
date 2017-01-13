@@ -7,8 +7,6 @@
 html, body {
   height: 100%;
   width: 100%;
-  background-color: #6ec1e5;
-
 }
 
 /*----------------------------------------------*/
@@ -33,6 +31,10 @@ html, body {
   height: 100%;
 }
 
+#mainDiv {
+  width: inherit;
+  height: inherit;
+}
 /*----------------------------------------------*/
 /*Header.jsx*/
 
@@ -167,6 +169,12 @@ html, body {
 
 /*----------------------------------------------*/
 /*Login.jsx* & Register.jsx*/
+
+.loginBackground {
+  width: 100%;
+  height: 100%;
+  background-color: #6ec1e5;
+}
 
 .login {
   color: #777;
@@ -399,6 +407,7 @@ html, body {
   margin-left: 52%;
   margin-right: 5px;
   background-color: #f1f1f1;
+  color: #333;
 }
 
 .inputForm {

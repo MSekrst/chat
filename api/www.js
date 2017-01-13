@@ -31,8 +31,8 @@ const sPort = process.env.SPORT || 3000;
 // middlewares
 app.use(cors());
 app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({ extended: false, limit: '16mb' }));
+app.use(bodyParser.urlencoded({ extended: false, limit: '16mb' }));
 app.use(favicon('public/images/favicon.ico'));
 
 // passport initialization

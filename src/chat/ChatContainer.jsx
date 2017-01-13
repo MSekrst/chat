@@ -52,7 +52,7 @@ export default class ChatContainer extends React.Component {
     this.getUsers();
 
     io.on('message', received => {
-      const state = {...this.state};
+      const state = { ...this.state };
       for (const m of state.messages) {
         if (m._id === received.chatId) {
           m.messages.push(received);
@@ -88,23 +88,29 @@ export default class ChatContainer extends React.Component {
   uploadFile(file, title) {
     fetch(file.preview).then(res => {
       res.blob().then(data => {
-        console.log('data', data);
         const reader = new FileReader();
         reader.addEventListener("loadend", loadedFile => {
           const toSend = loadedFile.currentTarget.result;
-          console.log('lf', loadedFile);
-          console.log('ts', toSend);
           const message = this.generateMessage();
-          message.bin = toSend;
+          message.bin = Array.apply(null, new Uint8Array(toSend));
           message.text = title;
           fetch('/api/messages/uploadFile/' + this.state.active._id, {
             method: 'POST',
             headers: {
               'Authorization': 'Bearer ' + localStorage.ccToken,
-              'Content-Type': "application/json",
+              'Content-Type': 'application/json',
             },
             body: JSON.stringify(message),
-          });
+          })
+            .then(checkStatus)
+            .then(res => {
+              res.json().then(data => {
+                const active = this.state.active;
+                active.messages.push(data);
+
+                this.setState({...this.state, active});
+              })
+            });
         });
         reader.readAsArrayBuffer(data);
       })
