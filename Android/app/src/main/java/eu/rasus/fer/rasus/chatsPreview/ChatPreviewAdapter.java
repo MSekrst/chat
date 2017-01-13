@@ -103,7 +103,11 @@ public class ChatPreviewAdapter extends BaseAdapter {
       title.setText(chat.receiver);
       lastMessage.setText(chat.lastMessageText);
 
-      Picasso.with(context).load(chat.image).placeholder(R.drawable.placeholder).error(R.drawable.placeholder).fit().centerCrop().noFade().into(image);
+      if (chat.image != null && !chat.image.equals("")) {
+        Picasso.with(context).load(chat.image).fit().centerCrop().noFade().into(image);
+      } else {
+        image.setImageResource(R.drawable.placeholder);
+      }
 
       SimpleDateFormat time_formatter = new SimpleDateFormat("HH:mm");
       SimpleDateFormat date_formatter = new SimpleDateFormat("dd.MM.yyyy");

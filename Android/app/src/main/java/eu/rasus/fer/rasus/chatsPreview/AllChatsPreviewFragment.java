@@ -3,7 +3,6 @@ package eu.rasus.fer.rasus.chatsPreview;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,8 +16,6 @@ import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +27,6 @@ import eu.rasus.fer.rasus.HttpsConstants;
 import eu.rasus.fer.rasus.R;
 import eu.rasus.fer.rasus.RestApi;
 import eu.rasus.fer.rasus.chat.ChatActivity;
-import eu.rasus.fer.rasus.chat.ChatMessage;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -77,8 +73,7 @@ public class AllChatsPreviewFragment extends Fragment {
           itemContainer.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
           if (response.body().size() == 0) {
             noChats.setVisibility(View.VISIBLE);
-          }
-          else {
+          } else {
             noChats.setVisibility(View.INVISIBLE);
           }
           itemContainer.setAdapter(chatPreviewAdapter);
@@ -105,7 +100,7 @@ public class AllChatsPreviewFragment extends Fragment {
         .create();
 
     retrofit = new Retrofit.Builder().baseUrl(HttpsConstants.ADDRES).client(HttpsConstants.getUnsafeOkHttpClient()).addConverterFactory(GsonConverterFactory.create(gson))
-                                              .build();
+                                     .build();
     api = retrofit.create(RestApi.class);
 
     call = api.getAllMessages(Application.TOKEN);
@@ -127,8 +122,7 @@ public class AllChatsPreviewFragment extends Fragment {
         itemContainer.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         if (response.body().size() == 0) {
           noChats.setVisibility(View.VISIBLE);
-        }
-        else {
+        } else {
           noChats.setVisibility(View.INVISIBLE);
         }
         itemContainer.setAdapter(chatPreviewAdapter);

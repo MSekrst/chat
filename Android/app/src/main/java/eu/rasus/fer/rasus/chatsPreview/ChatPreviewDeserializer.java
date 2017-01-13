@@ -52,6 +52,7 @@ public class ChatPreviewDeserializer implements JsonDeserializer<ChatPreview> {
   }
 
   private class User {
+
     String username;
     String image;
   }
