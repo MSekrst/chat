@@ -20,7 +20,3 @@ database
 
 #tmp files
 tmp
-
-# production files
-.env
-api/www.js
