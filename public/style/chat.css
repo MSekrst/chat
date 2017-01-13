@@ -7,8 +7,6 @@
 html, body {
   height: 100%;
   width: 100%;
-  background-color: #6ec1e5;
-
 }
 
 /*----------------------------------------------*/
@@ -33,6 +31,10 @@ html, body {
   height: 100%;
 }
 
+#mainDiv {
+  width: inherit;
+  height: inherit;
+}
 /*----------------------------------------------*/
 /*Header.jsx*/
 
@@ -168,6 +170,12 @@ html, body {
 /*----------------------------------------------*/
 /*Login.jsx* & Register.jsx*/
 
+.loginBackground {
+  width: 100%;
+  height: 100%;
+  background-color: #6ec1e5;
+}
+
 .login {
   color: #777;
   height: 75%;
@@ -200,7 +208,7 @@ html, body {
 }
 
 .panelDiv{
-  background-color: white;
+  background-color: whitesmoke;
   width: 60%;
   height: 70%;
   top: 50%;
@@ -399,6 +407,7 @@ html, body {
   margin-left: 52%;
   margin-right: 5px;
   background-color: #f1f1f1;
+  color: #333;
 }
 
 .inputForm {
@@ -491,4 +500,92 @@ html, body {
 }
 ::-webkit-scrollbar-corner {
   background: transparent;
+}
+
+.backBackground{
+  background-color: black !important;
+}
+
+.darkInput{
+  background-color: black !important;
+}
+
+.fullScreen{
+  left: 0 !important;
+  width: 100% !important;
+}
+
+.profile{
+  position: absolute;
+  top: 50px;
+  left: 0px;
+  width: 100%;
+  height: calc(100% - 50px);
+  background-color: white;
+}
+
+.personalData{
+  width: 80%;
+  margin-left: 10%;
+  margin-top: 4%;
+}
+
+.userPic{
+
+}
+
+.userName{
+  color: #2F4F4F;
+  margin-left: 3%;
+  font-weight: bold;
+  font-size: 5.2vh;
+  font-size: 40px;
+  text-align: left;
+}
+
+.divider{
+  height: 1px;
+  width: 80%;
+  background: #2e2e2e;
+}
+
+.profileRow{
+  width: 80%;
+  margin-left: 10%;
+}
+
+.profileLabel{
+  text-align: left;
+  padding-left: 2%;
+  font-size: 20px;
+  line-height: 70px;
+  width: 80%;
+  display: inline-block;
+}
+
+.profileValue{
+  text-align: right;
+  padding-right: 2%;
+  width: 20%;
+  display: inline-block;
+  color: #007eff;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.favouritesRow{
+  width: 77.5%;
+  margin-left: 11.5%;
+  height: 70px;
+  line-height: 70px;
+  margin-bottom: 5px;
+}
+
+.favouritesRowPart{
+  width: calc(33% - 16px);
+}
+
+.favouritesNumber{
+  color: #007eff;
+  font-weight: bold;
 }

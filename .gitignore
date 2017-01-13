@@ -10,6 +10,7 @@ node_modules
 
 #logs
 *.log
+*.log*
 
 #database directory
 database
@@ -17,8 +18,9 @@ database
 #word working files
 ~$b*
 
-#other files
-.env
+#tmp files
+tmp
 
-#server
+# production files
+.env
 api/www.js

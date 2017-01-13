@@ -128,6 +128,9 @@ public class AllChatsPreviewFragment extends Fragment {
         if (response.body().size() == 0) {
           noChats.setVisibility(View.VISIBLE);
         }
+        else {
+          noChats.setVisibility(View.INVISIBLE);
+        }
         itemContainer.setAdapter(chatPreviewAdapter);
       }
 

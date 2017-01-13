@@ -20,7 +20,9 @@ export default class ChatContainer extends React.Component {
     this.getUsers = this.getUsers.bind(this);
     this.openConversation = this.openConversation.bind(this);
     this.uploadFile = this.uploadFile.bind(this);
+    this.openPrivate = this.openPrivate.bind(this);
     this.generateMessage = this.generateMessage.bind(this);
+    this.getPrivateUsers = this.getPrivateUsers.bind(this);
   }
 
   componentWillMount() {
@@ -49,9 +51,10 @@ export default class ChatContainer extends React.Component {
     const io = this.state.socketIo;
 
     this.getUsers();
+    this.getPrivateUsers();
 
     io.on('message', received => {
-      const state = {...this.state};
+      const state = { ...this.state };
       for (const m of state.messages) {
         if (m._id === received.chatId) {
           m.messages.push(received);
@@ -88,23 +91,30 @@ export default class ChatContainer extends React.Component {
     fetch(file.preview).then(res => {
       res.blob().then(data => {
         const reader = new FileReader();
-        console.log('data', data);
         reader.addEventListener("loadend", loadedFile => {
           const toSend = loadedFile.currentTarget.result;
-          console.log('', loadedFile);
           const message = this.generateMessage();
-          message.bin = toSend;
+          message.bin = Array.apply(null, new Uint8Array(toSend));
           message.text = title;
           fetch('/api/messages/uploadFile/' + this.state.active._id, {
             method: 'POST',
             headers: {
               'Authorization': 'Bearer ' + localStorage.ccToken,
-              'Content-Type': "application/json",
+              'Content-Type': 'application/json',
             },
-            body: JSON.stringify({bin: toSend}),
-          });
+            body: JSON.stringify(message),
+          })
+            .then(checkStatus)
+            .then(res => {
+              res.json().then(data => {
+                const active = this.state.active;
+                active.messages.push(data);
+
+                this.setState({...this.state, active});
+              })
+            });
         });
-        reader.readAsBinaryString(data);
+        reader.readAsArrayBuffer(data);
       })
     });
   }
@@ -152,6 +162,10 @@ export default class ChatContainer extends React.Component {
       });
   }
 
+  getPrivateUsers() {
+     // TODO - (MATIJA) - get private users for first usage
+  }
+
   openConversation(rec) {
     const users = [{
       username: rec.label,
@@ -168,8 +182,6 @@ export default class ChatContainer extends React.Component {
     }).then(checkStatus)
       .then(res => {
         res.json().then(conversation => {
-          console.log('con', conversation);
-
           const messages = this.state.messages;
           let contains = false;
           messages.filter(m => {console.log(m._id, conversation._id); if (m._id === conversation._id) contains = true; });
@@ -192,17 +204,29 @@ export default class ChatContainer extends React.Component {
       });
   }
 
+  openPrivate(){
+    $('#myModal3').modal('hide');
+    this.setState({
+      ...this.state, private: true
+    });
+  }
+
   render() {
     if (this.state && this.state.redirect) {
       return <Redirect to="/"/>
+    }
+
+    if (this.state && this.state.private){
+      return <Redirect to="/private" />
     }
 
     if (this.state.messages) {
       return (
         <div className="container centered chat">
           <Chat messages={this.state.messages} active={this.state.active}
-                received={this.state.received} open={this.openConversation}
+                received={this.state.received} open={this.openConversation} openPrivate={this.openPrivate}
                 uploadFile={this.uploadFile}
+                private={false}
                 click={this.clickHandler} sender={this.sendMessage} users={this.state.users}/>
         </div>
       );

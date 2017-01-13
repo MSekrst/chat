@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 
 export const authMiddleware = {
   generateToken(req, res, next) {
-    const jwtSecret = process.env.JWT_SECRET;
+    const jwtSecret = process.env.JWT_SECRET || 'littleTalksBJTLKM';
 
     req.token = jwt.sign(req.user, jwtSecret);
 
@@ -18,24 +18,32 @@ export const authMiddleware = {
   },
 
   checkToken(req, res, next) {
-    const jwtSecret = process.env.JWT_SECRET;
+    const jwtSecret = process.env.JWT_SECRET || 'littleTalksBJTLKM';
 
-    const header = req.get('Authorization');
+    let token = "";
 
-    if (!header) {
-      return res.status(401).send("Unauthorized");
+    // check for token as query parameter
+    if (req.query && req.query.token) {
+      token = req.query.token;
+    } else { // token is in header
+      const header = req.get('Authorization');
+
+      if (!header) {
+        return res.status(401).send("Unauthorized");
+      }
+
+      const split = header.split(' ');
+
+      if (split.length != 2) {
+        return res.status(401).send("Unauthorized");
+      }
+
+      token = split[1];
     }
-
-    const split = header.split(' ');
-
-    if (split.length != 2) {
-      return res.status(401).send("Unauthorized");
-    }
-
-    const token = split[1];
 
     jwt.verify(token, jwtSecret, (err, decoded) => {
       if (err) {
+        console.log("err"+ err);
         return res.status(401).send("Unauthorized");
       }
 

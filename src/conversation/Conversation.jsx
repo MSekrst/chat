@@ -53,11 +53,12 @@ export default class ConversationContainer extends Component{
   renderEmoji(){
     if(this.state.emojiShow === true){
       return (<div style={{ position: "absolute", left: "0", bottom: "50px"}}>
+        <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "transparent"}} onClick={() => {
+          this.setState({ emojiShow: false });
+        }}/>
         <EmojiPicker onChange={(data) => {
                 this.addEmoji(data.shortname);
-          }} onBlur={() => {
-          this.setState({ emojiShow: false });
-        }} />
+          }}  />
       </div>);
     }
   }
@@ -81,13 +82,13 @@ export default class ConversationContainer extends Component{
 
   render() {
     return (
-      <div id="talk">{this.renderEmoji()}
+      <div id="talk" className={this.props.resize}>{this.renderEmoji()}
         <CurrentConversation active={this.props.active}/>
-        <form id="talkInput" className="inputForm" onSubmit={(e) => {
+        <form id="talkInput" className={"inputForm"+" "+this.props.styleName} onSubmit={(e) => {
           e.preventDefault()
         }}>
           <img src="./images/smileyButton.png" width="35px" height="35px" id="smileyButton"
-              onBlur={this.emojiShow} onClick={this.emojiShow}/>
+               onClick={this.emojiShow}/>
           <input className="talkInput" type="text" value={this.state.text}
                  onChange={this.handleText}/>
           <input type="submit" hidden="true" onClick={this.sendMessage}/>
