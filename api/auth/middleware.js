@@ -20,19 +20,26 @@ export const authMiddleware = {
   checkToken(req, res, next) {
     const jwtSecret = process.env.JWT_SECRET || 'littleTalksBJTLKM';
 
-    const header = req.get('Authorization');
+    let token = "";
 
-    if (!header) {
-      return res.status(401).send("Unauthorized");
+    // check for token as query parameter
+    if (req.query && req.query.token) {
+      token = req.query.token;
+    } else { // token is in header
+      const header = req.get('Authorization');
+
+      if (!header) {
+        return res.status(401).send("Unauthorized");
+      }
+
+      const split = header.split(' ');
+
+      if (split.length != 2) {
+        return res.status(401).send("Unauthorized");
+      }
+
+      token = split[1];
     }
-
-    const split = header.split(' ');
-
-    if (split.length != 2) {
-      return res.status(401).send("Unauthorized");
-    }
-
-    const token = split[1];
 
     jwt.verify(token, jwtSecret, (err, decoded) => {
       if (err) {

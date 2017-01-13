@@ -1,14 +1,9 @@
 import express from 'express';
-import fs from 'fs';
-import multipart from 'connect-multiparty';
-import {Binary} from 'mongodb';
+import { resolve } from 'path';
 
-import {getDb} from '../mongo';
-import {ObjectID} from '../mongo';
-import {getConnected} from '../www';
-import {authMiddleware} from '../auth/middleware';
-
-const multipartMiddleware = multipart();
+import { getDb, ObjectID } from '../mongo';
+import { getConnected } from '../www';
+import { authMiddleware } from '../auth/middleware';
 
 const messageRouter = express.Router();
 
@@ -101,98 +96,78 @@ messageRouter.post('/:id', authMiddleware.checkToken, (req, res) => {
   req.body.message['sender'] = req.user.username;
 
   const _id = ObjectID(req.params.id);
-  const connected = getConnected();
 
   db.collection('messages').findOneAndUpdate({_id},
     {$push: {messages: req.body.message}}, (err, data) => {
       if (err) return res.status(500).json({message: err});
 
-      const users = data.value.users;
+      sendToActiveUsers(data.value.users, req.user, req.body.message);
 
-      for (let i = 0; i < users.length; i++) {
-        for (let j = 0; j < connected.length; j++) {
-          console.log(connected[j].user, users[i].username);
-          if (connected[j].user === users[i].username && users[i].username !== req.user.username) {
-            console.log('saljem');
-            connected[j].socket.emit('message', req.body.message);
-          }
-
-          if (i == users.length - 1 && j == connected.length - 1) res.status(200).json();
-        }
-      }
+      res.status(204).json();
     });
 });
 
-
 messageRouter.post('/uploadFile/:id', authMiddleware.checkToken, (req, res) => {
   const db = getDb();
-  const connected = getConnected();
-  console.log(req.body.message);
 
-  var message = req.body.message;
-  console.log(message);
+  const message = req.body;
   message['sender'] = req.user.username;
 
   const _id = ObjectID(req.params.id);
 
-  var fileName = message.text;
-  message.type = "file";
+  const savedFile = {
+    fileName: message.text,
+    file: message.bin,
+  };
 
-  db.collection('files').insertOne({fileName: fileName, file: message.bin}, (err, inserted) => {
+  db.collection('files').insertOne(savedFile , (err, inserted) => {
     if (err) {
-      console.log(err);
-       res.status(500).json(err);
+      return res.status(500).json(err);
     }
-    else {
-      message.fileId = inserted.insertedId.toString();
-      delete message['bin'];
-      db.collection('messages').updateOne({_id}, {
-        $push: {messages: message}
-      }, err => {
-        if (err) {
-           res.status(500).json({message: err});
-        }
-        console.log(message);
-         res.status(200).json(message);
-      });
-    }
-  });
 
+    message.fileId = inserted.insertedId;
+    message.bin = undefined;
+    db.collection('messages').findOneAndUpdate({_id},
+      {$push: {messages: message}}, (err, data) => {
+      if (err) {
+        return res.status(500).json(err);
+      }
+
+      sendToActiveUsers(data.value.users, req.user, message);
+
+      res.status(200).json(message);
+    });
+  });
 });
 
 messageRouter.get('/getFile/:id', authMiddleware.checkToken, (req, res) => {
   const db = getDb();
   const _id = ObjectID(req.params.id);
 
-  db.collection('files').findOne({_id}, function (err, data) {
+  db.collection('files').findOne({ _id }, function (err, data) {
     if (err) {
-      console.error(err);
+      return res.status(500);
     }
     res.setHeader('Content-Type', 'application/octet-stream');
     res.setHeader('Content-Disposition', 'attachment; filename=' + data.fileName);
 
-    return res.send(data.file.buffer);
+    const buf = new Buffer(data.file);
+    return res.send(buf);
   });
 });
 
-messageRouter.get('/private', authMiddleware.checkToken, (req, res) => {
-  console.log("usao");
+//  HELPERS
+
+const sendToActiveUsers = (users, current, message) => {
   const connected = getConnected();
-  const username = req.user.username;
-  var ip;
-  for (var i = 0; i < connected.length; i++) {
-    if (username == connected.user.username) {
-      ip = connected.ip;
-      break;
+
+  for (let i = 0; i < users.length; i++) {
+    for (let j = 0; j < connected.length; j++) {
+      if (connected[j].user === users[i].username && users[i].username !== current.username) {
+        connected[j].socket.emit('message', message);
+      }
     }
   }
-  console.log(ip);
-  const users = [];
-  for (var i = 0; i < connected.length; i++) {
-    if (ip == connected.ip && username != connected.user.username) {
-      users.push(connected.user.username);
-    }
-  }
-});
+};
 
 export default messageRouter;

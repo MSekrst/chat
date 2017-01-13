@@ -10,12 +10,16 @@ node_modules
 
 #logs
 *.log
+*.log*
 
 #database directory
 database
 
 #word working files
 ~$b*
+
+#tmp files
+tmp
 
 # production files
 .env

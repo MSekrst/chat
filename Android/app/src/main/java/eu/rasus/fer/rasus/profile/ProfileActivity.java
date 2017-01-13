@@ -70,7 +70,6 @@ public class ProfileActivity extends AppCompatActivity {
   @BindView(R.id.profile_favourites_label_recv2)
   TextView favoritesLabelRecv2;
 
-
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -100,17 +99,22 @@ public class ProfileActivity extends AppCompatActivity {
         sentMessages.setText(String.valueOf(profile.totalSendMessages));
         receivedMessages.setText(String.valueOf(profile.totalReceivedMessages));
 
-       int length =0;
-        if (profile.favourites[0].username!=null) length++;
-        if (profile.favourites[1].username!=null) length++;
+        int length = 0;
+        if (profile.favourites[0].username != null) {
+          length++;
+        }
+        if (profile.favourites[1].username != null) {
+          length++;
+        }
 
-        if (length>=1){
+        if (length >= 1) {
           favoritesUsername1.setText(profile.favourites[0].username);
 
-          if (profile.favourites[0].img!=null && !profile.favourites[0].img.equals("") ){
+          if (profile.favourites[0].img != null && !profile.favourites[0].img.equals("")) {
             Picasso.with(activity).load(profile.favourites[0].img).fit().centerCrop().noFade().into(favoritesImage1);
+          } else {
+            favoritesImage1.setImageResource(R.drawable.placeholder);
           }
-          else favoritesImage1.setImageResource(R.drawable.placeholder);
 
           favoritesLabelSent1.setText("sent:");
           favoritesSent1.setText(String.valueOf(profile.favourites[0].sendMessages));
@@ -118,13 +122,14 @@ public class ProfileActivity extends AppCompatActivity {
           favoritesRecv1.setText(String.valueOf(profile.favourites[0].receivedMessages));
         }
 
-        if (length==2){
+        if (length == 2) {
           favoritesUsername2.setText(profile.favourites[1].username);
 
-          if (profile.favourites[1].img!=null && !profile.favourites[1].img.equals("") ){
+          if (profile.favourites[1].img != null && !profile.favourites[1].img.equals("")) {
             Picasso.with(activity).load(profile.favourites[1].img).fit().centerCrop().noFade().into(favoritesImage2);
+          } else {
+            favoritesImage2.setImageResource(R.drawable.placeholder);
           }
-          else favoritesImage2.setImageResource(R.drawable.placeholder);
 
           favoritesLabelSent2.setText("sent:");
           favoritesSent2.setText(String.valueOf(profile.favourites[1].sendMessages));

@@ -14,8 +14,8 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import eu.rasus.fer.rasus.contactList.ContactListActivity;
 import eu.rasus.fer.rasus.chatsPreview.AllChatsPreviewFragment;
+import eu.rasus.fer.rasus.contactList.ContactListActivity;
 import eu.rasus.fer.rasus.profile.ProfileActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
   public void onResume() {
     super.onResume();
 
-    if (!Application.SOCEKT.connected()){
+    if (!Application.SOCEKT.connected()) {
       Application.SOCEKT.connect();
       Application.SOCEKT.emit("userAndroid", Application.USERNAME);
     }

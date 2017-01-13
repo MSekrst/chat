@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-  android:paddingStart="15dp"
-  android:paddingEnd="15dp">
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp">
 
   <TextView
     android:id="@+id/profile_username"
@@ -96,7 +96,6 @@
     android:layout_below="@+id/profile_separator2"
     android:text="Favourites:"/>
 
-
   <de.hdodenhof.circleimageview.CircleImageView
     android:id="@+id/profile_favourites_image1"
     android:layout_width="62dp"
@@ -121,50 +120,50 @@
     android:layout_marginTop="5dp"
     android:layout_below="@id/profile_label_favourites">
 
-  <LinearLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:layout_gravity="right">
-
-    <TextView
-      android:id="@+id/profile_favourites_label_sent1"
-      android:textSize="16sp"
-      android:text=""
-      android:layout_marginRight="5dp"
+    <LinearLayout
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content"/>
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:layout_gravity="right">
 
-  <TextView
-    android:id="@+id/profile_favourites_sent1"
-    android:textSize="20sp"
-    android:textColor="@color/colorAccent"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"/>
+      <TextView
+        android:id="@+id/profile_favourites_label_sent1"
+        android:textSize="16sp"
+        android:text=""
+        android:layout_marginRight="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
-  </LinearLayout>
+      <TextView
+        android:id="@+id/profile_favourites_sent1"
+        android:textSize="20sp"
+        android:textColor="@color/colorAccent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
-  <LinearLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    </LinearLayout>
 
-    <TextView
-      android:id="@+id/profile_favourites_label_recv1"
-      android:textSize="16sp"
-      android:text=""
-      android:layout_marginRight="5dp"
+    <LinearLayout
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content"/>
+      android:layout_height="wrap_content"
+      android:orientation="horizontal">
 
-    <TextView
-      android:id="@+id/profile_favourites_recv1"
-      android:textSize="20sp"
-      android:textColor="@color/colorAccent"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"/>
+      <TextView
+        android:id="@+id/profile_favourites_label_recv1"
+        android:textSize="16sp"
+        android:text=""
+        android:layout_marginRight="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
-  </LinearLayout>
+      <TextView
+        android:id="@+id/profile_favourites_recv1"
+        android:textSize="20sp"
+        android:textColor="@color/colorAccent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    </LinearLayout>
   </LinearLayout>
 
   <!---->

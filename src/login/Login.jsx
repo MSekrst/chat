@@ -108,7 +108,7 @@ export default class Login extends React.Component {
       return <div></div>;
     }
 
-    return <div>
+    return <div className="loginBackground">
       <div className="panelDiv">
         <h1>Welcome to <span className="appName">Chit Chat</span></h1>
         <br />
