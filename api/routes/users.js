@@ -1,8 +1,8 @@
 import express from 'express';
 
-import { authMiddleware } from '../auth/middleware';
-import { getDb, ObjectID } from '../mongo';
-import { getConnected } from '../www';
+import {authMiddleware} from '../auth/middleware';
+import {getDb, ObjectID} from '../mongo';
+import {getConnected} from '../www';
 
 const usersRouter = express.Router();
 
@@ -49,7 +49,7 @@ usersRouter.get('/private', authMiddleware.checkToken, (req, res) => {
 usersRouter.get('/profile', authMiddleware.checkToken, (req, res) => {
   const db = getDb();
 
-  const username=req.user.username;
+  const username = req.user.username;
   const user = db.collection('users').findOne({username});
   user.then(data => {
     const conversation = db.collection('messages').find({users: {$elemMatch: {username: data.username}}}).toArray((err, conversations) => {
@@ -68,16 +68,20 @@ usersRouter.get('/profile', authMiddleware.checkToken, (req, res) => {
       var secondFavourite = {};
 
       for (var i in conversations) {
-        var conversation =  conversations[i];
+        var conversation = conversations[i];
         var sendMessages = conversation.messages.length;
         if (sendMessages != 0) {
           numberOfConversations++;
 
-          for(var i in conversation.messages) {
-            if(conversation.messages[i].sender == data.username) {
+          var send = 0;
+          var received = 0;
+          for (var i in conversation.messages) {
+            if (conversation.messages[i].sender == data.username) {
               totalSendMessages++;
+              send++;
             } else {
               totalReceivedMessages++;
+              received++;
             }
           }
           var reciever;
@@ -91,13 +95,15 @@ usersRouter.get('/profile', authMiddleware.checkToken, (req, res) => {
             firstFavourite = {
               username: reciever.username,
               img: reciever.image,
-              sendMessages: sendMessages
+              sendMessages: send,
+              receivedMessages: received
             }
           } else if (secondFavourite.sendMessages == undefined || secondFavourite.sendMessages < sendMessages) {
             secondFavourite = {
               username: reciever.username,
               img: reciever.image,
-              sendMessages: sendMessages
+              sendMessages: send,
+              receivedMessages: received
             }
           }
         }
@@ -108,7 +114,7 @@ usersRouter.get('/profile', authMiddleware.checkToken, (req, res) => {
       statistic['favourites'] = [];
       statistic['favourites'].push(firstFavourite);
       statistic['favourites'].push(secondFavourite);
-      
+
       res.status(203).json(statistic);
     });
   });
