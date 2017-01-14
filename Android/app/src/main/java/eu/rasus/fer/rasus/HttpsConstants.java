@@ -17,7 +17,7 @@ import okhttp3.OkHttpClient;
 
 public class HttpsConstants {
 
-  public static String ADDRES = "https://192.168.0.18:3000";
+  public static String ADDRES = "https://chitchat.cf";
 
   public static HostnameVerifier HOSTNAME_VERIFIER = new HostnameVerifier() {
 
