@@ -168,8 +168,8 @@ export default class ChatContainer extends React.Component {
 
   openConversation(rec) {
     const users = [{
-      username: rec.label,
       image: rec.image,
+      username: rec.label,
     }];
 
     fetch('/api/messages/init', {
