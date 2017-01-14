@@ -46,8 +46,8 @@ messageRouter.post('/init', authMiddleware.checkToken, (req, res) => {
   db.collection("users").findOne({username: req.user.username}, (err, data) => {
 
     let user = {
-      username: data.username,
       image: data.image,
+      username: data.username
     };
 
     users.push(user);
