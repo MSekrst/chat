@@ -154,7 +154,6 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onResponse(final Call<byte[]> call, final Response<byte[]> response) {
               Bitmap bitmap = BitmapFactory.decodeByteArray(response.body(), 0, response.body().length);
-              int b = 2 + 3;
               String filename = message.text;
               String path = getExternalFilesDir(null) + File.separator + "ChitChat";
               File dir = new File(path);
@@ -176,7 +175,7 @@ public class ChatActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(final Call<byte[]> call, final Throwable t) {
-              int a = 2 + 3;
+
             }
           });
         }
@@ -277,8 +276,8 @@ public class ChatActivity extends AppCompatActivity {
 
       try {
         Uri uri = data.getData();
-        String s = getRealPathFromURI(uri);
-        String name = s.substring(s.lastIndexOf("/") + 1);
+        String realPathFromURI = getRealPathFromURI(uri);
+        String filename = realPathFromURI.substring(realPathFromURI.lastIndexOf("/") + 1);
 
         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
 
@@ -287,7 +286,7 @@ public class ChatActivity extends AppCompatActivity {
 
         RestApi api = retrofit.create(RestApi.class);
 
-        ChatMessage chatMessage = new ChatMessage(chatInfo.id, Application.USERNAME, name, true);
+        ChatMessage chatMessage = new ChatMessage(chatInfo.id, Application.USERNAME, filename, true);
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
@@ -309,7 +308,6 @@ public class ChatActivity extends AppCompatActivity {
 
           @Override
           public void onFailure(final Call<ChatMessage> call, final Throwable t) {
-            int a = 2 + 3;
           }
         });
       } catch (IOException e) {
