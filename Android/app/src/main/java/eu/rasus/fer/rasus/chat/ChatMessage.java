@@ -12,7 +12,7 @@ public class ChatMessage {
   public String date;
   public String time;
   public String fileId;
-  public short[] bin;
+  public byte[] bin;
 
   public transient boolean isMine;
 

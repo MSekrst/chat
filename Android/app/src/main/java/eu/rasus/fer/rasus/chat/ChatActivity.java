@@ -2,7 +2,9 @@ package eu.rasus.fer.rasus.chat;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.Socket;
@@ -23,6 +26,8 @@ import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -130,47 +135,50 @@ public class ChatActivity extends AppCompatActivity {
 
     msgListView.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
     msgListView.setStackFromBottom(true);
-
     msgListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
       @Override
       public void onItemClick(final AdapterView<?> adapter, final View view, final int position, final long l) {
-        ChatMessage message = (ChatMessage) chatAdapter.getItem(position);
+        final ChatMessage message = (ChatMessage) chatAdapter.getItem(position);
 
-        if (message.fileId != null && message.fileId != "") {
+        if (message.fileId != null && !message.fileId.equals("")) {
           Retrofit retrofit = new Retrofit.Builder().baseUrl(HttpsConstants.ADDRES).client(HttpsConstants.getUnsafeOkHttpClient()).addConverterFactory(
             GsonConverterFactory.create())
                                                     .build();
           RestApi api = retrofit.create(RestApi.class);
 
-//          Call< byte[] > call = api.downloadFile(Application.TOKEN, message.fileId);
+          Call<byte[]> call = api.downloadFile(Application.TOKEN, message.fileId);
 //
-//          call.enqueue(new Callback< byte[] >() {
-//
-//            @Override
-//            public void onResponse(final Call< byte[] > call, final Response< byte[] > response) {
-//              Bitmap bitmap = BitmapFactory.decodeByteArray(response.body(), 0, response.body().length);
-//              int b = 2+3;
-//              String filename = "file.jpeg";
-//              File sd = Environment.getExternalStorageDirectory();
-//              File dest = new File(sd, filename);
-//
-//              try {
-//                FileOutputStream out = new FileOutputStream(dest);
-//                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, out);
-//                out.flush();
-//                out.close();
-//              } catch (Exception e) {
-//                e.printStackTrace();
-//              }
-//            }
-//
-//            @Override
-//            public void onFailure(final Call< byte[] > call, final Throwable t) {
-//              int a = 2+3;
-//            }
-//          });
+          call.enqueue(new Callback<byte[]>() {
 
+            @Override
+            public void onResponse(final Call<byte[]> call, final Response<byte[]> response) {
+              Bitmap bitmap = BitmapFactory.decodeByteArray(response.body(), 0, response.body().length);
+              int b = 2 + 3;
+              String filename = message.text;
+              String path = getExternalFilesDir(null) + File.separator + "ChitChat";
+              File dir = new File(path);
+
+              dir.mkdirs();
+
+              try {
+                File file = new File(dir, filename);
+                file.createNewFile();
+                FileOutputStream out = new FileOutputStream(file);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                out.flush();
+                out.close();
+                Toast.makeText(getBaseContext(), filename + " downloaded successfully!", Toast.LENGTH_LONG).show();
+              } catch (Exception e) {
+                e.printStackTrace();
+              }
+            }
+
+            @Override
+            public void onFailure(final Call<byte[]> call, final Throwable t) {
+              int a = 2 + 3;
+            }
+          });
         }
       }
     });
@@ -269,6 +277,9 @@ public class ChatActivity extends AppCompatActivity {
 
       try {
         Uri uri = data.getData();
+        String s = getRealPathFromURI(uri);
+        String name = s.substring(s.lastIndexOf("/") + 1);
+
         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
 
         Retrofit retrofit = new Retrofit.Builder().baseUrl(HttpsConstants.ADDRES).client(HttpsConstants.getUnsafeOkHttpClient()).addConverterFactory(GsonConverterFactory.create())
@@ -276,15 +287,11 @@ public class ChatActivity extends AppCompatActivity {
 
         RestApi api = retrofit.create(RestApi.class);
 
-        ChatMessage chatMessage = new ChatMessage(chatInfo.id, Application.USERNAME, "File", true);
+        ChatMessage chatMessage = new ChatMessage(chatInfo.id, Application.USERNAME, name, true);
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
-        chatMessage.bin = new short[stream.toByteArray().length];
-
-        for (int i = 0; i < stream.toByteArray().length; i++) {
-          chatMessage.bin[i] = (short) ((256 + (short) stream.toByteArray()[i]) % 256);
-        }
+        chatMessage.bin = stream.toByteArray();
 
         ChatMessageWrapper wrapper = new ChatMessageWrapper();
         wrapper.message = chatMessage;
@@ -309,5 +316,18 @@ public class ChatActivity extends AppCompatActivity {
         e.printStackTrace();
       }
     }
+  }
+
+  public String getRealPathFromURI(Uri contentUri) {
+// can post image
+    String[] proj = {MediaStore.Images.Media.DATA};
+    Cursor cursor = managedQuery(contentUri,
+                                 proj, // Which columns to return
+                                 null, // WHERE clause; which rows to return (all rows)
+                                 null, // WHERE clause selection arguments (none)
+                                 null); // Order-by clause (ascending by name)
+    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+    cursor.moveToFirst();
+    return cursor.getString(column_index);
   }
 }

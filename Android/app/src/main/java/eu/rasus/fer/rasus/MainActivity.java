@@ -1,7 +1,9 @@
 package eu.rasus.fer.rasus;
 
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +18,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import eu.rasus.fer.rasus.chatsPreview.AllChatsPreviewFragment;
 import eu.rasus.fer.rasus.contactList.ContactListActivity;
+import eu.rasus.fer.rasus.login.LoginView;
 import eu.rasus.fer.rasus.profile.ProfileActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -41,6 +44,21 @@ public class MainActivity extends AppCompatActivity {
 
     if (id == R.id.action_profile) {
       Intent intent = new Intent(this, ProfileActivity.class);
+      startActivity(intent);
+      return true;
+    }
+
+    if (id == R.id.action_logOut) {
+      Application.SOCEKT.disconnect();
+
+      SharedPreferences sharedPref = getSharedPreferences("data", Context.MODE_PRIVATE);
+      SharedPreferences.Editor editor = sharedPref.edit();
+
+      editor.putString("USERNAME", "");
+      editor.putString("TOKEN", "");
+      editor.apply();
+
+      Intent intent = new Intent(this, LoginView.class);
       startActivity(intent);
       return true;
     }

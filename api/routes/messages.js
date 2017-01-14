@@ -110,7 +110,7 @@ messageRouter.post('/:id', authMiddleware.checkToken, (req, res) => {
 messageRouter.post('/uploadFile/:id', authMiddleware.checkToken, (req, res) => {
   const db = getDb();
 
-  const message = req.body;
+  const message = req.body.message;
   message['sender'] = req.user.username;
 
   const _id = ObjectID(req.params.id);
@@ -119,6 +119,7 @@ messageRouter.post('/uploadFile/:id', authMiddleware.checkToken, (req, res) => {
     fileName: message.text,
     file: message.bin,
   };
+
 
   db.collection('files').insertOne(savedFile , (err, inserted) => {
     if (err) {
@@ -152,9 +153,26 @@ messageRouter.get('/getFile/:id', authMiddleware.checkToken, (req, res) => {
     res.setHeader('Content-Disposition', 'attachment; filename=' + data.fileName);
 
     const buf = new Buffer(data.file);
+    console.log(buf);
     return res.send(buf);
   });
 });
+
+messageRouter.get('/getFileAndroid/:id', authMiddleware.checkToken, (req, res) => {
+  const db = getDb();
+  const _id = ObjectID(req.params.id);
+
+  db.collection('files').findOne({ _id }, function (err, data) {
+    if (err) {
+      return res.status(500);
+    }
+    res.setHeader('Content-Type', 'application/octet-stream');
+    res.setHeader('Content-Disposition', 'attachment; filename=' + data.fileName);
+
+    return res.send(data.file);
+  });
+});
+
 
 //  HELPERS
 

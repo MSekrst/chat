@@ -20,6 +20,7 @@ import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Streaming;
 
 public interface RestApi {
 
@@ -56,7 +57,8 @@ public interface RestApi {
   @POST("api/messages/uploadFile/{chatId}")
   Call<ChatMessage> sendFile(@Header("Authorization") String token, @Path("chatId") String conversationId, @Body ChatMessageWrapper message);
 
-  @GET("api/messages/getFile/{fileId}")
+  @GET("api/messages/getFileAndroid/{fileId}")
+  @Streaming
   Call<byte[]> downloadFile(@Header("Authorization") String token, @Path("fileId") String fileId);
 
   @GET("api/users/profile")

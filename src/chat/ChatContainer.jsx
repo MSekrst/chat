@@ -102,7 +102,7 @@ export default class ChatContainer extends React.Component {
               'Authorization': 'Bearer ' + localStorage.ccToken,
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify(message),
+            body: JSON.stringify({message}),
           })
             .then(checkStatus)
             .then(res => {

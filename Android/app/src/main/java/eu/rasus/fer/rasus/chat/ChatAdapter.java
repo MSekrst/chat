@@ -2,6 +2,7 @@ package eu.rasus.fer.rasus.chat;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -88,13 +89,13 @@ public class ChatAdapter extends BaseAdapter {
 
       if (message.isMine) {
         bubble_layout.setBackgroundResource(R.drawable.bubble2);
+        message_text.setTextColor(ContextCompat.getColor(context, R.color.darkGray));
         parent.setGravity(Gravity.RIGHT);
       } else {
         bubble_layout.setBackgroundResource(R.drawable.bubble1);
+        message_text.setTextColor(ContextCompat.getColor(context, R.color.white));
         parent.setGravity(Gravity.LEFT);
       }
-
-      message_text.setTextColor(Color.BLACK);
     }
   }
 }

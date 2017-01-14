@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.JsonElement;
 
@@ -79,6 +80,7 @@ public class RegisterView extends AppCompatActivity {
         if (response.errorBody() != null) {
           usernameView.setError("Username already taken!!");
         } else {
+          Toast.makeText(getBaseContext(), "Registration successful!", Toast.LENGTH_LONG).show();
           Intent intent = new Intent(getApplication(), LoginView.class);
           startActivity(intent);
         }
