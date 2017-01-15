@@ -179,10 +179,11 @@ messageRouter.get('/getFileAndroid/:id', authMiddleware.checkToken, (req, res) =
 const sendToActiveUsers = (users, current, message) => {
   const connected = getConnected();
 
-  for (let i = 0; i < users.length; i++) {
-    for (let j = 0; j < connected.length; j++) {
-      if (connected[j].user === users[i].username && users[i].username !== current.username) {
-        connected[j].socket.emit('message', message);
+  for (const u of users) {
+    for (const c of connected) {
+      if (c.user === u.username && u.username !== current.username) {
+        console.log('saljem', u.username);
+        c.socket.emit('message', message);
       }
     }
   }

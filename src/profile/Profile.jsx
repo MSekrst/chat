@@ -67,18 +67,12 @@ export default class ConversationContainer extends Component {
       return <div></div>
     }
 
-    return (
-      <div>
-        <Header username={localStorage.ccUsername} activeUsers={this.props.activeUsers}
-                open={this.props.openPrivate}/>
-        <div className="profile">
-          {this.renderPersonal(this.props.profile.image)}
-          <hr className="divider"/>
-          {this.renderStatistic()}
-          <hr className="divider"/>
-          {this.renderFavourites()}
-        </div>
-      </div>
-    );
+    return <div className="profile">
+      {this.renderPersonal(this.props.profile.image)}
+      <hr className="divider"/>
+      {this.renderStatistic()}
+      <hr className="divider"/>
+      {this.renderFavourites()}
+    </div>;
   }
 }

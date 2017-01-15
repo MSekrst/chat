@@ -347,6 +347,7 @@ html, body {
   height: 35px;
   width: calc(90% - 85px);
   margin-top: 8px;
+  margin-left: 70px;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
@@ -376,7 +377,7 @@ html, body {
 }
 
 /*----------------------------------------------*/
-/*CurrentConversation.jsx & Message.jsx*/
+/*Conversation.jsx & Message.jsx*/
 
 .message {
   padding: 15px 10px 15px 10px;
@@ -502,11 +503,11 @@ html, body {
   background: transparent;
 }
 
-.backBackground{
+.privateChat {
   background-color: black !important;
 }
 
-.darkInput{
+.privateChatInput {
   background-color: black !important;
 }
 
@@ -518,7 +519,7 @@ html, body {
 .profile{
   position: absolute;
   top: 50px;
-  left: 0px;
+  left: 0;
   width: 100%;
   height: calc(100% - 50px);
   background-color: white;
@@ -589,4 +590,8 @@ html, body {
 .favouritesNumber{
   color: #007eff;
   font-weight: bold;
+}
+
+.noAvailableModal {
+  text-align: center;
 }

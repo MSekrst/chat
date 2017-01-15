@@ -25,7 +25,7 @@ usersRouter.get('/active', authMiddleware.checkToken, (req, res) => {
 
   for (const c of connected) {
     if (c.user !== req.user.username) {
-      users.push({ username: c.user, peerId: c.peerId });
+      users.push({ username: c.user, peerId: c.peerId, ip: c.ip });
     }
   }
 
@@ -36,8 +36,8 @@ usersRouter.get('/profile', authMiddleware.checkToken, (req, res) => {
   const db = getDb();
 
   const username = req.user.username;
-  const user = db.collection('users').findOne({username});
-  user.then(data => {
+
+  db.collection('users').findOne({ username }).then(data => {
     db.collection('messages').find({users: {$elemMatch: {username: data.username}}})
       .toArray((err, conversations) => {
         if (err) {
@@ -101,10 +101,10 @@ usersRouter.get('/profile', authMiddleware.checkToken, (req, res) => {
         statistic['totalReceivedMessages'] = totalReceivedMessages;
         statistic['favourites'] = [];
 
-        if (Object.keys(firstFavourite.length)) {
+        if (Object.keys(firstFavourite).length) {
           statistic['favourites'].push(firstFavourite);
         }
-        if (Object.keys(secondFavourite.length)) {
+        if (Object.keys(secondFavourite).length) {
           statistic['favourites'].push(secondFavourite);
         }
 

@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 
 class Item extends Component {
   render() {
-    // slika src this.props.picture a tek ako nema treba placeholder - staviti to
     return (
       <div>
         <div className="item" onClick={this.props.click}>

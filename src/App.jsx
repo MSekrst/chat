@@ -6,18 +6,18 @@ import 'whatwg-fetch';
 import NotFound from './not-found/NotFound.jsx';
 import Login from './login/Login.jsx';
 import Register from './register/Register.jsx';
-import ChatContainer from './chat/ChatContainer.jsx';
-import PrivateChatContainer from './chat/PrivateChatContainer.jsx';
-import ProfileContainer from './profile/ProfileContainer.jsx';
+import MainContainer from './Containers/MainContainer.jsx';
+import Logout from './logout/Logout.jsx';
 
 ReactDOM.render(
     <BrowserRouter>
       <div id="mainDiv">
         <Match exactly pattern="/" component={Login} />
         <Match exactly pattern="/register" component={Register} />
-        <Match exactly pattern="/chat" component={ChatContainer} />
-        <Match exactly pattern="/private" component={PrivateChatContainer} />
-        <Match exactly pattern="/profile" component={ProfileContainer} />
+        <Match exactly pattern="/chat" component={MainContainer} />
+        <Match exactly pattern="/private" component={MainContainer} />
+        <Match exactly pattern="/profile" component={MainContainer}  />
+        <Match exactly pattern="/logout" component={Logout} />
         <Miss component={NotFound} />
       </div>
     </BrowserRouter>,

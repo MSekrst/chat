@@ -75,23 +75,24 @@ const io = socketio.listen(sServer);
 
 io.on('connection', socket => {
   socket.on('user', user => {
-    console.log('Connected:', user.username, user.peerId);
+    const ip = socket.request.headers['x-forwarded-for'] || socket.request.connection.remoteAddress;
+    console.log('Connected:', user.username, user.peerId, ip);
     const newUserSocket = {
       user: user.username,
       socket: socket,
-      // PeerId given by server -> used to identify users
       peerId: user.peerId,
+      ip: ip,
     };
 
     userSockets.push(newUserSocket);
   });
 
   socket.on('userAndroid', user => {
-    console.log('Connected: ' + user);
+    console.log('Connected via mobile: ' + user);
     const newUserSocket = {
       user: user,
       socket: socket,
-      id: socket.request.connection.remoteAddress,
+      ip: socket.request.headers['x-forwarded-for'] || socket.request.connection.remoteAddress,
       mobile: true
     };
 
