@@ -52,10 +52,6 @@ export default class ChatContainer extends React.Component {
       });
   }
 
-  componentWillUpdate() {
-
-  }
-
   listenOnSocket() {
     io.on('message', received => {
       const state = {...this.state};

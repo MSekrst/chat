@@ -13,9 +13,11 @@ export default class MainContainer extends React.Component {
     this.state = {
       peer: null,
       socketIo: null,
+      con: null,
     };
 
-    if (this.props.location.query) {
+
+    if (this.props.location.query && !this.props.location.query.id) {
       localStorage['ccToken'] = this.props.location.query ? this.props.location.query.token || '' : '';
       localStorage['ccUsername'] = this.props.location.query.username || '';
     }
@@ -40,33 +42,21 @@ export default class MainContainer extends React.Component {
 
       this.setState({...this.state, peer});
     });
+
+    peer.on('connection', con => {
+      $('#privateDestination').attr('href', '/private?id=' + con.peer);
+      $('#myModal5').modal('show');
+
+      this.setState({ ...this.state, con });
+    });
   }
 
-  // getPrivateUsers() {
-  //    fetch('/api/users/active', {
-  //      headers: {
-  //        'Authorization': 'Bearer ' + localStorage.ccToken,
-  //      }
-  //    }).then(checkStatus)
-  //      .then(res => {
-  //        res.json().then(activeUsers => {
-  //          activeUsers = activeUsers.map(u => { return { label: u, value: u } });
-  //          this.setState({ ...this.state, activeUsers });
-  //        });
-  //      }).catch(err => {
-  //      // error while getting active users
-  //    });
-  // }
-
-  // openPrivate() {
-  //   $('#myModal3').modal('hide');
-  //   this.setState({
-  //     ...this.state, private: true
-  //   });
-  // }
-
   renderContainersByRoute() {
-    const currentPath = this.props.location.pathname || '';
+    let currentPath = this.props.location.pathname || '';
+
+    if (this.state.con) {
+      currentPath = '/private';
+    }
 
     switch (currentPath) {
       case '/chat' :
@@ -78,7 +68,7 @@ export default class MainContainer extends React.Component {
       case '/private' :
         return <div>
           <HeaderContainer styleName="privateChat"/>
-          <PrivateChatContainer socket={this.state.socketIo} peer={this.state.peer}/>
+          <PrivateChatContainer socket={this.state.socketIo} peer={this.state.peer} con={this.state.con}/>
         </div>;
 
       case '/profile' :
@@ -86,6 +76,7 @@ export default class MainContainer extends React.Component {
           <HeaderContainer/>
           <ProfileContainer/>
         </div>;
+
       default:
         return <Redirect to="/logout"/>
     }

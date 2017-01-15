@@ -11,8 +11,8 @@ function scroll() {
   }
 }
 
-export default class ConversationArea extends Component{
-  constructor(props){
+export default class ConversationArea extends Component {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -26,6 +26,7 @@ export default class ConversationArea extends Component{
     this.emojiShow = this.emojiShow.bind(this);
     this.addEmoji = this.addEmoji.bind(this);
     this.onDrop = this.onDrop.bind(this);
+    this.renderFileButton = this.renderFileButton.bind(this);
   }
 
   componentDidMount() {
@@ -44,27 +45,34 @@ export default class ConversationArea extends Component{
   }
 
   handleText(e) {
-    this.setState({ text: e.target.value });
+    this.setState({text: e.target.value});
   }
 
-  addEmoji(emoji){
-    this.setState({ text: this.state.text + " " + emoji});
+  addEmoji(emoji) {
+    this.setState({text: this.state.text + " " + emoji});
   }
 
-  renderEmoji(){
-    if(this.state.emojiShow === true){
-      return (<div style={{ position: "absolute", left: "0", bottom: "50px"}}>
-        <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "transparent"}} onClick={() => {
-          this.setState({ emojiShow: false });
+  renderEmoji() {
+    if (this.state.emojiShow === true) {
+      return (<div style={{position: "absolute", left: "0", bottom: "50px"}}>
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          background: "transparent"
+        }} onClick={() => {
+          this.setState({emojiShow: false});
         }}/>
         <EmojiPicker onChange={(data) => {
-                this.addEmoji(data.shortname);
-          }}  />
+          this.addEmoji(data.shortname);
+        }}/>
       </div>);
     }
   }
 
-  emojiShow(){
+  emojiShow() {
     this.setState({
       emojiShow: !this.state.emojiShow,
     });
@@ -81,21 +89,29 @@ export default class ConversationArea extends Component{
     }
   }
 
+  renderFileButton() {
+    if (this.props.file) {
+      return <img src="./images/file.png" width="25px" height="25px" id="fileButton"
+                  data-toggle="modal"
+                  data-target="#myModal2"/>;
+    }
+  }
+
   render() {
     return (
-      <div id="talk" className={this.props.resize}>{this.renderEmoji()}
+      <div id="talk" className={this.props.resize + " " + this.props.stretch || ''}>{this.renderEmoji()}
         <Conversation active={this.props.active}/>
 
-        <form id="talkInput" className={"inputForm" + " " + this.props.styleName || ''} onSubmit={(e) => {
-          e.preventDefault()
-        }}>
+        <form id="talkInput" className={"inputForm" + " " + this.props.styleName || ''}
+              onSubmit={(e) => {
+                e.preventDefault()
+              }}>
           <img src="./images/smileyButton.png" width="35px" height="35px" id="smileyButton"
                onClick={this.emojiShow}/>
           <input className="talkInput" type="text" value={this.state.text}
                  onChange={this.handleText}/>
           <input type="submit" hidden="true" onClick={this.sendMessage}/>
-          <img src="./images/file.png" width="25px" height="25px" id="fileButton" data-toggle="modal" data-target="#myModal2"
-               />
+          {this.renderFileButton()}
           <img src="./images/send.png" width="35px" height="35px" id="sendButton"
                onClick={this.sendMessage}/>
         </form>
@@ -111,10 +127,11 @@ export default class ConversationArea extends Component{
                 <h4 className="modal-title" id="myModalLabel">Upload files</h4>
               </div>
               <div className="modal-body">
-                <Dropzone onDrop={this.onDrop} multiple={false} maxSize={16777216} className="fileDrop" activeClassName="fileDropActive">
+                <Dropzone onDrop={this.onDrop} multiple={false} maxSize={16777216}
+                          className="fileDrop" activeClassName="fileDropActive">
                   <div>Try dropping some files here, or click to select files to upload.</div>
                   <br/>
-                  <img src="./images/upload.png" width="150px" height="150px" />
+                  <img src="./images/upload.png" width="150px" height="150px"/>
                 </Dropzone>
               </div>
             </div>

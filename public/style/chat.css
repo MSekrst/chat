@@ -507,10 +507,6 @@ html, body {
   background-color: black !important;
 }
 
-.privateChatInput {
-  background-color: black !important;
-}
-
 .fullScreen{
   left: 0 !important;
   width: 100% !important;
@@ -594,4 +590,9 @@ html, body {
 
 .noAvailableModal {
   text-align: center;
+}
+
+.stretchDiv {
+  width: 100% !important;
+  position: inherit !important;
 }
