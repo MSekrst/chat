@@ -197,7 +197,7 @@ export default class ChatContainer extends React.Component {
                  updateConversation={this.state.updateConversation} users={this.state.users}
 
                  click={this.clickHandler} open={this.openConversation} send={this.sendMessage}
-                 upload={this.uploadFile}
+                 upload={this.uploadFile} file={true}
     />;
   }
 }

@@ -13,7 +13,7 @@ export default class Chat extends React.Component {
       />
       <ConversationArea active={this.props.active}
 
-                    send={this.props.send} upload={this.props.upload}
+                    send={this.props.send} upload={this.props.upload} file={this.props.file}
       />
     </div>;
   }
