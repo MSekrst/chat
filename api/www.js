@@ -12,12 +12,12 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import favicon from 'serve-favicon';
 import passport from 'passport';
+import { PeerServer } from 'peer';
 
 dotenv.config({ silent: true });
 
 import routes from './routes';
 import { connectDatabase } from './mongo';
-
 
 const app = express();
 
@@ -27,6 +27,7 @@ connectDatabase();
 // get ports
 const port = process.env.PORT || 3080;
 const sPort = process.env.SPORT || 3000;
+const peerPort = process.env.PEER_PORT || 9000;
 
 // middlewares
 app.use(cors());
@@ -52,11 +53,12 @@ const options = {
 };
 
 const optionsProduction = {
-  key: fs.readFileSync(resolve('/etc/letsencrypt/archive/chitchat.cf/privkey1.pem')),
-  cert: fs.readFileSync(resolve('/etc/letsencrypt/archive/chitchat.cf/keychain1.pem'))
+  // key: fs.readFileSync(resolve('/etc/letsencrypt/archive/chitchat.cf/privkey1.pem')),
+  // cert: fs.readFileSync(resolve('/etc/letsencrypt/archive/chitchat.cf/fullchain1.pem'))
 };
 
 const sServer = https.createServer(options, app);
+const peerServer = PeerServer({ port: peerPort, ssl: options, path: '/' });
 
 // use routes defined in an index file
 app.use('/api', routes);
@@ -73,22 +75,24 @@ const io = socketio.listen(sServer);
 
 io.on('connection', socket => {
   socket.on('user', user => {
-    console.log('Connected: ' + user.username);
+    const ip = socket.request.headers['x-forwarded-for'] || socket.request.connection.remoteAddress;
+    console.log('Connected:', user.username, user.peerId, ip);
     const newUserSocket = {
       user: user.username,
       socket: socket,
-      id: socket.handshake.address
+      peerId: user.peerId,
+      ip: ip,
     };
 
     userSockets.push(newUserSocket);
   });
 
   socket.on('userAndroid', user => {
-    console.log('Connected: ' + user);
+    console.log('Connected via mobile: ' + user);
     const newUserSocket = {
       user: user,
       socket: socket,
-      id: socket.handshake.address,
+      ip: socket.request.headers['x-forwarded-for'] || socket.request.connection.remoteAddress,
       mobile: true
     };
 

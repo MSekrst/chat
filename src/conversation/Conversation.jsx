@@ -1,124 +1,19 @@
-import React, {Component} from 'react';
-import EmojiPicker from 'emojione-picker';
+import React from 'react';
 
-import Dropzone from 'react-dropzone';
+import Message from './Message.jsx';
 
-import CurrentConversation from './CurrentConversation.jsx';
+let i = 0;
 
-function scroll() {
-  const element = document.getElementById("currentConversation");
-  element.scrollTop = element.scrollHeight;
-}
-
-export default class ConversationContainer extends Component{
-  constructor(props){
-    super(props);
-
-    this.state = {
-      text: '',
-      emojiShow: false,
-    };
-
-    this.handleText = this.handleText.bind(this);
-    this.sendMessage = this.sendMessage.bind(this);
-    this.renderEmoji = this.renderEmoji.bind(this);
-    this.emojiShow = this.emojiShow.bind(this);
-    this.addEmoji = this.addEmoji.bind(this);
-    this.onDrop = this.onDrop.bind(this);
-  }
-
-  componentDidMount() {
-    scroll();
-  }
-
-  componentDidUpdate() {
-    scroll();
-  }
-
-  sendMessage() {
-    if (this.state.text) {
-      this.props.sender(this.state.text);
-      this.setState({text: ''});
-    }
-  }
-
-  handleText(e) {
-    this.setState({ text: e.target.value });
-  }
-
-  addEmoji(emoji){
-    this.setState({ text: this.state.text + " " + emoji});
-  }
-
-  renderEmoji(){
-    if(this.state.emojiShow === true){
-      return (<div style={{ position: "absolute", left: "0", bottom: "50px"}}>
-        <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "transparent"}} onClick={() => {
-          this.setState({ emojiShow: false });
-        }}/>
-        <EmojiPicker onChange={(data) => {
-                this.addEmoji(data.shortname);
-          }}  />
-      </div>);
-    }
-  }
-
-  emojiShow(){
-    this.setState({
-      emojiShow: !this.state.emojiShow,
-    });
-  }
-
-  onDrop(acceptedFiles, rejectedFiles) {
-    if (acceptedFiles.length) {
-      this.props.uploadFile(acceptedFiles[0], acceptedFiles[0].name);
-      $('#myModal2').modal('hide');
-    } else {
-      var modal = $('#myModal2');
-      modal.find('.modal-body div').text('Error occured during the uploading of the file. Maximum length you can upload is 16MB. Try again. ');
-      console.log("error");
-    }
-  }
-
+export default class Conversation extends React.Component {
   render() {
-    return (
-      <div id="talk" className={this.props.resize}>{this.renderEmoji()}
-        <CurrentConversation active={this.props.active}/>
-        <form id="talkInput" className={"inputForm"+" "+this.props.styleName} onSubmit={(e) => {
-          e.preventDefault()
-        }}>
-          <img src="./images/smileyButton.png" width="35px" height="35px" id="smileyButton"
-               onClick={this.emojiShow}/>
-          <input className="talkInput" type="text" value={this.state.text}
-                 onChange={this.handleText}/>
-          <input type="submit" hidden="true" onClick={this.sendMessage}/>
-          <img src="./images/file.png" width="25px" height="25px" id="fileButton" data-toggle="modal" data-target="#myModal2"
-               />
-          <img src="./images/send.png" width="35px" height="35px" id="sendButton"
-               onClick={this.sendMessage}/>
-        </form>
+    if (this.props.active) {
+      return <div id="currentConversation" className="messageContainer">
+        {this.props.active.messages.map(m => <Message sender={m.sender}
+                                                      key={i++}
+                                                      fileId={m.fileId} >{m.text}</Message>)}
+      </div>;
+    }
 
-        <div className="modal fade" id="myModal2" tabIndex="-1" role="dialog"
-             aria-labelledby="myModalLabel" aria-hidden="true">
-          <div className="modal-dialog" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-                <h4 className="modal-title" id="myModalLabel">Upload files</h4>
-              </div>
-              <div className="modal-body">
-                <Dropzone onDrop={this.onDrop} multiple={false} maxSize={16777216} className="fileDrop" activeClassName="fileDropActive">
-                  <div>Try dropping some files here, or click to select files to upload.</div>
-                  <br/>
-                  <img src="./images/upload.png" width="150px" height="150px" />
-                </Dropzone>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return <div></div>
   }
 }

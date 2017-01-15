@@ -18,28 +18,14 @@ usersRouter.get('/', authMiddleware.checkToken, (req, res) => {
   });
 });
 
-usersRouter.get('/private', authMiddleware.checkToken, (req, res) => {
+usersRouter.get('/active', authMiddleware.checkToken, (req, res) => {
   const connected = getConnected();
 
-  // TODO - (Matija) - FIX 500
-
-  const username = req.user.username;
-  let ip;
-
-  for (let i = 0; i < connected.length; i++) {
-    if (username == connected.user.username) {
-      ip = connected.ip;
-      break;
-    }
-  }
-
-  console.log('my ip', ip);
-
   const users = [];
-  for (let i = 0; i < connected.length; i++) {
-    console.log('con ip', connected.ip);
-    if (ip == connected.ip && username == connected.user.username) {
-      users.push(connected.user.username);
+
+  for (const c of connected) {
+    if (c.user !== req.user.username) {
+      users.push({ username: c.user, peerId: c.peerId, ip: c.ip });
     }
   }
 
@@ -50,73 +36,80 @@ usersRouter.get('/profile', authMiddleware.checkToken, (req, res) => {
   const db = getDb();
 
   const username = req.user.username;
-  const user = db.collection('users').findOne({username});
-  user.then(data => {
-    const conversation = db.collection('messages').find({users: {$elemMatch: {username: data.username}}}).toArray((err, conversations) => {
-      if (err) {
-        res.status(500).json(err);
-      }
-      var statistic = {
-        username: data.username,
-        image: data.image
-      }
 
-      var numberOfConversations = 0;
-      var totalSendMessages = 0;
-      var totalReceivedMessages = 0;
-      var firstFavourite = {};
-      var secondFavourite = {};
+  db.collection('users').findOne({ username }).then(data => {
+    db.collection('messages').find({users: {$elemMatch: {username: data.username}}})
+      .toArray((err, conversations) => {
+        if (err) {
+          res.status(500).json(err);
+        }
+        const statistic = {
+          username: data.username,
+          image: data.image
+        };
 
-      for (var i in conversations) {
-        var conversation = conversations[i];
-        var sendMessages = conversation.messages.length;
-        if (sendMessages != 0) {
-          numberOfConversations++;
+        let numberOfConversations = 0;
+        let totalSendMessages = 0;
+        let totalReceivedMessages = 0;
+        let firstFavourite = {};
+        let secondFavourite = {};
 
-          var send = 0;
-          var received = 0;
-          for (var i in conversation.messages) {
-            if (conversation.messages[i].sender == data.username) {
-              totalSendMessages++;
-              send++;
+        for (let i in conversations) {
+          const conversation = conversations[i];
+          const sendMessages = conversation.messages.length;
+          if (sendMessages != 0) {
+            numberOfConversations++;
+
+            let send = 0;
+            let received = 0;
+            for (let j of conversation.messages) {
+              if (j.sender == data.username) {
+                totalSendMessages++;
+                send++;
+              } else {
+                totalReceivedMessages++;
+                received++;
+              }
+            }
+            let reciever;
+            if (conversation.users[0].username == data.username) {
+              reciever = conversation.users[1];
             } else {
-              totalReceivedMessages++;
-              received++;
+              reciever = conversation.users[0];
             }
-          }
-          var reciever;
-          if (conversation.users[0].username == data.username) {
-            reciever = conversation.users[1];
-          } else {
-            reciever = conversation.users[0];
-          }
-          if (firstFavourite.sendMessages == undefined || firstFavourite.sendMessages < sendMessages) {
-            secondFavourite = firstFavourite;
-            firstFavourite = {
-              username: reciever.username,
-              img: reciever.image,
-              sendMessages: send,
-              receivedMessages: received
-            }
-          } else if (secondFavourite.sendMessages == undefined || secondFavourite.sendMessages < sendMessages) {
-            secondFavourite = {
-              username: reciever.username,
-              img: reciever.image,
-              sendMessages: send,
-              receivedMessages: received
+            if (firstFavourite.sendMessages == undefined || firstFavourite.sendMessages < sendMessages) {
+              secondFavourite = firstFavourite;
+              firstFavourite = {
+                username: reciever.username,
+                img: reciever.image,
+                sendMessages: send,
+                receivedMessages: received
+              }
+            } else if (secondFavourite.sendMessages == undefined || secondFavourite.sendMessages < sendMessages) {
+              secondFavourite = {
+                username: reciever.username,
+                img: reciever.image,
+                sendMessages: send,
+                receivedMessages: received
+              }
             }
           }
         }
-      }
-      statistic['numberOfConversations'] = numberOfConversations;
-      statistic['totalSendMessages'] = totalSendMessages;
-      statistic['totalReceivedMessages'] = totalReceivedMessages;
-      statistic['favourites'] = [];
-      statistic['favourites'].push(firstFavourite);
-      statistic['favourites'].push(secondFavourite);
 
-      res.status(203).json(statistic);
-    });
+        statistic['numberOfConversations'] = numberOfConversations;
+        statistic['totalSendMessages'] = totalSendMessages;
+        statistic['totalReceivedMessages'] = totalReceivedMessages;
+        statistic['favourites'] = [];
+
+        if (Object.keys(firstFavourite).length) {
+          statistic['favourites'].push(firstFavourite);
+        }
+        if (Object.keys(secondFavourite).length) {
+          statistic['favourites'].push(secondFavourite);
+        }
+
+        res.status(200).json(statistic);
+      });
   });
 });
 

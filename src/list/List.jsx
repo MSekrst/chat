@@ -11,13 +11,15 @@ class List extends Component {
         </button>
         <div id="list">
           {
-            this.props.messages.map(m => {
-            const reciver = m.users.filter(u => u.username !== localStorage.ccUsername)[0];
-            return <Item key={m._id}
-                         name={reciver.username}
-                         picture={reciver.image || ''}
-                         click={() => this.props.click(m._id)}/>
-          })}
+            this.props.conversations.map(m => {
+              const receiver = m.users.filter(u => u.username !== localStorage.ccUsername)[0];
+              return <Item key={m._id}
+                           name={receiver.username}
+                           picture={receiver.image || ''}
+                           click={() => this.props.click(m._id)}
+              />
+            })
+          }
         </div>
 
         <div className="modal fade" id="myModal" tabIndex="-1" role="dialog"
