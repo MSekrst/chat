@@ -95,7 +95,7 @@ public class LoginView extends AppCompatActivity {
                                                       public void onCompleted(JSONObject object, GraphResponse response) {
 
                                                         try {
-                                                          String id = object.getString("chatId");
+                                                          String id = object.getString("id");
                                                           final String username = object.getString("name");
                                                           String image = ((JSONObject) ((JSONObject) object.get("picture")).get("data")).getString("url");
 
@@ -124,7 +124,7 @@ public class LoginView extends AppCompatActivity {
                                                       }
                                                     });
                                                     Bundle parameters = new Bundle();
-                                                    parameters.putString("fields", "chatId,name,picture");
+                                                    parameters.putString("fields", "id,name,picture");
                                                     request.setParameters(parameters);
                                                     request.executeAsync();
                                                   }

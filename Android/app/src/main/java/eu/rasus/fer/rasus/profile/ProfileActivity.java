@@ -108,15 +108,7 @@ public class ProfileActivity extends AppCompatActivity {
         sentMessages.setText(String.valueOf(profile.totalSendMessages));
         receivedMessages.setText(String.valueOf(profile.totalReceivedMessages));
 
-        int length = 0;
-        if (profile.favourites[0].username != null) {
-          length++;
-        }
-        if (profile.favourites[1].username != null) {
-          length++;
-        }
-
-        if (length >= 1) {
+        if (profile.favourites.length >= 1) {
           favoritesUsername1.setText(profile.favourites[0].username);
 
           if (profile.favourites[0].img != null && !profile.favourites[0].img.equals("")) {
@@ -131,7 +123,7 @@ public class ProfileActivity extends AppCompatActivity {
           favoritesRecv1.setText(String.valueOf(profile.favourites[0].receivedMessages));
         }
 
-        if (length == 2) {
+        if (profile.favourites.length == 2) {
           favoritesUsername2.setText(profile.favourites[1].username);
 
           if (profile.favourites[1].img != null && !profile.favourites[1].img.equals("")) {
