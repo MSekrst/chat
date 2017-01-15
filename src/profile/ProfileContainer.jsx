@@ -1,22 +1,52 @@
 import React, { Component } from 'react';
+
 import Profile from './Profile.jsx';
+import { checkStatus } from '../helpers';
 
-export default class ProfileContainer extends Component{
+export default class ProfileContainer extends Component {
 
-  constructor(props){
+  constructor(props) {
     super(props);
 
-    if (this.props.location.query) {
-      localStorage['ccToken'] = this.props.location.query ? this.props.location.query.token || '' : '';
-      localStorage['ccUsername'] = this.props.location.query.username;
-    }
-
-    this.state={
+    this.state = {
       users: []
     }
   }
 
-  render(){
-    return <Profile users={this.state.users} open={this.openConversation} />;
+  componentWillMount() {
+    fetch('/api/users/profile', {
+      headers: {
+        'Authorization': 'Bearer ' + localStorage.ccToken,
+      }
+    }).then(checkStatus)
+      .then(res => {
+        res.json().then(profile => {
+          this.setState({...this.state, profile});
+        });
+      }).catch(err => {
+      // profile not fetched
+    });
+
+    fetch('/api/users/active', {
+      headers: {
+        'Authorization': 'Bearer ' + localStorage.ccToken,
+      }
+    }).then(checkStatus)
+      .then(res => {
+        res.json().then(activeUsers => {
+          activeUsers = activeUsers.map(u => {
+            return {label: u, value: u}
+          });
+
+          this.setState({...this.state, activeUsers});
+        });
+      }).catch(err => {
+      // error while fetching active users
+    });
+  }
+
+  render() {
+    return <Profile activeUsers={this.state.activeUsers} open={this.openConversation}
+                    profile={this.state.profile}/>;
   }
 }

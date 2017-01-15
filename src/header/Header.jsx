@@ -66,7 +66,7 @@ export default class Header extends React.Component {
             <div className="modal-body">
               <Select
                 name="users"
-                options={this.props.users}
+                options={this.props.activeUsers}
                 onChange={this.props.open}
               />
             </div>

@@ -13,14 +13,15 @@ export default class ChatContainer extends React.Component {
   }
 
   componentWillMount() {
-    fetch('/api/users/private', {
+    fetch('/api/users/active', {
       headers: {
         'Authorization': 'Bearer ' + localStorage.ccToken,
       }
     }).then(checkStatus)
       .then(res => {
-        res.json().then(users => {
-          console.log('users', users);
+        res.json().then(activeUsers => {
+          activeUsers = activeUsers.map(u => { return { label: u, value: u } });
+          this.setState({ ...this.state, activeUsers });
         })
       })
       .catch(err => {
@@ -38,7 +39,7 @@ export default class ChatContainer extends React.Component {
 
   render() {
     return <div className="container centered chat">
-      <Chat active={this.state.active}
+      <Chat active={this.state.active} activeUsers={this.state.activeUsers}
             received={this.state.received} openPrivate={this.openPrivate}
             private={true}
       />

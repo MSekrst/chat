@@ -39,12 +39,20 @@ export default class ChatContainer extends React.Component {
       this.setState({redirect: true});
     });
 
+    const username = localStorage.ccUsername;
+
     const socketIo = window.io.connect();
-    socketIo.emit('user', {
-      username: localStorage.ccUsername,
-    });
 
     this.setState({...this.state, socketIo});
+
+    const peer = new window.Peer({host: '/', port: 9000, secure: true});
+    peer.on('open', peerId => {
+      socketIo.emit('user', {
+        username, peerId
+      });
+
+      this.setState({...this.state, peer});
+    });
   }
 
   componentDidMount() {
@@ -154,7 +162,7 @@ export default class ChatContainer extends React.Component {
             return {label: u.username, image: u.image, value: u._id}
           });
 
-          this.setState({...this.state, users});
+          this.setState({ ...this.state, users });
         });
       })
       .catch(err => {
@@ -163,7 +171,19 @@ export default class ChatContainer extends React.Component {
   }
 
   getPrivateUsers() {
-     // TODO - (MATIJA) - get private users for first usage
+     fetch('/api/users/active', {
+       headers: {
+         'Authorization': 'Bearer ' + localStorage.ccToken,
+       }
+     }).then(checkStatus)
+       .then(res => {
+         res.json().then(activeUsers => {
+           activeUsers = activeUsers.map(u => { return { label: u, value: u } });
+           this.setState({ ...this.state, activeUsers });
+         });
+       }).catch(err => {
+       // error while getting active users
+     });
   }
 
   openConversation(rec) {
@@ -204,7 +224,7 @@ export default class ChatContainer extends React.Component {
       });
   }
 
-  openPrivate(){
+  openPrivate() {
     $('#myModal3').modal('hide');
     this.setState({
       ...this.state, private: true
@@ -225,8 +245,7 @@ export default class ChatContainer extends React.Component {
         <div className="container centered chat">
           <Chat messages={this.state.messages} active={this.state.active}
                 received={this.state.received} open={this.openConversation} openPrivate={this.openPrivate}
-                uploadFile={this.uploadFile}
-                private={false}
+                uploadFile={this.uploadFile} private={false} activeUsers={this.state.activeUsers}
                 click={this.clickHandler} sender={this.sendMessage} users={this.state.users}/>
         </div>
       );

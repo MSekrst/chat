@@ -15,14 +15,14 @@ export default class Chat extends React.Component {
     this.renderList = this.renderList.bind(this);
   }
 
-  renderHeader(){
+  renderHeader() {
     if(this.props.private){
       return(
-        <Header username={localStorage.ccUsername} styleName={"backBackground"} users={this.props.users} open={this.props.openPrivate}/>
+        <Header username={localStorage.ccUsername} styleName={"backBackground"} activeUsers={this.props.activeUsers} open={this.props.openPrivate}/>
       );
     }
     return(
-      <Header username={localStorage.ccUsername} users={this.props.users} open={this.props.openPrivate}/>
+      <Header username={localStorage.ccUsername} activeUsers={this.props.activeUsers} open={this.props.openPrivate}/>
     );
   }
 
